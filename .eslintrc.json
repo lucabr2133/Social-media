@@ -1,0 +1,14 @@
+{
+    "extends": ["standard","plugin:jest/recommended"],
+    "rules": {
+      "semi": ["error", "always"],
+      "quotes": ["error", "single"],
+      "indent": ["error", 2]
+    },
+    "env": {
+       "browser": true, // If you're working on frontend code
+    "node": true,    // If you're working on backend Node.js code
+    "es2025": true,  // Or a newer ECMAScript version (e.g., es2023)
+    "jest": true  
+    }
+  }

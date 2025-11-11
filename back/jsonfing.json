@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es2017", 
+    "module": "esnext",
+    "lib": [
+      "es2017", 
+      "dom"
+    ],
+    "checkJs": true 
+  },
+  "include": [
+    "src/**/*", 
+    "tests/**/*", 
+    "*.js" 
+  ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules"
+  ],
+  "typeAcquisition": {
+    "enable": true
+  }
+}

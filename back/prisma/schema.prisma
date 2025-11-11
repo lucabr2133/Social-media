@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @unique @default(uuid())
+  username     String         @unique
+  password     String?
+  description  String         @default("")
+  profileImg   String         @default("")
+  create_at    DateTime       @default(now())
+  githubId     String?        @unique
+  publications publications[]
+  comments     comments[]
+  likes        likes[]
+  followers    following[]    @relation(name: "UserFollowers")
+  following    following[]    @relation(name: "UserFollowing")
+
+  messagesSent     messages[] @relation(name: "UserSentMessages")
+  messagesReceived messages[] @relation(name: "UserReceivedMessages")
+}
+
+model publications {
+  id        String     @id @unique @default(uuid())
+  user_id   String
+  content   String
+  create_at DateTime   @default(now())
+  image_url String
+  author    User       @relation(fields: [user_id], references: [id])
+  likes     likes[]
+  comments  comments[]
+}
+
+model comments {
+  id          String       @id @unique @default(uuid())
+  post_id     String
+  user_id     String
+  content     String
+  create_at   DateTime     @default(now())
+  author      User         @relation(fields: [user_id], references: [id])
+  publication publications @relation(fields: [post_id], references: [id])
+  likes       likes[]
+}
+
+model likes {
+  id         String  @id @unique @default(uuid())
+  post_id    String?
+  user_id    String
+  comment_id String?
+
+  create_at DateTime      @default(now())
+  author    User          @relation(fields: [user_id], references: [id])
+  post      publications? @relation(fields: [post_id], references: [id])
+  comment   comments?     @relation(fields: [comment_id], references: [id])
+}
+
+model following {
+  id           String   @id @unique @default(uuid())
+  follower_id  String
+  following_id String
+  create_at    DateTime @default(now())
+
+  follower  User @relation(name: "UserFollowers", fields: [follower_id], references: [id])
+  following User @relation(name: "UserFollowing", fields: [following_id], references: [id])
+  userId    Int?
+}
+
+model messages {
+  id          String   @id @unique @default(uuid())
+  sender_id   String
+  receptor_id String
+  content     String
+  create_at   DateTime @default(now())
+  sender      User     @relation(name: "UserSentMessages", fields: [sender_id], references: [id])
+  receiver    User     @relation(name: "UserReceivedMessages", fields: [receptor_id], references: [id])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  sid       String   @unique
+  data      String // MediumText may be needed for MySql
+  expiresAt DateTime
+}

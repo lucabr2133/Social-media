@@ -1,0 +1,56 @@
+.dialog{
+    margin: auto;
+    position: fixed;
+    height: 99vh;
+    width: 99vw ;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.605);
+    border: none;
+    top: 50%; /* Coloca el dialog a la mitad desde el top */
+    left: 50%; /* Coloca el dialog a la mitad desde el left */
+    transform: translate(-50%, -50%); 
+  }
+  .dialog-form{
+    width: 600px ;
+    height: 600px;
+    border-radius: 10px;
+    background-color: rgb(52, 48, 48);
+    display: flex;
+    flex-direction: column;
+    position: fixed; /* Posiciona el dialog sobre el contenido */
+    top: 50%; /* Coloca el dialog a la mitad desde el top */
+    left: 50%; /* Coloca el dialog a la mitad desde el left */
+    transform: translate(-50%, -50%); 
+  }
+  .dialog-form>input{
+    width: 500px;
+    height: 100px;
+  }
+  .dialog-form>label{
+    text-align: start;
+    cursor: pointer;
+  }
+  .container-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10%;
+  }
+  .container-form>button{
+    background-color: rgba(255, 179, 0, 0.554);
+  
+  }
+  .container-form>label{
+    margin-top: 50px;
+  }
+  .container-form>input{
+    margin-top: 10px;
+    height: 100px;
+    width: 200px;
+  }
+  .form-header{
+    border-bottom:rgba(160, 160, 160, 0.274) solid 2px ;
+    font-size: 25px;
+    padding: 10px;
+  }

@@ -1,0 +1,18 @@
+.userContainer{
+    display: flex;
+    border: 2px solid rgb(65, 65, 69);
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+      }
+      .usersContainer{
+        background-color: rgba(36, 34, 32, 0.667);
+      
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        padding: 100px;
+      }
+      .userContainer>*{
+        padding: 10px;
+      }
