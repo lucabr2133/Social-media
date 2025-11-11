@@ -6,15 +6,12 @@ import useLikesPublication from '../../../hooks/useLikes'
 import usePublicationLikes ,{myAction,myState}from '../../../hooks/usePublicationLikes'
 interface actions {
   onHandleLikePublication:(e:React.MouseEvent<HTMLImageElement>,publicationId:string,userId:string)=>Promise<Likes>
-  onHandleDeletedLike:(id:string)=>void
-setOpen:React.Dispatch<React.SetStateAction<string>>
-dispatch:React.ActionDispatch<[myAction]>
+  onHandleDeletedLike:(id:string)=>Promise<Likes>
+
 }
 interface data{
   publication:Publications,
   userFind:User[],
-  state:myState,
-  open:string ,
   user:User,
   users:User[]
 }

@@ -1,7 +1,6 @@
-import { UUIDTypes } from "uuid"
 import { Likes } from "../src/types"
 
-async function onHandleDeletedLike (likeId:UUIDTypes) {
+async function onHandleDeletedLike (likeId:string):Promise<Likes> {
 
   const data = await fetch('http://localhost:3000/likes/likes', {
     method: 'DELETE',

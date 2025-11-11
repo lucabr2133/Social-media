@@ -6,8 +6,8 @@ import styles from './Messages.module.css'
 import { UserContext, UserSession } from '../../contex/context.js'
 import MainHeader from '../Header/Header.jsx'
 import React from 'react'
-import { Messages, User } from '../../types.js'
-import {useChatSocket} from '../../../hooks/useChatSocket.ts'
+import { Messages as messages, User } from '../../types.js'
+import {useChatSocket} from '../../../hooks/useChatSocket'
 import { socket } from '../../socket.js'
 function Messages() {
   const contex = useContext(UserSession)
@@ -16,7 +16,7 @@ function Messages() {
 
   const users = useContext(UserContext)
   const { messages:hookMessage } = useMessages()
-  const [messages,setMessages]=useState<Messages[]>()
+  const [messages,setMessages]=useState<messages[]>()
   useEffect(()=>{
     if(hookMessage){
       setMessages(hookMessage)
@@ -30,8 +30,10 @@ function Messages() {
       if(user?.id){
        socket.emit("joinRoom", user.id);
 
-    const handleMessage = (message: Messages) => {
-      setMessages((prev) => [...prev, message]);
+    const handleMessage = (message: messages) => {
+      setMessages((prev) => {
+        if(!prev) return
+        return [...prev, message]});
     };
 
     socket.on("chat message", handleMessage);
@@ -219,7 +221,7 @@ function Messages() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault()
-                  onHandleMessageSubmit(e, user, receptorUser,setMessages)
+                  onHandleMessageSubmit(e, user, receptorUser)
                   e.currentTarget.reset()
                 }}
                 method="POST"

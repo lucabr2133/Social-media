@@ -1,7 +1,7 @@
 import React from "react"
-import { Messages, User } from "../src/types"
 import {socket} from '../src/socket'
-async function onHandleMessageSubmit (e:React.FormEvent<HTMLFormElement>, user:User, receptorUser:User,) {
+import { User } from "../src/types"
+async function onHandleMessageSubmit (e:React.FormEvent<HTMLFormElement>, user:User, receptorUser:User) {
   e.preventDefault()
   const formdata = new FormData(e.target as HTMLFormElement)
   const message = formdata.get('message')

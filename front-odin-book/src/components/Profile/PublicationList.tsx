@@ -138,7 +138,7 @@ const likePublication = useMemo(() => {
         {isOpen && (
           <div style={{ paddingTop: '15px' }}>
             <h3 style={{ marginBottom: '10px' }}>Comentarios</h3>
-            <CommentList userSession={userSession}
+            <CommentList 
               publication={publication}
               styles={styles}
               user={userData}

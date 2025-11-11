@@ -9,9 +9,8 @@ interface props {
   publication:Publications,
   users:User[],
   user:User,
-  userSession:User,
 }
-function CommentList ({ styles, publication, users, user ,userSession}:props) {
+function CommentList ({ styles, publication, users, user }:props) {
   const { comments:commentsHook } = useComments()
 const [comments,setComments]=useState<Comments[]>()
 useEffect(()=>{
@@ -28,13 +27,14 @@ useEffect(() => {
 
   // Handler
   const handleComment = (comment: Comments) => {
-    setComments((prev) => [...prev, comment]);
+    setComments((prev) => {
+      if(!prev)return
+      return [...prev, comment]
+    });
   };
 
-  // Escuchar evento
   socket.on("publication comments", handleComment);
 
-  // Cleanup
   return () => {
     socket.off("publication comments", handleComment);
   };
@@ -75,7 +75,7 @@ if (comments==null && !users) {
           )}
         </div>
         <div className={styles['submit-comment']}>
-          <form className={styles['submit-comment-form']} action='' onSubmit={(e) => { onHandleSubmitComment(e, userSession.id, publication.id) }}>
+          <form className={styles['submit-comment-form']} action='' onSubmit={(e) => { onHandleSubmitComment(e, user.id, publication.id) }}>
             <input className='comment-text' type='text' name='comment' />
             <button type='submit'>Send</button>
           </form>

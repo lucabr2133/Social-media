@@ -18,7 +18,7 @@ function PublicationOpen ({ users, styles, user, publication, setOpen }:props) {
    
        
 
-        <CommentList styles={styles} users={users} user={user} publication={publication} />
+        <CommentList  styles={styles} users={users} user={user} publication={publication} />
 
     </div>
   )

@@ -2,7 +2,7 @@ import React from "react"
 import { UUIDTypes } from "uuid"
 import { Likes } from "../src/types"
 
-async function onHandleLikePublication (e:React.MouseEvent<HTMLImageElement>, publicationID:UUIDTypes, userActiveID:UUIDTypes) {
+async function onHandleLikePublication (e:React.MouseEvent<HTMLImageElement>, publicationID:UUIDTypes, userActiveID:UUIDTypes):Promise<Likes> {
 
   const response = await fetch('http://localhost:3000/likes/likes', {
     method: 'post',
