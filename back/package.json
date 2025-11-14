@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node index.js",
     "test": "set NODE_ENV=test&& vitest",
     "testwatch": "npm test -- --watch"
   },
