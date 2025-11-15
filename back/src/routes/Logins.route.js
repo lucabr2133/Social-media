@@ -100,7 +100,7 @@ Loginrouter.get('/auth/github',
 Loginrouter.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function (req, res) {
-    res.redirect('http://localhost:5173/'); // o la página que quieras
+    res.redirect(`${process.env.PUBLIC_URL}`); // o la página que quieras
   });
 Loginrouter.get('/users', async (req, res) => {
   const users = await ControlerData.getUserController();

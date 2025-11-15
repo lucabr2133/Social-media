@@ -16,7 +16,7 @@ import { prisma } from './src/model/prismamodel.js';
 const app = e();
 const server=createServer(app)
 const io= new Server(server, {cors: {
-    origin:  process.env.PUBLIC_URL, 
+    origin:  process.env.CLIENT_URL, 
     methods: ["GET", "POST"],
     credentials: true
   }})
@@ -66,7 +66,7 @@ io.to(publicationId).emit("publication comments", comment);
 app.use(e.json());
 app.use(e.urlencoded({ extended: true }));
 app.use(cors({
-  origin: process.env.PUBLIC_URL, // Asegúrate de que sea el puerto correcto
+  origin: process.env.CLIENT_URL, // Asegúrate de que sea el puerto correcto
   credentials: true // Permite enviar cookies en la solicitud
 }));
 

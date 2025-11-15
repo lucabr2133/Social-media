@@ -3,6 +3,7 @@ import { Following } from "../src/types"
 const apiUrl = import.meta.env.VITE_API_URL;
 
 async function onHandletFollow (followId:UUIDTypes) {
+  
   const response=await fetch(`${apiUrl}/followings/following`, {
     method: 'delete',
     credentials: 'include',
