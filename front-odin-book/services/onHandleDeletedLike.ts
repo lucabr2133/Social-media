@@ -1,8 +1,9 @@
 import { Likes } from "../src/types"
 
 async function onHandleDeletedLike (likeId:string):Promise<Likes> {
+const apiUrl = import.meta.env.VITE_API_URL;
 
-  const data = await fetch('http://localhost:3000/likes/likes', {
+  const data = await fetch(`${apiUrl}/likes/likes`, {
     method: 'DELETE',
     credentials: 'include',
     headers: {

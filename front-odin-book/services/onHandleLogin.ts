@@ -1,10 +1,13 @@
+import { SetStateAction } from "react";
+import { User } from "../src/types";
 import React from "react";
-import { errorMesagges, User } from "../src/types";
-import { NavigateFunction, useNavigate } from "react-router";
+import { UseFormSetError } from "react-hook-form";
+import { Inputs } from "../src/components/Signup/Signup";
+const apiUrl = import.meta.env.VITE_API_URL;
 
-async function onHandleSubmitLogin (data,setUser,setError) {
+async function onHandleSubmitLogin (data:Inputs,setUser:React.Dispatch<SetStateAction<User|null>>,setError:UseFormSetError<Inputs>) {
 
-  const response = await fetch('http://localhost:3000/logins/', {
+  const response = await fetch(`${apiUrl}/logins/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

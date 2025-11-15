@@ -1,10 +1,12 @@
-import React from "react"
+
 import { UseFormSetError } from "react-hook-form"
 import { Inputs } from "../src/components/Signup/Signup"
+const apiUrl = import.meta.env.VITE_API_URL;
+
 async function onHandleSubmitSign (  data:  Inputs,setError:UseFormSetError<Inputs>)
    {
     
-  const response = await fetch('http://localhost:3000/logins/signup', {
+  const response = await fetch(`${apiUrl}/logins/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -22,7 +24,7 @@ async function onHandleSubmitSign (  data:  Inputs,setError:UseFormSetError<Inpu
         } else {
           throw new Error(errors.message || "Error desconocido")
         }
-        return // cortamos aquí para no continuar
+        return
   }
   const dataResponse = await response.json()
 return dataResponse
