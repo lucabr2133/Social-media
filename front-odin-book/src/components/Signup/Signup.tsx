@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import styles from '../Login/Login.module.scss'
+import styles from '../Login/login.module.scss'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import onHandleSubmitSign from '../../../services/onHandleSign';
 
