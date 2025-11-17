@@ -15,7 +15,11 @@ import { prisma } from './src/model/prismamodel.js';
 
 const app = e();
 app.set("trust proxy", 1);
-
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
 const server=createServer(app)
 const io= new Server(server, {cors: {
     origin:  process.env.CLIENT_URL, 
@@ -68,22 +72,25 @@ io.to(publicationId).emit("publication comments", comment);
 app.use(e.json());
 app.use(e.urlencoded({ extended: true }));
 app.use(cors({
-  origin: process.env.CLIENT_URL, // Asegúrate de que sea el puerto correcto
-  credentials: true // Permite enviar cookies en la solicitud
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("CORS bloqueado: " + origin));
+  },
+  credentials: true
 }));
-
 
 
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: false,
-
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
-    sameSite: "none",
-    secure: true
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production"
   }
 }));
 configPassport()

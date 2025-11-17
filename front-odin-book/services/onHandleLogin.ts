@@ -3,7 +3,6 @@ import { User } from "../src/types";
 import React from "react";
 import { UseFormSetError } from "react-hook-form";
 import { Inputs } from "../src/components/Signup/Signup";
-import { Navigate } from "react-router";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 async function onHandleSubmitLogin (data:Inputs,setUser:React.Dispatch<SetStateAction<User|null>>,setError:UseFormSetError<Inputs>) {
