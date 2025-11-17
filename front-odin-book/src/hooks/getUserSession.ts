@@ -12,7 +12,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
         const res = await fetch(`${apiUrl}/logins/`, {
           credentials: 'include',
         })
-
+        
         if (res.ok) {
           const data :data = await res.json()
           setUser(data.user) // Asigna el usuario recibido

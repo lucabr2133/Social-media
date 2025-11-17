@@ -72,7 +72,6 @@ Loginrouter.post('/', (req, res, next) => {
     req.logIn(user, (err) => {
       if (err) return res.status(500).json({ message: 'Error al iniciar sesión' });
 
-      // Aquí podés enviar cualquier info que quieras al frontend
       return res.json({
         message: 'Login exitoso',
         user: { id: user.id, username: user.username }
