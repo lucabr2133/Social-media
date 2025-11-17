@@ -30,7 +30,7 @@ async function onHandleSubmitLogin (data:Inputs,setUser:React.Dispatch<SetStateA
 
   } 
    
-   Navigate({to:'/'})
+   window.location.href='/'
 
 }
 
