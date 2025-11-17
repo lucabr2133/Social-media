@@ -77,12 +77,13 @@ app.use(cors({
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
 
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24, 
-    sameSite: 'lax',
-    httpOnly: true
+    maxAge: 1000 * 60 * 60 * 24,
+    httpOnly: true,
+    sameSite: "none",
+    secure: true
   }
 }));
 configPassport()
