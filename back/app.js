@@ -22,7 +22,12 @@ const allowedOrigins = [
 ];
 const server=createServer(app)
 const io= new Server(server, {cors: {
-    origin:  process.env.CLIENT_URL, 
+    origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("CORS bloqueado: " + origin));
+  },
     methods: ["GET", "POST"],
     credentials: true
   }})

@@ -6,6 +6,7 @@
     justify-content: center;
     grid-column: 2/3;
 width: 100%;
+
   }
   .publications-home{
     display: flex;
@@ -16,12 +17,11 @@ width: 100%;
  
   }
   .publication-container{
-    border-bottom: 2px solid rgb(226, 226, 226);
+    border-bottom: 2px solid rgb(188, 137, 6);
     margin: 10px;
     display: flex;
     transition: 1s;
   
-  background-color:  rgba(29, 182, 121, 0);
   
   }
 
@@ -29,9 +29,8 @@ width: 100%;
   .message{
     display:flex ;
     margin: 20px 0px;
-    text-align: center;
-    align-items: center;
     padding: 5px;
+    flex-direction: column;
   }
   .description{
     font-size: 22px;
@@ -51,15 +50,8 @@ width: 100%;
   .message>*{
     margin-right: 5px;
   }
-  .publication-container>img{
-    margin-top: 10px;
-    width: 800px;
-    height: 800px;
-  }
-  .publication-content{
-    display: inline;
-    padding: 10px;
-  }
+
+ 
   .icons{
     display: flex;
     margin-bottom: 10px;
@@ -70,17 +62,15 @@ width: 100%;
   }
  
   .main-publication{
-    padding: 10px;
     display: flex;
-    height: 100%;
   }
    .main-publication>div{
     width: 100%;
   }
   .comments{
-
+text-wrap: wrap;
     display: grid;
-    grid-template-rows: 95% 5%;
+    grid-template-rows: 90% 10%;
     margin: 0 30px;
     height: 100%;
     width: 100%;
@@ -110,4 +100,14 @@ width: 100%;
 }
 .dialog.open {
   display: flex; /* visible cuando se abre */
+}
+
+@media only screen and (min-device-width: 0px) and (max-device-width: 768px) {
+  .main-publication{
+    display: none;
+  }
+  .comments{
+    grid-template-rows: 90% 20%;
+  }
+  
 }

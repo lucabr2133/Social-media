@@ -10,6 +10,7 @@ import MainHeader from '../Header/Header'
 import { Likes } from '../../types'
 import VerticalHeader from '../Header/VericalHeader'
 import { Link } from 'react-router'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 function Home () {
   const PublicationHome = lazy(() => import('./PublicationsHome'));
@@ -38,14 +39,9 @@ const{dispatch,state}=contexPublication
 
   return (
     <>
-    <div style={
-      {
-        display:'grid',
-        gridTemplateColumns:'15% 65% 20%'
-      }
-    }>
+    <div className='lg:grid  lg:grid-cols-[15%_65%_20%] block' >
 <MainHeader userActive={user} setOpenDialog2s={setOpenDialog} />
-      <main className={styles.home}>
+      <main className='w-full'>
         <div className={styles['publications-home']}>
           <Suspense fallback={<p>loading...</p>}>
         {state.publications.map((publication) => {
@@ -61,17 +57,11 @@ const{dispatch,state}=contexPublication
         </div>
       </main>
       <aside style={{
+        justifyContent:'center',
         display:'flex',
         flexDirection:'column'
       }}>
-        <div style={
-          {
-            textAlign:"center",
-             border:'1px solid black',
-              borderRadius:'10px',
-              margin:'10px'
-          }
-        }>
+        <div className='lg:flex flex-col text-center gap-5  hidden bg-neutral-700/15 rounded-2xl'>
           <h1 style={{
             fontSize:'40PX'
           }}>USERS</h1>
@@ -80,7 +70,10 @@ const{dispatch,state}=contexPublication
              
             }} className={styles.message}>
           <Link style={{ width: '100px', marginRight: '10px' }} to={`/${user.username}`}>
-              <img width={'80px'} src={user.profileImg?user.profileImg:'profile2.svg'} alt="" />
+              <Avatar className='size-20'>
+  <AvatarImage src={user.profileImg?user.profileImg:'/profile2.svg'} />
+  <AvatarFallback></AvatarFallback>
+</Avatar>
           
           </Link>
               <h2>{user.username}</h2>

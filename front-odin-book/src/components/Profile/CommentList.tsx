@@ -22,7 +22,6 @@ useChatSocket()
 useEffect(() => {
   if (!publication?.id) return;
 
-  // Unir a la "room"
   socket.emit("publicationRomm", publication.id);
 
   // Handler
@@ -61,11 +60,16 @@ if (comments==null && !users) {
             const user = users?.find((user) => user.id === comment.user_id)
             return (
               comment.post_id === publication.id && (
+
                 <div className={styles.message} key={comment.id}>
-                  <img width='30px' src={user?.profileImg ?? 'profile2.svg'} alt='' />
+                  <div>
+ <img width='30px' src={user?.profileImg ?? 'profile2.svg'} alt='' />
 
                   <p>{user?.username}</p>
+                  </div>
+                 
                   <p key={comment.id}>{comment.content}</p>
+
                 </div>
 
               )
@@ -75,9 +79,14 @@ if (comments==null && !users) {
           )}
         </div>
         <div className={styles['submit-comment']}>
-          <form className={styles['submit-comment-form']} action='' onSubmit={(e) => { onHandleSubmitComment(e, user.id, publication.id) }}>
+          <form className={styles['submit-comment-form']} action='' onSubmit={(e) => { 
+
+            onHandleSubmitComment(e, user.id, publication.id) 
+            }}>
             <input className='comment-text' type='text' name='comment' />
-            <button type='submit'>Send</button>
+            <button onClick={()=>{
+              
+            }} type='submit' style={{padding:'5px'}}>Send</button>
           </form>
         </div>
       </div>

@@ -4,6 +4,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import { Likes, Publications, User } from '../../types'
 import useLikesPublication from '../../hooks/useLikes'
 import usePublicationLikes ,{myAction,myState}from '../../hooks/usePublicationLikes'
+import { Cross, Delete, X } from 'lucide-react'
 interface actions {
   onHandleLikePublication:(e:React.MouseEvent<HTMLImageElement>,publicationId:string,userId:string)=>Promise<Likes>
   onHandleDeletedLike:(id:string)=>Promise<Likes>
@@ -42,44 +43,49 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
 
 }
   return (
-    <div className={styles['publication-container']} key={publication.id}>
-      <div >
+    <div className={`${styles['publication-container']} bg-neutral-700/35 flex w-full md:w-auto p-0  rounded-2xl shadow-2xl` } key={publication.id}>
+  <div className='w-full lg:w-auto'>
+  {/* El div que quieres animar y mostrar solo en móvil */}
+
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Link style={{ width: '100px', marginRight: '10px' }} to={`/${userFind[0]?.username}`}>
-            <img style={{ width: '100px', marginRight: '10px' }} src={userFind[0]?.profileImg} alt="" />
+          <Link  to={`/${userFind[0]?.username}`}>
+            <img style={{ width: '70px' }} src={userFind[0]?.profileImg||'profile2.svg'} alt="" />
           </Link>
-         <h1>{userFind[0]?.username}</h1> 
+         <h1 className='uppercase font-extrabold text-2xl'>{userFind[0]?.username}</h1> 
         </div>
 
-        <img width='450px' src={publication.image_url} alt="" />
+        <img className='h-[calc(100vh-35vh)] w-full md:w-auto' src={publication.image_url} alt="" />
         <div className={styles['publication-content']}>
-          <div className={styles.icons}>
-            <img
+          <div className='flex flex-col gap-5'>
+            <div className='flex w-full items-center gap-5' style={{padding:'10px'}}>
+             <img
               aria-label="likeimg"
               onClick={(e)=>{onHandleClickLike(e)}}
               src={state.likes.some(like => like.post_id === publication.id && like.user_id === user.id) ? '/likeActive.svg' : '/offlike.svg'}
               width="50px"
               alt=""
             />
-            <h4 className={styles.numlikes}>{state.likes.filter((n) => n.post_id === publication.id).length}</h4>
+            <h4 className='text-center text-2xl'>{state.likes.filter((n) => n.post_id === publication.id).length}</h4>
 
             <img
               onClick={() => {
                 setOpen(isOpen ? '' : publication.id) // toggle open/close
               }}
               src="/comment1.svg"
-              width="50px"
+              width="45px"
               alt=""
               style={{ cursor: 'pointer' }}
             />
+            </div>
+           
 
-            <div className={styles.description}>{publication.content}</div>
+            <div className='p-5' style={{padding:'5px'}}>{publication.content}</div>
           </div>
         </div>
       </div>
 
       <div
-      className={styles["main-publication"]}
+      className={`${styles["main-publication"]} hidden `}
         style={{
           width: isOpen ? '500px' : '0px', // ancho cerrado o abierto
           overflow: 'hidden',
@@ -89,7 +95,34 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
       >
         {isOpen && <PublicationOpen publication={publication} setOpen={setOpen} user={user} users={users} styles={styles} />}
       </div>
+      <div 
+    className={`
+      bg-black
+      md:hidden 
+      w-full 
+      absolute 
+      top-0 
+      overflow-hidden 
+      transition-all 
+      duration-500 
+      ease-in-out 
+      ${isOpen ? 'h-full' : 'h-0'}
+    `}
+  >
+    {isOpen && (
+      <div className="p-4 text-white h-full displaymenu">
+        {/* Tu contenido aquí */}
+        <div className='flex' style={{padding:'10px'}}>
+        <h2 className='w-full  uppercase text-2xl'>Comments</h2>
+        <X onClick={()=>setOpen('')}></X>
+        </div>
+        {isOpen && <PublicationOpen publication={publication} setOpen={setOpen} user={user} users={users} styles={styles} />}
+      
+      </div>
+    )}
+  </div>
     </div>
+    
   )
 }
 

@@ -12,7 +12,6 @@ import UpdatePublicationProfile from './UpdatePublicationProfile.jsx'
 import PubliationTabs from './PublicationTabs'
 import PublicationGrid from './PublicationGrid'
 import MainHeader from '../Header/Header.js'
-import React from 'react'
 import {  Publications, User } from '../../types.js'
 function Profile() {
   const [openDialgo2, setOpenDialog2s] = useState(false)
@@ -59,7 +58,7 @@ useEffect(() => {
 
   return (
     <>
-      <div className={styles.container}>
+      <div className={` grid grid-cols-[15%] min-h-screen`}>
         <MainHeader userActive={userSession} setOpenDialog2s={setOpenDialog2s} />
         <main className={styles.main}>
           <Header
