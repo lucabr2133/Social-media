@@ -50,6 +50,7 @@ function Header({ data, actions, usernameParam, styles }: Props) {
           marginBottom: '20px',
           flexWrap: 'wrap',
         }}
+        className='flex-col md:flex-row'
       >
         {/* Imagen de perfil */}
         <div
@@ -73,8 +74,6 @@ function Header({ data, actions, usernameParam, styles }: Props) {
             }}
           />
         </div>
-
-        {/* Info de usuario */}
         <div style={{ flex: 1, minWidth: '200px' }}>
           <h2 style={{ margin: '0 0 10px', fontSize: '1.8rem', color: '#fff' }}>
             {usernameParam}

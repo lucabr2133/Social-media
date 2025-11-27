@@ -6,6 +6,7 @@ import onHandleDeletedLike from '../../../services/onHandleDeletedLike'
 import onHandleLikePublication from '../../../services/onHandleLikePublication'
 import usePublicationLikes from '../../hooks/usePublicationLikes'
 import { user } from '@heroui/react'
+import { X } from 'lucide-react'
 interface Props {
   styles: Record<string, string>
   data: {
@@ -128,6 +129,7 @@ const likePublication = useMemo(() => {
 
       {/* Comentarios expandibles */}
       <div
+      className='hidden md:block'
         ref={panelRef}
         style={{
           maxWidth: isOpen ? '800px' : '500px',
@@ -148,7 +150,31 @@ const likePublication = useMemo(() => {
           </div>
         )}
       </div>
-    </div>
+      <div  className={`
+      bg-black
+      md:hidden 
+      w-full 
+      fixed 
+      left-0
+      top-0 
+      overflow-hidden 
+      transition-all 
+      duration-500 
+      ease-in-out 
+      ${isOpen ? 'h-full' : 'h-0'}
+    `}>
+            <div className='flex justify-between'>
+            <h3 >Comments</h3>
+            <X onClick={()=>setOpenedId('')}></X>
+            </div>
+             <CommentList 
+              publication={publication}
+              styles={styles}
+              user={userData}
+              users={users}
+            />
+          </div>
+      </div>
   )
 }
 

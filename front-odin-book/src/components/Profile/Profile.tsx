@@ -58,9 +58,9 @@ useEffect(() => {
 
   return (
     <>
-      <div className={` grid grid-cols-[15%] min-h-screen`}>
+      <div className={` lg:grid lg:grid-cols-[15%] min-h-screen flex flex-col  `}>
         <MainHeader userActive={userSession} setOpenDialog2s={setOpenDialog2s} />
-        <main className={styles.main}>
+        <div className={styles.mainpublication}>
           <Header
             data={{ userData, userSession, publications, following }}
             actions={{ setUserData }}
@@ -71,7 +71,7 @@ useEffect(() => {
             <PublicationGrid extra={{ userSession, userData, dispatch, users, setUpdateForm }} styles={styles} data={{ sortedVideos, publications }} />
           </div>
 
-        </main>
+        </div>
 
       </div>
 

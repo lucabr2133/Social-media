@@ -74,14 +74,12 @@ return state.following.some(
 
   return (
     <>
-    <div style={{
+    <div className='lg:grid lg:grid-cols-[15%_85%] w-full' style={{
       display:"grid",
-      gridTemplateColumns:'10% 90%'
     }}>
         <MainHeader userActive={user} setOpenDialog2s={setOpenDialog} />
-    <div 
+    <div className='col-start-1 lg:col-start-2 lg:col-end-3' 
         style={{
-          gridColumn :'2/3',
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',

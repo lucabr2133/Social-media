@@ -16,3 +16,8 @@
       .userContainer>*{
         padding: 10px;
       }
+@media only screen and  (min-device-width: 0px) and (max-device-width: 768px) {
+  .usersContainer{
+    padding: 0;
+  }
+}

@@ -56,14 +56,10 @@ function Messages() {
 
   return (
     <>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns:'20% 70%'
-      }}
-        
-      >
-        <MainHeader userActive={user} setOpenDialog2s={setOpenDialog} />
-<div style={{
+      <div className='lg:grid lg:grid-cols-[15%_80%] flex ' >
+           <div className='w-full' style={{
+            
+            marginBottom:'30px',
           display: 'flex',
           flexDirection: 'column',
           height: '100vh',
@@ -133,7 +129,6 @@ function Messages() {
             ))}
         </header>
 
-        {/* Contenedor principal */}
         <main
           style={{
             flex: 1,
@@ -144,7 +139,6 @@ function Messages() {
             overflow: 'hidden',
           }}
         >
-          {/* Mensajes y chat */}
           {receptorUser ? (
             <section
               style={{
@@ -158,7 +152,6 @@ function Messages() {
               }}
               aria-label={`Chat con ${receptorUser.username}`}
             >
-              {/* Header receptor */}
               <div
                 style={{
                   display: 'flex',
@@ -179,7 +172,6 @@ function Messages() {
                 <h2 style={{ color: '#4a90e2', margin: 0 }}>{receptorUser.username}</h2>
               </div>
 
-              {/* Mensajes */}
               <div
                 style={{
                   flex: 1,
@@ -216,7 +208,6 @@ function Messages() {
                   ))}
               </div>
 
-              {/* Formulario enviar mensaje */}
               <form
                 onSubmit={(e) => {
                   e.preventDefault()
@@ -286,8 +277,9 @@ function Messages() {
             </div>
           )}
         </main>
-</div>
-        {/* Sidebar Usuarios */}
+      </div>
+        <MainHeader userActive={user} setOpenDialog2s={setOpenDialog} />
+        
      
       </div>
 

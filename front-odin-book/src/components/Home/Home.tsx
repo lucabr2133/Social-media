@@ -57,18 +57,20 @@ const{dispatch,state}=contexPublication
         </div>
       </main>
       <aside style={{
-        justifyContent:'center',
         display:'flex',
         flexDirection:'column'
       }}>
-        <div className='lg:flex flex-col text-center gap-5  hidden bg-neutral-700/15 rounded-2xl'>
+        <div style={{
+        margin:'15px',
+
+        }} className='lg:flex flex-col text-center gap-5  hidden border rounded-2xl'>
           <h1 style={{
             fontSize:'40PX'
           }}>USERS</h1>
           {users.map((user)=>(
             <div style={{
-             
-            }} className={styles.message}>
+             padding:'30px'
+            }} className='flex items-center'>
           <Link style={{ width: '100px', marginRight: '10px' }} to={`/${user.username}`}>
               <Avatar className='size-20'>
   <AvatarImage src={user.profileImg?user.profileImg:'/profile2.svg'} />
@@ -76,7 +78,7 @@ const{dispatch,state}=contexPublication
 </Avatar>
           
           </Link>
-              <h2>{user.username}</h2>
+              <h2 className='text-center'>{user.username}</h2>
             </div>
           ))}
         </div>

@@ -100,7 +100,7 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
       bg-black
       md:hidden 
       w-full 
-      absolute 
+      fixed 
       top-0 
       overflow-hidden 
       transition-all 
@@ -111,7 +111,6 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
   >
     {isOpen && (
       <div className="p-4 text-white h-full displaymenu">
-        {/* Tu contenido aquí */}
         <div className='flex' style={{padding:'10px'}}>
         <h2 className='w-full  uppercase text-2xl'>Comments</h2>
         <X onClick={()=>setOpen('')}></X>

@@ -13,7 +13,8 @@ function MainHeader ({ userActive, setOpenDialog2s }:props) {
   return (
     <>
         <header   className='  bg-neutral-700/20 flex  fixed  '>
-      <ul className='w-full lg:w-[15%] flex flex-row lg:flex-col bottom-0 fixed justify-around lg:top-0 lg:justify-start  bg-neutral-700/40 gap-5 *:min-h-[60px]  *:flex *:items-center *:text-3xl uppercase font-extrabold' style={{padding:'5px'}}>
+      <ul className='lg:w-[15%] flex flex-row lg:flex-col bottom-0 fixed justify-around lg:top-0 lg:justify-start bg-neutral-700/20 gap-5 *:min-h-[60px]  *:flex *:items-center *:text-3xl capitalize font-extrabold *:w-full w-full' style={{padding:'20px'}}>
+        <li className='hidden lg:block' ><h2 className='hidden lg:block'>My social media</h2></li>
         <li><Link to='/'><img width='20px' src='/homesvg.svg' alt='' /><h2 className='hidden lg:block'>Inicio</h2></Link></li>
         <li><Link to='/messages'><img width='20px' src='/messages.svg' /><h2 className='hidden lg:block'>Mensajes</h2></Link></li>
         {userActive && (<li><Link to={`/${userActive.username}`}><Useri></Useri> <h2 className='hidden lg:block'>Profile</h2></Link></li>)}
