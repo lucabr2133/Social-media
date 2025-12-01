@@ -1,5 +1,5 @@
 import PublicationList from './PublicationList'
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 import { Publications, User } from '../../types'
 import { myAction } from '../../Reducers/PublicationReducer'
 interface props{
@@ -36,7 +36,8 @@ function PublicationGrid({ styles, data, extra }: props) {
       }}
     >
       {publications && publications.length > 0 ? (
-        sortedVideos.map((publication) => (
+        <Suspense fallback={<p className='text-3xl flex items-center h-screen'>Loading data</p>}>
+{  sortedVideos.map((publication) => (
           <PublicationList
             key={publication.id}
             styles={styles}
@@ -49,7 +50,9 @@ function PublicationGrid({ styles, data, extra }: props) {
               userSession,
             }}
           />
-        ))
+        ))}
+        </Suspense>
+      
       ) : (
         <p style={{ color: '#ccc', textAlign: 'center' }}>No hay publicaciones</p>
       )}

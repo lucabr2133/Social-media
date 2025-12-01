@@ -3,33 +3,33 @@ import LocalStrategy from 'passport-local';
 import GitHubStrategy from 'passport-github2';
 import bcrypt from 'bcryptjs';
 import { prisma } from '../src/model/prismamodel.js';
-import { Strategy as JwtStrategy } from 'passport-jwt';
-import { ExtractJwt } from 'passport-jwt';
 
-const opts = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: 'este es mi secreto'
-};
 
-export function configPassport(){passport.use(
-  new JwtStrategy(opts, async (jwtPayload, done) => {
+  // const opts = {
+  //   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  //   secretOrKey: 'este es mi secreto'
+  // };
 
-    try {
-      // Busca el usuario por el ID que está en el JWT
-      const user = await prisma.user.findUnique({
-        where: { id: jwtPayload.id } // 'id' debe ser del tipo String
-      });
+  export function configPassport(){
+  //   passport.use(
+  //   new JwtStrategy(opts, async (jwtPayload, done) => {
 
-      if (user) {
-        return done(null, user); // Autenticación exitosa
-      } else {
-        return done(null, false); // Usuario no encontrado
-      }
-    } catch (error) {
-      return done(error, false); // Error en la consulta
-    }
-  })
-);
+  //     try {
+  //       // Busca el usuario por el ID que está en el JWT
+  //       const user = await prisma.user.findUnique({
+  //         where: { id: jwtPayload.id } // 'id' debe ser del tipo String
+  //       });
+
+  //       if (user) {
+  //         return done(null, user); // Autenticación exitosa
+  //       } else {
+  //         return done(null, false); // Usuario no encontrado
+  //       }
+  //     } catch (error) {
+  //       return done(error, false); // Error en la consulta
+  //     }
+  //   })
+  // );
 passport.use(new LocalStrategy(async (username, password, done) => {
     console.log(username,password);
     

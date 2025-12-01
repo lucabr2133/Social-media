@@ -56,19 +56,21 @@ if (comments==null && !users) {
           maxHeight:'750px',
           overflowY:'auto'
         }} className='messages'>
+          <h2 className='text-4xl font-extrabold'>Comments</h2>
           {comments?.map((comment) => {
             const user = users?.find((user) => user.id === comment.user_id)
             return (
               comment.post_id === publication.id && (
 
                 <div className={styles.message} key={comment.id}>
-                  <div>
- <img width='30px' src={user?.profileImg ?? 'profile2.svg'} alt='' />
+                  <div className='flex items-center gap-5'>
+ <img width='50px' src={user?.profileImg || '/profile2.svg'} alt='' />
 
                   <p>{user?.username}</p>
+                  <p  key={comment.id}>{comment.content}</p>
+
                   </div>
                  
-                  <p key={comment.id}>{comment.content}</p>
 
                 </div>
 

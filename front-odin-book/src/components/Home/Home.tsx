@@ -43,7 +43,7 @@ const{dispatch,state}=contexPublication
 <MainHeader userActive={user} setOpenDialog2s={setOpenDialog} />
       <main className='w-full'>
         <div className={styles['publications-home']}>
-          <Suspense fallback={<p>loading...</p>}>
+          <Suspense fallback={<p className='h-full flex items-center text-3xl capitalize'>loading...</p>}>
         {state.publications.map((publication) => {
             const userFind = users?.filter(user => publication.user_id === user.id)
             return (

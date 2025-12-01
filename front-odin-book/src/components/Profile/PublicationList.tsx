@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import CommentList from './CommentList'
 import { Likes, Publications, User } from '../../types'
 import { myAction } from '../../Reducers/PublicationReducer'
@@ -25,11 +25,10 @@ interface Props {
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function PublicationList({ styles, data, actions }: Props) {
-  const { openedId, users, publication, userSession, userData } = data
-  const { setOpenedId, setUpdateForm, dispatch } = actions
-
+  const {  users, publication, userSession, userData } = data
+  const {  setUpdateForm, dispatch } = actions
+const [isOpen,setOpenId]=useState<null|string>(null)
   const isOwner = userSession?.id === userData?.id
-  const isOpen = openedId === publication.id
   const panelRef = useRef<HTMLDivElement>(null)
   const {addLike,deleteLike,state}=usePublicationLikes()
 const likePublication = useMemo(() => {
@@ -94,7 +93,6 @@ const likePublication = useMemo(() => {
             deleteLike(checked[0])
             onHandleDeletedLike(checked[0].id)
           }else{
-            console.log('a');
             
             const like=await onHandleLikePublication(e,publication.id,userSession.id)
             addLike(like)
@@ -108,7 +106,7 @@ const likePublication = useMemo(() => {
         />
         {likePublication.length}
         <img
-          onClick={() => setOpenedId(isOpen ? null : publication.id)}
+          onClick={() => setOpenId(isOpen ? null : publication.id)}
           src="/comment1.svg"
           width="30px"
           style={{ cursor: 'pointer' }}
@@ -117,7 +115,7 @@ const likePublication = useMemo(() => {
         <div className={styles.description}>{publication.content}</div>
         {isOwner && (
           <>
-     \          
+       
             <button onClick={() => deletePublication(publication.id)}>Delete</button>
             <button onClick={() => setUpdateForm(publication.id)}>Update</button>
           </>
@@ -139,15 +137,12 @@ const likePublication = useMemo(() => {
         }}
       >
         {isOpen && (
-          <div style={{ paddingTop: '15px' }}>
-            <h3 style={{ marginBottom: '10px' }}>Comentarios</h3>
             <CommentList 
               publication={publication}
               styles={styles}
               user={userData}
               users={users}
             />
-          </div>
         )}
       </div>
       <div  className={`
@@ -165,7 +160,7 @@ const likePublication = useMemo(() => {
     `}>
             <div className='flex justify-between'>
             <h3 >Comments</h3>
-            <X onClick={()=>setOpenedId('')}></X>
+            <X onClick={()=>setOpenId(null)}></X>
             </div>
              <CommentList 
               publication={publication}

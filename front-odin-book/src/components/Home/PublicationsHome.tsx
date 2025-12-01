@@ -45,7 +45,6 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
   return (
     <div className={`${styles['publication-container']} bg-neutral-700/35 flex w-full md:w-auto p-0  rounded-2xl shadow-2xl` } key={publication.id}>
   <div className='w-full lg:w-auto'>
-  {/* El div que quieres animar y mostrar solo en móvil */}
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Link  to={`/${userFind[0]?.username}`}>
