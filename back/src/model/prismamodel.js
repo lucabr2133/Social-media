@@ -1,8 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient({
-  datasources: { db: { url: process.env.DATABASE_URL } }
-});
+
+// src/model/prismamodel.js o ts
+
+const prisma = new PrismaClient();
+
+
+
 
 class prismaModel {
  static async createUserModel(username, password) {
