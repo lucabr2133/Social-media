@@ -61,8 +61,9 @@ export default [
     },
     settings: { react: { version: '18.3' } },
     rules: {
+      'react/react-in-jsx-scope': 'off',
       ...js.configs.recommended.rules,
-      ...typescriptPlugin.configs['recommended'].rules,
+      ...typescriptPlugin.configs.recommended.rules,
       ...react.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
       'react/jsx-no-target-blank': 'off',

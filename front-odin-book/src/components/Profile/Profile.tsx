@@ -1,3 +1,4 @@
+import React from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { Params, useParams } from 'react-router'
 import CreatePublication from '../CreatePublication/CreatePublication.js'
@@ -9,7 +10,6 @@ import useUser from '../../hooks/useUser'
 import usePublication from '../../hooks/getUserPublicattion.js'
 import Header from './Header.js'
 import UpdatePublicationProfile from './UpdatePublicationProfile.jsx'
-import PubliationTabs from './PublicationTabs'
 import PublicationGrid from './PublicationGrid'
 import MainHeader from '../Header/Header.js'
 import {  Publications, User } from '../../types.js'
@@ -45,7 +45,10 @@ useEffect(() => {
 
   if (isLoading||!publications||!userData||!following||!username||!users||!userSession) {
     return (
-      <h1>Loading</h1>
+    <div className="min-h-screen flex items-center justify-center flex-col gap-5">
+    <h2>Loading...</h2>
+    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
     )
   }
  

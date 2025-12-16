@@ -14,7 +14,7 @@ interface actionFollow{
 }
 interface actionUnfollow{
   type:'unfollow',
-  followId:String
+  followId:string
 }
 interface actionSet{
   type:'set',

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import styles from '../Login/login.module.scss'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import onHandleSubmitSign from '../../../services/onHandleSign';
-
+import React from 'react';
 export interface Inputs {
   username: string;
   password: string;
@@ -16,12 +16,10 @@ function Signup() {
     formState: { errors, isSubmitting }
   } = useForm<Inputs>()
 
-  const onSubmit: SubmitHandler<Inputs> = async (data,  e?: React.BaseSyntheticEvent) => {
-    // Aquí llamas a tu API
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await onHandleSubmitSign(data,setError)
   }
-  const onError = (errors: any) => {
-};
+
 
   return (
   <div className={styles.Loginbody}>

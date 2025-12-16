@@ -1,12 +1,10 @@
-import { SetStateAction } from "react";
-import { User } from "../src/types";
-import React from "react";
 import { UseFormSetError } from "react-hook-form";
 import { Inputs } from "../src/components/Signup/Signup";
+import React, { SetStateAction } from "react";
+import { User } from "@/types";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 async function onHandleSubmitLogin (data:Inputs,setUser:React.Dispatch<SetStateAction<User|null>>,setError:UseFormSetError<Inputs>) {
-  console.log(apiUrl);
   
   const response = await fetch(`${apiUrl}/logins/`, {
     method: 'POST',
@@ -18,18 +16,24 @@ async function onHandleSubmitLogin (data:Inputs,setUser:React.Dispatch<SetStateA
     body: JSON.stringify(data)
   })
   const res = await response.json()
-  console.log(res);
   
-  if (res.error === 'La contraseña no coincide') {
+  if (res.error === 'Password doesnt match ') {
    setError("password", {
             type: "server",
             message: "Password dont match"
           })
-  return
+      return false
 
   } 
-   
-   window.location.href='/'
+  if(res.message=== 'User not found'){
+    setError('username',{
+      type:'server',
+      message:"User not found"
+    })
+    return false
+  }
+  setUser(res.user)
+   return true
 
 }
 

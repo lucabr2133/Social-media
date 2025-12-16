@@ -39,10 +39,10 @@ passport.use(new LocalStrategy(async (username, password, done) => {
     }
   });
 
-  if (!user) return done(null, false, { message: 'No se encontró el usuario' });
-  const isMatch = await bcrypt.compare(password, user.password);
+  if (!user) return done(null, false, { message: 'User not found' });
+  const isMatch =  bcrypt.compare(password, user.password);
 
-  if (!isMatch) return done(null, false, { message: 'La contraseña no coincide' });
+  if (!isMatch) return done(null, false, { message: 'Password doesnt match ' });
   return done(null, user);
 }));
 passport.use(new GitHubStrategy({

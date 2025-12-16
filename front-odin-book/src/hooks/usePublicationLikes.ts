@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from "react"
 import {Likes} from '../types'
 import useLikesPublication from './useLikes'
+
 interface addAction{
   type:'add',
   like:Likes

@@ -62,6 +62,7 @@ Loginrouter.post('/signup', async (req, res) => {
 Loginrouter.post('/', (req, res, next) => {
   
   passport.authenticate('local', (err, user, info) => {
+    
     if (err) return res.status(500).json({ message: 'Error del servidor' });
     if (!user) return res.status(401).json({ message: info.message || 'Credenciales incorrectas' });
 

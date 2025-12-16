@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, {  useMemo, useRef, useState } from 'react'
 import CommentList from './CommentList'
 import { Likes, Publications, User } from '../../types'
 import { myAction } from '../../Reducers/PublicationReducer'
 import onHandleDeletedLike from '../../../services/onHandleDeletedLike'
 import onHandleLikePublication from '../../../services/onHandleLikePublication'
 import usePublicationLikes from '../../hooks/usePublicationLikes'
-import { user } from '@heroui/react'
 import { X } from 'lucide-react'
 interface Props {
   styles: Record<string, string>
@@ -46,7 +45,17 @@ const likePublication = useMemo(() => {
       console.error('Error eliminando publicación:', error)
     }
   }
+async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>){
+  const checked = state.likes.filter(like => like.post_id === publication.id && like.user_id === userSession.id)
+                if (checked.length > 0) {
+                  deleteLike(checked[0])
+                  onHandleDeletedLike(checked[0].id)
+                } else {
+                  const like = await onHandleLikePublication(e, publication.id, userSession.id)
+                  addLike(like)
+                }
 
+}
   return (
     <div
       style={{
@@ -87,24 +96,14 @@ const likePublication = useMemo(() => {
       {/* Controles */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <img
-        onClick={async(e)=>{
-          const checked= likePublication.filter((like:Likes)=>like.user_id===userSession.id)
-          if(checked.length>0){
-            deleteLike(checked[0])
-            onHandleDeletedLike(checked[0].id)
-          }else{
-            
-            const like=await onHandleLikePublication(e,publication.id,userSession.id)
-            addLike(like)
-          }
-        }}
+        onClick={(e)=>onHandleClickLike(e)}
           aria-label="likeimg"
-          src={false ? '/likeActive.svg' : '/offlike.svg'}
+          src={state.likes.some(like => like.post_id === publication.id && like.user_id === userSession.id) ? '/likeActive.svg' : '/offlike.svg'}
           width="30px"
           style={{ cursor: 'pointer' }}
           alt="like"
         />
-        {likePublication.length}
+        {state.likes.filter((n) => n.post_id === publication.id).length}
         <img
           onClick={() => setOpenId(isOpen ? null : publication.id)}
           src="/comment1.svg"
@@ -122,10 +121,8 @@ const likePublication = useMemo(() => {
         )}
       </div>
       </div>
-      {/* Encabezado usuario */}
      
 
-      {/* Comentarios expandibles */}
       <div
       className='hidden md:block'
         ref={panelRef}

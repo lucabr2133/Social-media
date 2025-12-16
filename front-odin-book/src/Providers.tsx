@@ -7,44 +7,37 @@ import useUserSession from './hooks/getUserSession.js'
 import usePublication from './hooks/getUserPublicattion.js'
 import { reducer } from './Reducers/PublicationReducer.js'
 import { PublicationContext, UserSession, UserContext } from './contex/context.js'
-import { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { Routes, Route } from 'react-router'
-import React from 'react'
+
 import { Messages } from './components/Messages/Messages.jsx'
 import { Users } from './components/User/User.js'
+import { Home } from 'lucide-react'
+import Login from './components/Login/Login.js'
+import AppRoutes from './router/route.js'
 function AppWithProviders () {
   const { users } = useUsers()
-  
-  const { user, loading } = useUserSession()
+
+  const { user, loading, setUser } = useUserSession()
 
   const { publications } = usePublication(user?.id ?? undefined)
   const initialState = { publications: [] }
   const [state, dispatch] = useReducer(reducer, initialState)
 
-useEffect(() => {
-  if (!publications) return
-  if (publications.length === 0) return // no dispatch con array vacío
-  dispatch({ type: "set", publications })
-}, [publications, dispatch])
-
-
+  useEffect(() => {
+    if (!publications) return
+    if (publications.length === 0) return // no dispatch con array vacío
+    dispatch({ type: 'set', publications })
+  }, [publications, dispatch])
 
   return (
-    <UserContext.Provider value={users}>
-      <UserSession.Provider value={{ user, loading }}>
+    <UserSession.Provider value={{ user, loading, setUser }}>
+      <UserContext.Provider value={users}>
         <PublicationContext.Provider value={{ state, dispatch }}>
-
-          <Routes>
-            <Route path='/' element={<App />} />
-            <Route path='/:username' element={<Profile />} />
-            <Route path='/messages' element={<Messages />} />
-            <Route path='/users' element={<Users />} />
-            <Route path='/Signup' element={<Signup />} />
-            <Route path='/github-token' element={<GitHubRedirect />} />
-          </Routes>
+          <App />
         </PublicationContext.Provider>
-      </UserSession.Provider>
-    </UserContext.Provider>
+      </UserContext.Provider>
+    </UserSession.Provider>
   )
 }
 export default AppWithProviders

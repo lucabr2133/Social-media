@@ -26,7 +26,7 @@ function reducer (state:myState, action:myAction) {
     case 'add':
       return {
         ...state,
-        publications: [...state.publications, action.publication] // ✅ Correcto
+        publications: [...state.publications, action.publication] 
       }
 
     case 'delete':
@@ -47,9 +47,9 @@ function reducer (state:myState, action:myAction) {
         )
       }
  case "set":
-      { console.log("Reducer recibió:", action.publications)
+      { 
       const newState = { ...state, publications: action.publications }
-      console.log("Reducer devuelve:", newState)
+
       return newState }
 
     default:

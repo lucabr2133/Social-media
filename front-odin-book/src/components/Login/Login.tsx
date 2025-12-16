@@ -1,23 +1,30 @@
-import { Link, useNavigate } from 'react-router'
+import { Link , useNavigate } from 'react-router'
 import onHandleSubmitLogin from '../../../services/onHandleLogin'
-import useUserSession from '../../hooks/getUserSession'
-import { useState } from 'react'
-import styles from './login.module.scss'
+import { useContext } from 'react'
 import React from 'react'
-import { errorMesagges } from '../../types'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Inputs } from '../Signup/Signup'
+import { UserSession } from '../../contex/context'
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function Login () {
+  
   const {register,setError,handleSubmit,formState:{errors,isSubmitting}} =useForm<Inputs>()
-  const { user, setUser } = useUserSession()
-const navigate=useNavigate()
-
-  const  onSubmit:SubmitHandler<Inputs>=async data=>{
-  const success = await onHandleSubmitLogin(data, setUser, setError);
-  if (success) navigate("/");
+  const navigate=useNavigate()
+  const contex=useContext(UserSession)
+  if(!contex){
+    throw new Error('component outside provider ')
   }
+  const {setUser}=contex
+  const  onSubmit:SubmitHandler<Inputs>=async data=>{
+  const success = await onHandleSubmitLogin(data,setUser, setError);
+  
+  if (success) {
+    
+     navigate('/',{replace:true})
+  }
+  }
+
   return (
  <>
   <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-900 via-neutral-800 to-black px-4">

@@ -28,7 +28,6 @@ function CreatePublication({ setOpenDialog, opendialog }: props) {
   const { user } = userContex;
   const { dispatch } = contex;
 
-  if (!user) return null;
 
   const {
     register,
@@ -36,6 +35,7 @@ function CreatePublication({ setOpenDialog, opendialog }: props) {
     setError,
     formState: { errors, isSubmitting },
   } = useForm<Inputs>();
+  if (!user) return null;
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
