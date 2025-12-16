@@ -58,7 +58,8 @@ input{
 }
 a {
 display: flex;
-transition:  0.5s ;
+justify-content: start;
+transition:  0.3s ;
   padding: 10px;
 
 }
@@ -68,12 +69,13 @@ a:hover{
 }
 
 button{
-  background-color: rgba(227, 9, 9, 0.461);
-  border-radius: 5px;
+  background-color: rgb(126, 46, 32);
+  border-radius: 10px;
   border: none;
-  padding: 10px;
-  font-size: 20px;
-  margin: 2px;
+  padding: 5px 20px;
+  cursor: pointer;
+
+  margin: 5px 1px;
 
 }
 button:focus{

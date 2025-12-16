@@ -1,48 +1,115 @@
-.Loginbody{
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/background1.jpg');
-      background-size: 100%;
-        display: flex;
-        height:  100vh;
-  }
-  .Loginform{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    padding: 0 50PX;
-    height: 100%;
-    width: 35%;
-  outline: 1px solid rgb(42, 42, 113);
-  background-color: #241a575f;
-  box-shadow: 0px 0px 30px rgb(42, 42, 113);;
-  }
-  .Loginform>*{
-    width: 50%;
-    margin: 10PX;
-  }
-  .Loginform > input {
-    background-color: rgba(33, 42, 48, 0.9); /* un poco transparente */
-    border: none;
-    padding: 10px;
-    margin: 10px 0;
+.Loginbody {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+
+  background: linear-gradient(
+    135deg,
+    #0f0f0f,
+    #1a1a1a,
+    #000
+  );
+}
+
+.Loginform {
+  width: 100%;
+  max-width: 420px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+
+  background: rgba(255, 255, 255, 0.041);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+
+  h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-family: monospace;
     color: white;
-    border-radius: 5px;
-    font-size: 16px;
+    margin-bottom: 1rem;
   }
-  .Loginform > input:focus{
+
+  label {
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+
+  input {
+    padding: 0.7rem 1rem;
+    border-radius: 0.8rem;
+    border: 1px solid #444;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
     outline: none;
+    transition: border 0.2s ease;
+
+    &:focus {
+      border-color: white;
+    }
   }
-  .Loginform > input:-webkit-autofill {
-   background-color: rgba(33, 42, 48, 0.9) !important;
-    color: white !important;
-    -webkit-box-shadow: 0 0 0px 1000px rgba(33, 42, 48, 0.9) inset;
-    transition: background-color 5000s ease-in-out 0s;
+
+  button {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    border-radius: 0.8rem;
+    border: none;
+    cursor: pointer;
+
+    background: white;
+    color: black;
+    font-weight: 600;
+
+    transition: background 0.2s ease, transform 0.1s ease;
+
+    &:hover {
+      background: #e5e5e5;
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   }
-  .error-username{
-    color: red;
-    border-top: red solid ;
+}
+
+.error {
+  font-size: 0.8rem;
+  color: #ff6b6b;
+}
+
+.link {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #ccc;
+  text-decoration: none;
+
+  &:hover {
+    color: white;
   }
-  
-.error-password{
-    color: red;
-    border-top: red solid ;
+}
+
+/* Responsive extra */
+@media (max-width: 480px) {
+  .Loginform {
+    padding: 2rem 1.5rem;
+
+    h2 {
+      font-size: 2rem;
+    }
   }
+}

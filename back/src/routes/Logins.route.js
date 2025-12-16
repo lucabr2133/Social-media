@@ -3,11 +3,7 @@ import ControlerData from '../controller/controller.js';
 import bcrypt from 'bcryptjs';
 import passport from 'passport';
 import { z } from 'zod';
-function ensureAuth(req, res, next) {
-  
-  if (req.isAuthenticated()) return next();
-  return res.status(401).json({ error: 'No autorizado' });
-}
+
 
 const Loginrouter = Router();
 const User = z.object(
@@ -87,7 +83,7 @@ Loginrouter.get('/logout', (req, res, next) => {
 
     req.session.destroy((err) => {
       if (err) return next(err);
-      res.json({ redirectUrl: 'http://localhost:5173/' }); // Envía la URL como JSON
+      res.json({ redirectUrl: process.env.CLIENT_URL }); // Envía la URL como JSON
     });
   });
 });
@@ -95,11 +91,10 @@ Loginrouter.get('/logout', (req, res, next) => {
 Loginrouter.get('/auth/github',
   passport.authenticate('github', { scope: ['user:email'] }));
 
-// GitHub redirige aquí después de autenticarse
 Loginrouter.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function (req, res) {
-    res.redirect(`${process.env.PUBLIC_URL}`); // o la página que quieras
+    res.redirect(`${process.env.CLIENT_UR}`); // o la página que quieras
   });
 Loginrouter.get('/users', async (req, res) => {
   const users = await ControlerData.getUserController();

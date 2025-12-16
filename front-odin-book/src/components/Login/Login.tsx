@@ -14,45 +14,153 @@ function Login () {
   const { user, setUser } = useUserSession()
 const navigate=useNavigate()
 
-  const onSubmit:SubmitHandler<Inputs>=data=>{
-    onHandleSubmitLogin(data,setUser,setError)
+  const  onSubmit:SubmitHandler<Inputs>=async data=>{
+  const success = await onHandleSubmitLogin(data, setUser, setError);
+  if (success) navigate("/");
   }
   return (
-    <>
-      <div className={styles.Loginbody}>
-        <form
-          className={styles.Loginform} onSubmit={handleSubmit(onSubmit) }
+ <>
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-900 via-neutral-800 to-black px-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="
+        w-full max-w-md
+        rounded-3xl
+        bg-white/4
+        backdrop-blur-md
+    
+        shadow-2xl
+        p-8
+        flex flex-col gap-4
+      "
+      style={{
+        padding:'32px'
+      }}
+    >
+      <h2 className="text-4xl font-mono text-center text-white mb-4">
+        Login
+      </h2>
+
+      {/* USERNAME */}
+      <label className="text-sm text-neutral-300">Username</label>
+      <input
+        type="text"
+        className="
+          rounded-xl
+          bg-neutral-900/70
+          text-white
+          outline-none
+          border border-neutral-700
+          focus:border-white
+          transition
+        "
+        style={{
+               borderRadius:'20px',
+          padding:'8px 16px'
+        }}
+        {...register("username", {
+          required: "Username is required",
+          minLength: { value: 8, message: "Minimum 8 characters" },
+          maxLength: { value: 16, message: "Maximum 16 characters" },
+        })}
+        aria-label="username"
+      />
+      {errors.username && (
+        <span className="text-red-400 text-sm">
+          {errors.username.message}
+        </span>
+      )}
+
+      {/* PASSWORD */}
+      <label className="text-sm text-neutral-300">Password</label>
+      <input
+        type="password"
+        className="
+          rounded-xl
+          bg-neutral-900/70
+          text-white
+          outline-none
+          border border-neutral-700
+          focus:border-white
+          transition
+          
+        "
+            style={{
+              borderRadius:'20px',
+          padding:'8px 16px'
+        }}
+        {...register("password", {
+          required: "Password is required",
+          minLength: { value: 8, message: "Minimum 8 characters" },
+          maxLength: { value: 16, message: "Maximum 16 characters" },
+        })}
+        aria-label="password"
+      />
+      {errors.password && (
+        <span className="text-red-400 text-sm">
+          {errors.password.message}
+        </span>
+      )}
+
+      {/* BUTTONS */}
+      <div className="flex flex-col gap-3 mt-4">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          aria-label="send"
+          className="
+            rounded-xl
+            bg-white text-black
+            py-2
+            font-semibold
+            hover:bg-neutral-200
+            transition
+            disabled:opacity-50
+          "
         >
-          <h2 style={{ fontSize: '50px', textAlign: 'center', fontFamily: 'monospace' }}>Login</h2>
-          <label>Username</label>
-          <input type='text'    {...register("username", {
-            required: "Username is required",
-            minLength: { value: 8, message: "Minimum 8 characters" },
-            maxLength: { value: 16, message: "Maximum 16 characters" }
-          })} aria-label='username' />
-        {errors.username && <span>{errors.username.message}</span>}
-          <label>Passwoord</label>
-          <input type='password'    {...register("password", {
-            required: "Password is required",
-            minLength: { value: 8, message: "Minimum 8 characters" },
-            maxLength: { value: 16, message: "Maximum 16 characters" }
-          })} aria-label='password' />
-        {errors.password && <span>{errors.password.message}</span>}
-        
-             <button aria-label='send' disabled={isSubmitting} type="submit">
-          {isSubmitting ? "Sending..." : "Send"}
+          {isSubmitting ? "Sending..." : "Login"}
         </button>
-              <button type='button' aria-label='send-guest' onClick={()=>{
-                onSubmit({username:"guestUser",password:"12345678"})
-              }}>Enter as a guest</button>
 
-          <Link to='/Signup'>Create account</Link>
-          <Link to={`${apiUrl}/auth/github`}><img width='40px' src='/github.jpg' alt='' /></Link>
-        </form>
-
+        <button
+          type="button"
+          aria-label="send-guest"
+          onClick={() =>
+            onSubmit({ username: "guestUser", password: "12345678" })
+          }
+          className="
+            rounded-xl
+            border border-white/30
+            text-white
+            py-2
+            hover:bg-white/10
+            transition
+          "
+        >
+          Enter as Guest
+        </button>
       </div>
 
-    </>
+      {/* FOOTER */}
+      <div className="flex items-center justify-between mt-6">
+        <Link
+          to="/Signup"
+          className="text-sm text-neutral-300 hover:text-white transition"
+        >
+          Create account
+        </Link>
+
+        <Link to={`${apiUrl}/auth/github`} className='flex justify-center'>
+          <img
+            src="/github.jpg"
+            alt="GitHub login"
+            className="w-10 h-10 flex rounded-full hover:scale-110 transition"
+          />
+        </Link>
+      </div>
+    </form>
+  </div>
+</>
+
   )
 }
 export default Login

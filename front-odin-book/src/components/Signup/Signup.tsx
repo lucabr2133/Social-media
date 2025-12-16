@@ -24,14 +24,17 @@ function Signup() {
 };
 
   return (
-    <div className={styles.Loginbody}>
-      <form className={styles.Loginform} onSubmit={handleSubmit(onSubmit,onError)}>
+  <div className={styles.Loginbody}>
+      <form
+        className={styles.Loginform}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <h2>Sign up</h2>
 
-        <label htmlFor='username'>Username</label>
+        <label htmlFor="username">Username</label>
         <input
-        id='username'
-        aria-label='userinput'
+          id="username"
+          aria-label="userinput"
           type="text"
           {...register("username", {
             required: "Username is required",
@@ -40,18 +43,16 @@ function Signup() {
           })}
         />
         {errors.username && (
-         <span role='alert' style={{ color: "red" }}>
-  {errors.username?.message}
-</span>
-
+          <span className={styles.error}>
+            {errors.username.message}
+          </span>
         )}
 
         <label htmlFor="password">Password</label>
         <input
-        aria-label='passwordinput'
-
-          type="password"
           id="password"
+          aria-label="passwordinput"
+          type="password"
           {...register("password", {
             required: "Password is required",
             minLength: { value: 8, message: "Minimum 8 characters" },
@@ -59,14 +60,18 @@ function Signup() {
           })}
         />
         {errors.password && (
-          <span aria-label='errorPassword' style={{ color: "red" }}>{errors.password.message}</span>
+          <span className={styles.error}>
+            {errors.password.message}
+          </span>
         )}
 
         <button disabled={isSubmitting} type="submit">
-          {isSubmitting ? "Sending..." : "Send"}
+          {isSubmitting ? "Sending..." : "Create account"}
         </button>
 
-        <Link to="/">login</Link>
+        <Link to="/" className={styles.link}>
+          Already have an account? Login
+        </Link>
       </form>
     </div>
   )
