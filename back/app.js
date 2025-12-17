@@ -1,4 +1,6 @@
 import e from 'express';
+import 'dotenv/config';
+
 import passport from 'passport';
 import session from 'express-session';
 import cors from 'cors';
