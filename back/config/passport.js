@@ -40,15 +40,15 @@ passport.use(new LocalStrategy(async (username, password, done) => {
   });
 
   if (!user) return done(null, false, { message: 'User not found' });
-  const isMatch =  bcrypt.compare(password, user.password);
+  const isMatch =  await bcrypt.compare(password, user.password);
 
   if (!isMatch) return done(null, false, { message: 'Password doesnt match ' });
   return done(null, user);
 }));
 passport.use(new GitHubStrategy({
-  clientID: 'Ov23ligGhkwNuOc4TmWH',
-  clientSecret: '84e3cf9493bb6df29e841e5e3540f897c0701ae8',
-  callbackURL: 'http://localhost:3000/auth/github/callback'
+  clientID: process.env.GITHUB_CLIENTID,
+  clientSecret: process.env.GITHUB_CLIENTSECRET,
+  callbackURL:process.env.GITHUB_AUTHCALLBACK
 }, async (accessToken, refreshToken, profile, done) => {
   const user = await prisma.user.findUnique({
     where: {
@@ -62,10 +62,12 @@ passport.serializeUser((user, done) => {
   return done(null, user.id);
 });
 passport.deserializeUser(async (id, done) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      id
-    }
-  });
-  return done(null, user);
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id }
+    });
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });}

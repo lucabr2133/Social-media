@@ -3,7 +3,13 @@ import { PrismaClient } from '@prisma/client';
 
 // src/model/prismamodel.js o ts
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+   datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 
 
 
@@ -112,7 +118,7 @@ class prismaModel {
   }
 
   static async postLikePublicationModel (likes, publicationID, userActiveID) {
-    const likesPublication = prisma.likes.create({
+    const likesPublication =await  prisma.likes.create({
       data: {
         user_id: userActiveID,
         post_id: publicationID
@@ -122,7 +128,7 @@ class prismaModel {
   };
 
   static async deleteLikePublicationModel (likeId) {
-    const likesPublication = prisma.likes.delete({
+    const likesPublication =await  prisma.likes.delete({
       where: {
         id: likeId
       }
