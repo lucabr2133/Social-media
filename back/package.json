@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-      "build": "npx prisma generate && npx tsc",
+    "build": "npx prisma generate && npx tsc",
     "test": "set NODE_ENV=test&& vitest",
     "testwatch": "npm test -- --watch"
   },

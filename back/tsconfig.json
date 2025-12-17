@@ -2,8 +2,10 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
+    "moduleResolution": "Node",
     "outDir": "dist",
-    "moduleResolution": "Node"
+    "rootDir": "src",
+    "strict": true
   },
   "include": ["src"]
 }
