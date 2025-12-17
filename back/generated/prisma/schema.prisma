@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id               String         @id @unique @default(uuid())
+  username         String         @unique
+  password         String?
+  description      String         @default("")
+  profileImg       String         @default("")
+  create_at        DateTime       @default(now())
+  githubId         String?        @unique
+  comments         comments[]
+  followers        following[]    @relation("UserFollowers")
+  following        following[]    @relation("UserFollowing")
+  likes            likes[]
+  messagesReceived messages[]     @relation("UserReceivedMessages")
+  messagesSent     messages[]     @relation("UserSentMessages")
+  publications     publications[]
+}
+
+model publications {
+  id        String     @id @unique @default(uuid())
+  user_id   String
+  content   String
+  create_at DateTime   @default(now())
+  image_url String
+  comments  comments[]
+  likes     likes[]
+  author    User       @relation(fields: [user_id], references: [id])
+}
+
+model comments {
+  id          String       @id @unique @default(uuid())
+  post_id     String
+  user_id     String
+  content     String
+  create_at   DateTime     @default(now())
+  publication publications @relation(fields: [post_id], references: [id])
+  author      User         @relation(fields: [user_id], references: [id])
+  likes       likes[]
+}
+
+model likes {
+  id         String        @id @unique @default(uuid())
+  post_id    String?
+  user_id    String
+  comment_id String?
+  create_at  DateTime      @default(now())
+  comment    comments?     @relation(fields: [comment_id], references: [id])
+  post       publications? @relation(fields: [post_id], references: [id])
+  author     User          @relation(fields: [user_id], references: [id])
+}
+
+model following {
+  id           String   @id @unique @default(uuid())
+  follower_id  String
+  following_id String
+  create_at    DateTime @default(now())
+  userId       Int?
+  follower     User     @relation("UserFollowers", fields: [follower_id], references: [id])
+  following    User     @relation("UserFollowing", fields: [following_id], references: [id])
+}
+
+model messages {
+  id          String   @id @unique @default(uuid())
+  sender_id   String
+  receptor_id String
+  content     String
+  create_at   DateTime @default(now())
+  receiver    User     @relation("UserReceivedMessages", fields: [receptor_id], references: [id])
+  sender      User     @relation("UserSentMessages", fields: [sender_id], references: [id])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
