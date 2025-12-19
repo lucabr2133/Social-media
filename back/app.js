@@ -10,7 +10,7 @@ import { Server } from 'socket.io';
 import { createServer } from 'node:http';
 import { prisma } from './src/model/prismamodel.js';
 
-
+import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 
 
 
@@ -98,7 +98,15 @@ app.use(session({
     httpOnly: true,
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production"
-  }
+  },
+  store: new PrismaSessionStore(
+      prisma,
+      {
+        checkPeriod: 2 * 60 * 1000,  // Limpiar sesiones expiradas cada 2 min
+        dbRecordIdIsSessionId: true,
+        dbRecordIdFunction: undefined,
+      }
+    ) 
 }));
 configPassport()
 
