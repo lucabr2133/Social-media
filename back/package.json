@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "build": "npx prisma generate && npx tsc",
+    "build": "npx prisma generate ",
     "test": "set NODE_ENV=test&& vitest",
     "testwatch": "npm test -- --watch"
   },
@@ -46,5 +46,5 @@
     "supertest": "^7.1.3",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
-  }
+  } 
 }
