@@ -1,21 +1,20 @@
+import { PrismaClient } from '../../generated/prisma/client.js'
+import { PrismaPg } from '@prisma/adapter-pg'
+import pg from 'pg'
 
-import { PrismaClient } from '../../generated/prisma/client.js';
-import { PrismaPg } from "@prisma/adapter-pg";
-import pg from 'pg'; // Importa la librería 'pg' estándar
-
-const { Pool } = pg;
-
-const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL.replace('&sslmode=require', ''),
   ssl: {
+    ca: undefined,
     rejectUnauthorized: false,
-    require: true // <--- Añade esto explícitamente
   },
-  max: 1 // Prueba con 1 conexión para descartar saturación del pooler de Supabase
-});
+  max: 1,
+})
 
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({
+  adapter: new PrismaPg(pool),
+})
+
 
 
 
