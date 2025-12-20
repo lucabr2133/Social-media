@@ -5,12 +5,13 @@ import pg from 'pg'; // Importa la librería 'pg' estándar
 
 const { Pool } = pg;
 
-// 1. Aquí es donde se configura el SSL de verdad
 const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // Esto permite certificados autofirmados
-  }
+    rejectUnauthorized: false,
+    require: true // <--- Añade esto explícitamente
+  },
+  max: 1 // Prueba con 1 conexión para descartar saturación del pooler de Supabase
 });
 
 const adapter = new PrismaPg(pool);
