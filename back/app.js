@@ -117,5 +117,9 @@ app.use('/', router);
 app.get('/', (req, res) => {
   res.send('¡Hola desde mi app!');
 });
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 export {server}
 export default app;
