@@ -1,16 +1,19 @@
 
 import { PrismaClient } from '../../generated/prisma/client.js';
-
 import { PrismaPg } from "@prisma/adapter-pg";
-// src/model/prismamodel.js o ts
+import pg from 'pg'; // Importa la librería 'pg' estándar
 
+const { Pool } = pg;
 
-const adapter = new PrismaPg({ 
+// 1. Aquí es donde se configura el SSL de verdad
+const pool = new Pool({ 
+  connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false 
-  },
-  connectionString: process.env.DATABASE_URL 
+    rejectUnauthorized: false // Esto permite certificados autofirmados
+  }
 });
+
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 
