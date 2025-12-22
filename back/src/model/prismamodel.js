@@ -11,13 +11,21 @@ const pool = new pg.Pool({
         ca: undefined,
         rejectUnauthorized: false,
       }
-    : false, 
+    : false,
+
   max: isProd ? 5 : 1,
+
+  // 🔑 CLAVES PARA EVITAR ETIMEDOUT
+  connectionTimeoutMillis: 10000, // 10s
+  idleTimeoutMillis: 30000,       // 30s
+  keepAlive: true,
 })
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg(pool),
 })
+
+
 
 
 class prismaModel {
