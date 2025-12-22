@@ -1,24 +1,13 @@
 import { PrismaClient } from '../../generated/prisma/client.js'
+
 import { PrismaPg } from '@prisma/adapter-pg'
-import pg from 'pg'
 
-const isProd = process.env.NODE_ENV === 'production'
-
-const pool = new pg.Pool({
+const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
-  ssl: isProd
-    ? {
-        rejectUnauthorized: false,
-      }
-    : false,
-
-  max: 3, // 🔑 menos conexiones, más estabilidad
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
 })
 
 const prisma = new PrismaClient({
-  adapter: new PrismaPg(pool),
+  adapter,
 })
 
 
