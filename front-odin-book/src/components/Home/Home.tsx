@@ -1,10 +1,10 @@
-import React, { useState, useContext, useEffect, lazy, Suspense } from 'react'
+import React, { useState, useContext, lazy, Suspense } from 'react'
 import usePublication from '../../hooks/getPublications'
 import onHandleLikePublication from '../../../services/onHandleLikePublication'
 import useLikesPublication from '../../hooks/useLikes'
 import onHandleDeletedLike from '../../../services/onHandleDeletedLike'
 import styles from './Home.module.css'
-import { PublicationContext, UserContext, UserSession } from '../../contex/context'
+import { UserContext, UserSession } from '../../contex/context'
 import MainHeader from '../Header/Header'
 import { Link } from 'react-router'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
@@ -13,19 +13,13 @@ function Home () {
   const PublicationHome = lazy(() => import('./PublicationsHome'))
   const [opendialog, setOpenDialog] = useState(false)
   const contex = useContext(UserSession)
-  const contexPublication = useContext(PublicationContext)
 
-  if (!contex || !contexPublication) throw new Error('The context must have a valid provider')
+  if (!contex) throw new Error('The context must have a valid provider')
   const { user } = contex
-  const { dispatch, state } = contexPublication
   const { publication } = usePublication()
   const users = useContext(UserContext)
   const { publicationLikes } = useLikesPublication()
-  useEffect(() => {
-    if (!publication) return
-    if (publication.length === 0) return
-    dispatch({ type: 'set', publications: publication })
-  }, [publication, dispatch])
+
   const isLoading = ![users, user, publicationLikes].every(Boolean)
 
   if (isLoading || !users || !user) {
@@ -51,7 +45,7 @@ function Home () {
               </div>
 }
             >
-              {state.publications.map((publication) => {
+              {publication?.map((publication) => {
                 const userFind = users?.filter(user => publication.user_id === user.id)
                 return (
 
@@ -69,9 +63,10 @@ function Home () {
         >
           <div
             style={{
-              margin: '15px'
+              margin: '15px',
+              padding: '15px'
 
-            }} className='lg:flex flex-col text-center gap-5  hidden border rounded-2xl'
+            }} className='hidden rounded-2xl lg:flex flex-col text-center gap-5  overflow-y-scroll scrollbar-none bg-neutral-700/20 '
           >
             <h1 style={{
               fontSize: '40PX'
@@ -82,10 +77,10 @@ function Home () {
               <div
                 key={user.id}
                 style={{
-                  padding: '30px'
-                }} className='flex items-center'
+                  padding: '0px'
+                }} className='flex items-center border-b border-neutral-700 hover:border-amber-600 transition-all duration-300 '
               >
-                <Link style={{ width: '100px', marginRight: '10px' }} to={`/${user.username}`}>
+                <Link className='' style={{ width: '100px', marginRight: '10px' }} to={`/profile/${user.username}`}>
                   <Avatar className='size-20'>
                     <AvatarImage src={user.profileImg ? user.profileImg : '/profile2.svg'} />
                     <AvatarFallback />

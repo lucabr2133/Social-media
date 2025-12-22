@@ -1,11 +1,13 @@
-import { Navigate, Outlet } from 'react-router'
+import { Navigate, Outlet } from 'react-router-dom'
 import { useContext } from 'react'
 import { UserSession } from '../contex/context'
 
 export default function PrivateRoute () {
   const session = useContext(UserSession)
 
-  if (!session) throw new Error('PrivateRoute outside provider')
+  if (!session) {
+    throw new Error('PrivateRoute outside provider')
+  }
 
   const { user, loading } = session
 

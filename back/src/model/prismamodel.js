@@ -2,20 +2,22 @@ import { PrismaClient } from '../../generated/prisma/client.js'
 import { PrismaPg } from '@prisma/adapter-pg'
 import pg from 'pg'
 
+const isProd = process.env.NODE_ENV === 'production'
+
 const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL.replace('&sslmode=require', ''),
-  ssl: {
-    ca: undefined,
-    rejectUnauthorized: false,
-  },
-  max: 1,
+  connectionString: process.env.DATABASE_URL,
+  ssl: isProd
+    ? {
+        ca: undefined,
+        rejectUnauthorized: false,
+      }
+    : false, 
+  max: isProd ? 5 : 1,
 })
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg(pool),
 })
-
-
 
 
 class prismaModel {

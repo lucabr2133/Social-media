@@ -1,10 +1,9 @@
 import PublicationOpen from './PublicationOpen'
 import { Link } from 'react-router'
-import React, { useEffect, useReducer, useState } from 'react'
+import React, {  useState } from 'react'
 import { Likes, Publications, User } from '../../types'
-import useLikesPublication from '../../hooks/useLikes'
-import usePublicationLikes ,{myAction,myState}from '../../hooks/usePublicationLikes'
-import { Cross, Delete, X } from 'lucide-react'
+import usePublicationLikes from '../../hooks/usePublicationLikes'
+import {  X } from 'lucide-react'
 interface actions {
   onHandleLikePublication:(e:React.MouseEvent<HTMLImageElement>,publicationId:string,userId:string)=>Promise<Likes>
   onHandleDeletedLike:(id:string)=>Promise<Likes>
@@ -47,10 +46,10 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
   <div className='w-full lg:w-auto'>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Link  to={`/${userFind[0]?.username}`}>
+          <Link  to={`/profile/${userFind[0]?.username}`}>
             <img style={{ width: '70px' }} src={userFind[0]?.profileImg||'profile2.svg'} alt="" />
           </Link>
-         <h1 className='uppercase font-extrabold text-2xl'>{userFind[0]?.username}</h1> 
+         <h1 className='capitalize font-extrabold text-2xl'>{userFind[0]?.username}</h1> 
         </div>
 
         <img className='h-[calc(100vh-35vh)] w-full md:w-auto' src={publication.image_url} alt="" />
@@ -61,7 +60,7 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
               aria-label="likeimg"
               onClick={(e)=>{onHandleClickLike(e)}}
               src={state.likes.some(like => like.post_id === publication.id && like.user_id === user.id) ? '/likeActive.svg' : '/offlike.svg'}
-              width="50px"
+              width="30px"
               alt=""
             />
             <h4 className='text-center text-2xl'>{state.likes.filter((n) => n.post_id === publication.id).length}</h4>
@@ -71,7 +70,7 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
                 setOpen(isOpen ? '' : publication.id) // toggle open/close
               }}
               src="/comment1.svg"
-              width="45px"
+              width="30px"
               alt=""
               style={{ cursor: 'pointer' }}
             />

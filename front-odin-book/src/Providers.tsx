@@ -8,13 +8,7 @@ import usePublication from './hooks/getUserPublicattion.js'
 import { reducer } from './Reducers/PublicationReducer.js'
 import { PublicationContext, UserSession, UserContext } from './contex/context.js'
 import React, { useEffect, useReducer } from 'react'
-import { Routes, Route } from 'react-router'
 
-import { Messages } from './components/Messages/Messages.jsx'
-import { Users } from './components/User/User.js'
-import { Home } from 'lucide-react'
-import Login from './components/Login/Login.js'
-import AppRoutes from './router/route.js'
 function AppWithProviders () {
   const { users } = useUsers()
 

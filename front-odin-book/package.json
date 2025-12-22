@@ -61,6 +61,7 @@
     "prettier": "^3.7.4",
     "sass": "^1.90.0",
     "standard": "^17.1.2",
+    "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.50.0",
