@@ -12,7 +12,7 @@ function MainHeader ({ userActive, setOpenDialog2s }:props) {
 
   return (
     <>
-        <header   className='  bg-neutral-700/20 flex  fixed   ' style={{
+        <header   className='  bg-neutral-700/20 flex  z-10 fixed   ' style={{
           margin:'10px 0'
         }}>
 
