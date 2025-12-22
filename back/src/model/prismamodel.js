@@ -8,22 +8,20 @@ const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: isProd
     ? {
-        ca: undefined,
         rejectUnauthorized: false,
       }
     : false,
 
-  max: isProd ? 5 : 1,
-
-  // 🔑 CLAVES PARA EVITAR ETIMEDOUT
-  connectionTimeoutMillis: 10000, // 10s
-  idleTimeoutMillis: 30000,       // 30s
-  keepAlive: true,
+  max: 3, // 🔑 menos conexiones, más estabilidad
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 })
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg(pool),
 })
+
+
 
 
 
