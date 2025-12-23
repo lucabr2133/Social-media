@@ -1,6 +1,9 @@
 import {server} from './app.js';
 import dotenv from 'dotenv';
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+  import("dotenv").then(d => d.config());
+}
+
 const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () => {
