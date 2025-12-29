@@ -29,3 +29,19 @@ Conexiones: Sistema de  seguidores.
 
 Perfil: Personalización de datos del usuario.
 
+
+## Installation
+```bash
+# Clone repository
+git clone https://github.com/lucabr2133/Social-media.git
+
+
+# Backend setup
+cd backend
+npm install
+node index.js
+
+# Frontend setup
+cd ../frontend
+npm install
+npm run dev
