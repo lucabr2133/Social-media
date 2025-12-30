@@ -4,10 +4,10 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(),tailwindcss(
+  plugins: [react(), tailwindcss(
     {
-          include: ["src/index.css"], // solo el CSS global con @tailwind
-      exclude: ["**/*.module.scss"], 
+      include: ['src/index.css'], // solo el CSS global con @tailwind
+      exclude: ['**/*.module.scss']
     }
   )],
   test: {

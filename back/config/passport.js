@@ -31,7 +31,6 @@ import { prisma } from '../src/model/prismamodel.js';
   //   })
   // );
 passport.use(new LocalStrategy(async (username, password, done) => {
-    console.log(username,password);
     
   const user = await prisma.user.findUnique({
     where: {

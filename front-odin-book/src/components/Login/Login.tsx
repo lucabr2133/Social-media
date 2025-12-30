@@ -1,10 +1,11 @@
 import { Link , useNavigate } from 'react-router'
 import onHandleSubmitLogin from '../../../services/onHandleLogin'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Inputs } from '../Signup/Signup'
 import { UserSession } from '../../contex/context'
+import { SpinnerComponnet } from '../ui/spinner'
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function Login () {
@@ -12,13 +13,15 @@ function Login () {
   const {register,setError,handleSubmit,formState:{errors,isSubmitting}} =useForm<Inputs>()
   const navigate=useNavigate()
   const contex=useContext(UserSession)
+  
   if(!contex){
     throw new Error('component outside provider ')
   }
+    const [loading,setLoading]=useState(false)
+
   const {setUser}=contex
   const  onSubmit:SubmitHandler<Inputs>=async data=>{
   const success = await onHandleSubmitLogin(data,setUser, setError);
-  
   if (success) {
     
      navigate('/',{replace:true})
@@ -27,7 +30,7 @@ function Login () {
 
   return (
  <>
-  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-neutral-900 via-neutral-800 to-black px-4">
+  <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-neutral-900 via-neutral-800 to-black px-4">
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="
@@ -73,7 +76,7 @@ function Login () {
         aria-label="username"
       />
       {errors.username && (
-        <span className="text-red-400 text-sm">
+        <span className="text-red-500!  font-extrabold">
           {errors.username.message}
         </span>
       )}
@@ -104,12 +107,11 @@ function Login () {
         aria-label="password"
       />
       {errors.password && (
-        <span className="text-red-400 text-sm">
+        <span className="  text-red-500! font-extrabold">
           {errors.password.message}
         </span>
       )}
 
-      {/* BUTTONS */}
       <div className="flex flex-col gap-3 mt-4">
         <button
           type="submit"
@@ -129,10 +131,14 @@ function Login () {
         </button>
 
         <button
+          disabled={loading}
           type="button"
           aria-label="send-guest"
-          onClick={() =>
+          onClick={() =>{
+            setLoading(true)
             onSubmit({ username: "guestUser", password: "12345678" })
+          }
+       
           }
           className="
             rounded-xl
@@ -143,7 +149,7 @@ function Login () {
             transition
           "
         >
-          Enter as Guest
+          {loading? "Loading...":"Enter as Guest"}
         </button>
       </div>
 

@@ -20,7 +20,7 @@ async function onHandleSubmitLogin (data:Inputs,setUser:React.Dispatch<SetStateA
   if (res.error === 'Password doesnt match ') {
    setError("password", {
             type: "server",
-            message: "Password dont match"
+            message: "Password doesn`t match"
           })
       return false
 

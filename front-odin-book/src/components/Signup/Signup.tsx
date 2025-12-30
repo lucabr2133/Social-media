@@ -3,6 +3,7 @@ import styles from '../Login/login.module.scss'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import onHandleSubmitSign from '../../../services/onHandleSign';
 import React from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 export interface Inputs {
   username: string;
   password: string;
@@ -17,12 +18,19 @@ function Signup() {
   } = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await onHandleSubmitSign(data,setError)
+    const userResponse =await onHandleSubmitSign(data,setError)
+    if (userResponse){
+      toast.success('User Created succesfully')
+    }
+    
   }
 
 
   return (
   <div className={styles.Loginbody}>
+    <Toaster position='bottom-right'>
+
+    </Toaster>
       <form
         className={styles.Loginform}
         onSubmit={handleSubmit(onSubmit)}
