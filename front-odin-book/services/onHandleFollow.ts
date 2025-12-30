@@ -1,7 +1,6 @@
-import { UUIDTypes } from "uuid"
 const apiUrl = import.meta.env.VITE_API_URL;
 
-async function onHandleFollow (userlId:UUIDTypes, userSessionId:UUIDTypes) {
+async function onHandleFollow (userlId : string, userSessionId:string) {
 
   const response=await fetch(`${apiUrl}/followings/following`, {
     method: 'post',

@@ -1,113 +1,33 @@
 import useFollowing from '../../hooks/useFollowing'
 import CreatePublication from '../CreatePublication/CreatePublication'
-import { useState, useContext, useReducer, useEffect, SetStateAction } from 'react'
 import onHandleFollow from '../../../services/onHandleFollow'
 import onHandletFollow from '../../../services/onHandletFollow'
 import styles from './User.module.css'
 import MainHeader from '../Header/Header'
-import { UserContext, UserSession } from '../../contex/context'
-import React from 'react'
-import { Following, User } from '../../types'
-import useUsers from '@/hooks/useUsers'
-import { Spinner } from '@heroui/react'
+import {UserSession } from '../../contex/context'
+import React, { useContext, useEffect , useState } from 'react'
 import { SpinnerComponnet } from '../ui/spinner'
-interface actionFollow{
-  type:'follow',
-  follower:Following
-}
-interface actionUnfollow{
-  type:'unfollow',
-  followId:string
-}
-interface actionSet{
-  type:'set',
-  followers:Following[]
-}
-type myAction = actionFollow|actionUnfollow|actionSet
-interface myState{
-  following:Following[]
-}
-const apiUrl = import.meta.env.VITE_API_URL;
+import { UsemyActions } from '../../Reducers/UserReducer'
+import { useSearchUser } from '../../hooks/useSearchUsers'
 
-function userReducer(state:myState,action:myAction){
- switch (action.type) {
-    case 'follow':
-      return {
-        ...state,
-        following: [...state.following, action.follower]
-      }
-    case 'unfollow':
-      return {
-        ...state,
-        following: state.following.filter(follow => follow.id !== action.followId)
-      }
-      case 'set':
-        return{
-          ...state,
-        following:action.followers
-        }
-    default:
-      return state
-  }
-}
+
+
 export function Users() {
-  // const contextUser = useContext(UserContext)
   const contextUserSession = useContext(UserSession)
   if (!contextUserSession) {
     throw new Error('you must provide the correct value types')
   }
-  // const users = contextUser
   const { user } = contextUserSession
-
-  const { following } = useFollowing()
+  const {following}=useFollowing()
   const [opendialog, setOpenDialog] = useState(false)
-  const [users,setUsers]=useState<User[]>([])
-  const [loading,setLoading]=useState(false)
-  const [input,setInputValue]=useState('')
-  const [state,dispatch]=useReducer(userReducer,{following:[]})
-    useEffect(() => {
-      if (following) {
-        dispatch({ type: 'set', followers: following })
-      }
-    }, [following])
-
-
-  useEffect(() => {
-
-  const controller = new AbortController()
-
-  const timeout = setTimeout(async () => {
-    setLoading(true)
-
-    try {
-      const res = await fetch(
-        `${apiUrl}/logins/users?username=${input}`,
-        { signal: controller.signal }
-      )
-
-      if (!res.ok) throw new Error('Error en búsqueda')
-
-      const data = await res.json()
-      
-      setUsers(data)
-    setLoading(false)
-      
-
-    } catch (err) {
-    setLoading(false)
-
-      if (err.name !== 'AbortError') {
-        console.error(err)
-      }
+  const {followAction,setAction,state,unfollowAction}=UsemyActions()
+  const {input,loading,setInputValue,users}=useSearchUser()
+   useEffect(()=>{
+    if(following){
+      setAction(following)
     }
-  }, 300) // debounce
+   },[following])
 
-  return () => {
-
-    clearTimeout(timeout)
-    controller.abort()
-  }
-}, [input])
 
   if (!users || !user || !following) return <>loading...</>
 
@@ -145,7 +65,6 @@ return state.following.some(
           style={{
             flex: 1,
             paddingTop: 30,
-            // Ya no hay maxWidth para que ocupe más horizontal
             width: '100%',
             margin: '0 auto',
           }}
@@ -242,11 +161,11 @@ return state.following.some(
                         )
                         if (checked.length > 0) {
                           const follow=await onHandletFollow(checked[0].id)
-                          dispatch({type:'unfollow',followId:follow.id})
+                          unfollowAction(follow.id)
                         } else {
                        const follow=await    onHandleFollow(userl.id, user.id)
-                       dispatch({type:'follow',follower:follow})
-                        }
+                        followAction(follow)
+                      }
                       }}
                       style={{
                         backgroundColor: isFollowing(userl.id)
