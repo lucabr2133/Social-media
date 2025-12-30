@@ -85,8 +85,14 @@ class prismaModel {
     return comments;
   }
 
-  static async getUserModel () {
-    const users = await prisma.user.findMany();
+  static async getUserModel (query) {
+    const users = await prisma.user.findMany({
+      where:{
+        username:{
+          contains:query
+        }
+      }
+    });
     return users;
   }
 

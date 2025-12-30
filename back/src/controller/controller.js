@@ -38,8 +38,8 @@ static async createUserController(username, password ) {
     return comments;
   }
 
-  static async getUserController () {
-    const users = await prismaModel.getUserModel();
+  static async getUserController (query) {
+    const users = await prismaModel.getUserModel(query);
     return users;
   }
 

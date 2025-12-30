@@ -1,13 +1,16 @@
 import useFollowing from '../../hooks/useFollowing'
 import CreatePublication from '../CreatePublication/CreatePublication'
-import { useState, useContext, useReducer, useEffect } from 'react'
+import { useState, useContext, useReducer, useEffect, SetStateAction } from 'react'
 import onHandleFollow from '../../../services/onHandleFollow'
 import onHandletFollow from '../../../services/onHandletFollow'
 import styles from './User.module.css'
 import MainHeader from '../Header/Header'
 import { UserContext, UserSession } from '../../contex/context'
 import React from 'react'
-import { Following } from '../../types'
+import { Following, User } from '../../types'
+import useUsers from '@/hooks/useUsers'
+import { Spinner } from '@heroui/react'
+import { SpinnerComponnet } from '../ui/spinner'
 interface actionFollow{
   type:'follow',
   follower:Following
@@ -24,6 +27,8 @@ type myAction = actionFollow|actionUnfollow|actionSet
 interface myState{
   following:Following[]
 }
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function userReducer(state:myState,action:myAction){
  switch (action.type) {
     case 'follow':
@@ -46,23 +51,64 @@ function userReducer(state:myState,action:myAction){
   }
 }
 export function Users() {
-  const contextUser = useContext(UserContext)
+  // const contextUser = useContext(UserContext)
   const contextUserSession = useContext(UserSession)
   if (!contextUserSession) {
     throw new Error('you must provide the correct value types')
   }
-  const users = contextUser
+  // const users = contextUser
   const { user } = contextUserSession
 
   const { following } = useFollowing()
   const [opendialog, setOpenDialog] = useState(false)
-
+  const [users,setUsers]=useState<User[]>([])
+  const [loading,setLoading]=useState(false)
+  const [input,setInputValue]=useState('')
   const [state,dispatch]=useReducer(userReducer,{following:[]})
     useEffect(() => {
       if (following) {
         dispatch({ type: 'set', followers: following })
       }
     }, [following])
+
+
+  useEffect(() => {
+
+  const controller = new AbortController()
+
+  const timeout = setTimeout(async () => {
+    setLoading(true)
+
+    try {
+      const res = await fetch(
+        `${apiUrl}/logins/users?username=${input}`,
+        { signal: controller.signal }
+      )
+
+      if (!res.ok) throw new Error('Error en búsqueda')
+
+      const data = await res.json()
+      
+      setUsers(data)
+    setLoading(false)
+      
+
+    } catch (err) {
+    setLoading(false)
+
+      if (err.name !== 'AbortError') {
+        console.error(err)
+      }
+    }
+  }, 300) // debounce
+
+  return () => {
+
+    clearTimeout(timeout)
+    controller.abort()
+  }
+}, [input])
+
   if (!users || !user || !following) return <>loading...</>
 
   const isFollowing = (userId: string) =>{
@@ -78,7 +124,7 @@ return state.following.some(
       display:"grid",
     }}>
         <MainHeader userActive={user} setOpenDialog2s={setOpenDialog} />
-    <div className='col-start-1 lg:col-start-2 lg:col-end-3' 
+    <div className='col-start-1 lg:col-start-2 lg:col-end-3 ' 
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -90,7 +136,11 @@ return state.following.some(
           boxSizing: 'border-box',
         }}
       >
-
+   <div className=' z-20 my-5! p-5!'>
+            <input value={input} onChange={(e)=>{
+              setInputValue(e.currentTarget.value)
+            }} type="text" className=' w-full rounded-2xl!'  placeholder='Search user...'/>
+          </div>
         <div
           style={{
             flex: 1,
@@ -101,6 +151,7 @@ return state.following.some(
           }}
           className={styles.usersContainer}
         >
+       
           <h2
             style={{
               textAlign: 'center',
@@ -112,15 +163,20 @@ return state.following.some(
           >
             Usuarios
           </h2>
-
+   {loading && <div className='flex justify-center items-center gap-5'>
+              <p>Loading</p>
+               <SpinnerComponnet></SpinnerComponnet>
+               </div>}
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
               gap: 30,
             }}
+            hidden={loading}
           >
-            {users
+         
+            {users.length!==0?users
               .filter((u) => u.username !== user.username)
               .map((userl) => (
                 <div
@@ -223,7 +279,7 @@ return state.following.some(
                     </button>
                   </div>
                 </div>
-              ))}
+              )):<h2 className='text-center col-end-3 col-start-1'>No se encontraron Usuarios</h2>}
           </div>
         </div>
       </div>

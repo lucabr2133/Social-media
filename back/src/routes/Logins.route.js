@@ -98,7 +98,10 @@ Loginrouter.get('/auth/github/callback',
     res.redirect(`${process.env.CLIENT_UR}`); // o la página que quieras
   });
 Loginrouter.get('/users', async (req, res) => {
-  const users = await ControlerData.getUserController();
+  const {username}=req.query
+  console.log(username,'aa');
+  
+  const users = await ControlerData.getUserController(username);
   res.json(users);
 });
 Loginrouter.get('/profile/:username/', async (req, res) => {
