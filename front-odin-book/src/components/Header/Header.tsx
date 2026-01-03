@@ -32,7 +32,7 @@ function MainHeader ({ userActive, setOpenDialog2s }:props) {
               setOpenNotifications(true)
           }} className=' cursor-pointer flex gap-2 hover:bg-neutral-700 duration-200 rounded-2xl p-2'>
     <Bell ></Bell>
-         <h2 className='hidden lg:flex gap-5 '>  <p>Notifications</p> <h2 className='bg-red-700 rounded-4xl w-7.5 h-full flex justify-center items-center'>{notifications?.length ||0}</h2></h2>
+         <h2 className='hidden lg:flex gap-2  flex-wrap '>  <p>Notifications</p> <h2 className='bg-red-700 rounded-4xl w-5  h-5 flex justify-center items-center'>{notifications?.length ||0}</h2></h2>
           </div>
         </li>
         <li className='flex gap-2  rounded-2xl cursor-pointer' onClick={()=>{
