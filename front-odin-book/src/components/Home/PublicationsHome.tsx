@@ -42,17 +42,17 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
 
 }
   return (
-    <div className={`${styles['publication-container']} bg-neutral-700/35 flex w-full md:w-auto p-0  rounded-2xl shadow-2xl` } key={publication.id}>
+    <div className={`${styles['publication-container']}  flex w-full md:w-auto p-0  rounded-2xl shadow-2xl` } key={publication.id}>
   <div className='w-full lg:w-auto'>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Link  to={`/profile/${userFind[0]?.username}`}>
-            <img style={{ width: '70px' }} src={userFind[0]?.profileImg||'profile2.svg'} alt="" />
+            <img style={{ width: '40px' }} src={userFind[0]?.profileImg||'profile2.svg'} alt="" />
           </Link>
-         <h1 className='capitalize font-extrabold text-2xl'>{userFind[0]?.username}</h1> 
+         <h1 className='capitalize font-extrabold '>{userFind[0]?.username}</h1> 
         </div>
 
-        <img className='h-[calc(100vh-35vh)] w-full md:w-auto' src={publication.image_url} alt="" />
+        <img className='h-[calc(100vh-35vh)] w-full md:w-auto ' src={publication.image_url} alt="" />
         <div className={styles['publication-content']}>
           <div className='flex flex-col gap-5'>
             <div className='flex w-full items-center gap-5' style={{padding:'10px'}}>
@@ -77,7 +77,7 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
             </div>
            
 
-            <div className='p-5' style={{padding:'5px'}}>{publication.content}</div>
+            <div className='text-neutral-500 font-light capitalize' style={{padding:'20px 10px',fontSize:'12px'}}>{publication.content}</div>
           </div>
         </div>
       </div>

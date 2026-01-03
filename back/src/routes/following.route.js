@@ -3,10 +3,8 @@ import ControlerData from '../controller/controller.js';
 const followingRouter = Router();
 followingRouter.post('/following', async (req, res) => {
   const { userSessionId, userlId } = req.body;
-  console.log(req.body);
-
+  
   const following = await ControlerData.followingUser(userSessionId, userlId);
-  console.log('user created');
 
   res.json(following);
 });

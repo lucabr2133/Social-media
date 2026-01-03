@@ -85,13 +85,15 @@ class prismaModel {
     return comments;
   }
 
-  static async getUserModel (query) {
+  static async getUserModel (query,quantity) {
     const users = await prisma.user.findMany({
       where:{
         username:{
           contains:query
+          
         }
-      }
+      },
+      take:parseInt(quantity)||30
     });
     return users;
   }
@@ -149,10 +151,24 @@ class prismaModel {
         following_id: userSessionId
       }
     });
+ const followerUser = await prisma.user.findUnique({
+  where: { id: userSessionId },
+  select: { username: true }
+});
+
+if (userSessionId !== userlId) {
+  await prisma.notifcations.create({
+    data: {
+      user_id: userlId, 
+      type: "follow",
+      actorId:userSessionId
+    }
+  });
+}
     return followingUser;
   };
 
-  static async getfollowingUser () {
+  static async getfollowingUser  () {
     const following = await prisma.following.findMany();
     return following;
   }
@@ -197,6 +213,26 @@ class prismaModel {
       }
     });
     return user;
+  }
+  static async getNotificationModel(userId){
+    const notification=await prisma.notifcations.findMany(
+      {
+        where:{
+          user_id:userId
+        },
+        include:{
+         actor:{
+          select:{
+    id:true,
+          username:true,
+          profileImg:true
+          }
+      
+         }
+        }
+      }
+    )
+    return notification
   }
 }
 export { prisma };

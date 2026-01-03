@@ -6,6 +6,7 @@ import { Loginrouter } from './Logins.route.js';
 import messagesRouter from './messages.route.js';
 import publicationRouter from './publicattion.route.js';
 import filesRouter from './files.route.js';
+import notifyRouter from './notifications.route.js';
 const router = Router();
 router.use('/comments', commentRouter);
 router.use('/followings', followingRouter);
@@ -14,4 +15,5 @@ router.use('/logins', Loginrouter);
 router.use('/messages', messagesRouter);
 router.use('/publications', publicationRouter);
 router.use('/',filesRouter)
+router.use('/',notifyRouter)
 export default router;

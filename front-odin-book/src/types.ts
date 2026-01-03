@@ -68,3 +68,19 @@ export interface User {
   export interface params{
     username:string
   }
+  export interface notifications {
+    id:string
+    user_id:string,
+    message:string,
+    type:string,
+    createdAt:Date,
+    read:boolean
+    actorId:string
+    actor:{
+      id:string,
+      username:string,
+      profileImg:string
+    }
+
+
+  }

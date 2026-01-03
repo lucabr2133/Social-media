@@ -8,6 +8,7 @@ import { UserContext, UserSession } from '../../contex/context'
 import MainHeader from '../Header/Header'
 import { Link } from 'react-router'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { ArrowRightCircle } from 'lucide-react'
 
 function Home () {
   const PublicationHome = lazy(() => import('./PublicationsHome'))
@@ -63,15 +64,11 @@ function Home () {
         >
           <div
             style={{
-              margin: '15px',
-              padding: '15px'
+              margin: '15px'
 
-            }} className='hidden rounded-2xl lg:flex flex-col text-center gap-5  overflow-y-scroll scrollbar-none bg-neutral-700/20 '
+            }} className='hidden  lg:flex flex-col text-center gap-5  overflow-y-scroll scrollbar-none border border-neutral-700  rounded-2xl duration-500 '
           >
-            <h1 style={{
-              fontSize: '40PX'
-            }}
-            >USERS
+            <h1 className='text-2xl  capitalize'>Users
             </h1>
             {users.map((user) => (
               <div
@@ -81,7 +78,7 @@ function Home () {
                 }} className='flex items-center border-b border-neutral-700 hover:border-amber-600 transition-all duration-300 '
               >
                 <Link className='' style={{ width: '100px', marginRight: '10px' }} to={`/profile/${user.username}`}>
-                  <Avatar className='size-20'>
+                  <Avatar className='size-10'>
                     <AvatarImage src={user.profileImg ? user.profileImg : '/profile2.svg'} />
                     <AvatarFallback />
                   </Avatar>
@@ -90,7 +87,9 @@ function Home () {
                 <h2 className='text-center'>{user.username}</h2>
               </div>
             ))}
+            <h2 className='border rounded-b-2xl hover:bg-neutral-700 duration-500 cursor-pointer flex justify-center items-center'>See more <ArrowRightCircle /> </h2>
           </div>
+
         </aside>
       </div>
 

@@ -38,8 +38,8 @@ static async createUserController(username, password ) {
     return comments;
   }
 
-  static async getUserController (query) {
-    const users = await prismaModel.getUserModel(query);
+  static async getUserController (query,quantity) {
+    const users = await prismaModel.getUserModel(query,quantity);
     return users;
   }
 
@@ -101,6 +101,10 @@ static async createUserController(username, password ) {
   static async getuserController (username) {
     const user = await prismaModel.getuserModel(username);
     return user;
+  }
+  static async getNotifyController(userid){
+  const notification=await prismaModel.getNotificationModel(userid)
+    return notification 
   }
 }
 export default ControlerData;
