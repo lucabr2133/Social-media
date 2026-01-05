@@ -106,5 +106,9 @@ static async createUserController(username, password ) {
   const notification=await prismaModel.getNotificationModel(userid)
     return notification 
   }
+  static async updateNotifyController(userId){
+    const notifcations=await prismaModel.updateNotificationModel(userId)
+    return notifcations
+  }
 }
 export default ControlerData;

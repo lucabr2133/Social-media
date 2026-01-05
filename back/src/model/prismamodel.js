@@ -234,6 +234,17 @@ if (userSessionId !== userlId) {
     )
     return notification
   }
+  static async updateNotificationModel(userId){
+    await prisma.notifcations.updateMany({
+      data:{
+        read:true
+      },
+      where:{
+        user_id:userId
+
+      }
+    })
+  }
 }
 export { prisma };
 export default prismaModel;

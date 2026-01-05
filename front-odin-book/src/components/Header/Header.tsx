@@ -4,17 +4,16 @@ import { User } from '../../types'
 import CreatePublication from '../CreatePublication/CreatePublication'
 import { Bell, Cross, User as Useri, Users, X } from 'lucide-react'
 import { useNotification } from '../../hooks/useNotifications'
-import useUser from '@/hooks/useUser'
+import { onHandleReadNotification } from 'services/onHandleReadNotification'
 interface props{
   userActive:User,
-  setOpenDialog2s:React.Dispatch<React.SetStateAction<boolean>>
 }
-function MainHeader ({ userActive, setOpenDialog2s }:props) {
+function MainHeader ({ userActive }:props) {
   const [opendialog2, setOpenDialog2] = useState(false)
   const [openNotifications,setOpenNotifications]=useState(false)
-  const {notifications,setNotification}=useNotification(userActive.id)
+  const {notifications}=useNotification(userActive.id)
 
-  
+  if(!notifications) return <p>loading</p>
   return (
     <>
         <header   className='  bg-neutral-700/20 flex  z-10 fixed    ' style={{
@@ -32,7 +31,7 @@ function MainHeader ({ userActive, setOpenDialog2s }:props) {
               setOpenNotifications(true)
           }} className=' cursor-pointer flex gap-2 hover:bg-neutral-700 duration-200 rounded-2xl p-2'>
     <Bell ></Bell>
-         <h2 className='hidden lg:flex gap-2  flex-wrap '>  <p>Notifications</p> <h2 className='bg-red-700 rounded-4xl w-5  h-5 flex justify-center items-center'>{notifications?.length ||0}</h2></h2>
+         <h2 className='hidden lg:flex gap-2  flex-wrap '>  <p>Notifications</p> <h2 className='bg-red-700 rounded-4xl w-5  h-5 flex justify-center items-center'>{notifications?.filter((notification)=>!notification.read).length ||0}</h2></h2>
           </div>
         </li>
         <li className='flex gap-2  rounded-2xl cursor-pointer' onClick={()=>{
@@ -42,7 +41,7 @@ function MainHeader ({ userActive, setOpenDialog2s }:props) {
           <div className='flex gap-2 hover:bg-neutral-700 duration-200 rounded-2xl p-2'>
     <Cross ></Cross>
          <h2 className='hidden lg:block '>Create</h2>
-          </div>
+          </div>  
     
 
         </li>
@@ -52,7 +51,12 @@ function MainHeader ({ userActive, setOpenDialog2s }:props) {
     <CreatePublication opendialog={opendialog2} setOpenDialog={setOpenDialog2}></CreatePublication>
        {openNotifications && (
   <div
-    onClick={() => setOpenNotifications(false)}
+    onClick={() => {
+      setOpenNotifications(false)
+      onHandleReadNotification(userActive.id)
+
+
+    }}
     className="fixed w-screen h-screen flex justify-center items-center z-10 bg-neutral-900/90"
   >
     <div
@@ -61,8 +65,10 @@ function MainHeader ({ userActive, setOpenDialog2s }:props) {
     >
       <header className='border-b border-neutral-500 flex justify-between p-2'>
         <h2 className="text-center">Notifications</h2>
-      <X onClick={()=>{
+      <X className='lg:hidden' onClick={()=>{
         setOpenNotifications(false)
+      onHandleReadNotification(userActive.id)
+
       }}></X>
       </header>
       <div>
