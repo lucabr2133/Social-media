@@ -1,7 +1,5 @@
 import useFollowing from '../../hooks/useFollowing'
 import CreatePublication from '../CreatePublication/CreatePublication'
-import onHandleFollow from '../../../services/onHandleFollow'
-import onHandletFollow from '../../../services/onHandletFollow'
 import styles from './User.module.css'
 import MainHeader from '../Header/Header'
 import {UserSession } from '../../contex/context'
@@ -9,6 +7,7 @@ import React, { useContext, useEffect , useState } from 'react'
 import { SpinnerComponnet } from '../ui/spinner'
 import { UsemyActions } from '../../Reducers/UserReducer'
 import { useSearchUser } from '../../hooks/useSearchUsers'
+import { toggleFollow } from '../../../services/onHandleToggleFollow'
 
 
 
@@ -32,7 +31,7 @@ export function Users() {
   if (!users || !user || !following) return <>loading...</>
 
   const isFollowing = (userId: string) =>{
-return state.following.some(
+      return state.following.some(
       (f) => f.following_id === user.id && f.follower_id === userId
     )
   }
@@ -43,7 +42,7 @@ return state.following.some(
     <div className='lg:grid lg:grid-cols-[15%_85%] w-full' style={{
       display:"grid",
     }}>
-        <MainHeader userActive={user} setOpenDialog2s={setOpenDialog} />
+        <MainHeader userActive={user}/>
     <div className='col-start-1 lg:col-start-2 lg:col-end-3 ' 
         style={{
           display: 'flex',
@@ -154,19 +153,8 @@ return state.following.some(
                     <button
                       onClick={async (e) => {
                         e.stopPropagation()
-                        const checked = state.following.filter(
-                          (f) =>
-                            f.following_id === user.id &&
-                            f.follower_id === userl.id
-                        )
-                        if (checked.length > 0) {
-                          const follow=await onHandletFollow(checked[0].id)
-                          unfollowAction(follow.id)
-                        } else {
-                       const follow=await    onHandleFollow(userl.id, user.id)
-                        followAction(follow)
-                        
-                      }
+                        toggleFollow(userl,user,state,unfollowAction,followAction)
+                     
                       }}
                       style={{
                         backgroundColor: isFollowing(userl.id)

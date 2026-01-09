@@ -31,7 +31,7 @@ function MainHeader ({ userActive }:props) {
               setOpenNotifications(true)
           }} className=' cursor-pointer flex gap-2 hover:bg-neutral-700 duration-200 rounded-2xl p-2'>
     <Bell ></Bell>
-         <h2 className='hidden lg:flex gap-2  flex-wrap '>  <p>Notifications</p> <h2 className='bg-red-700 rounded-4xl w-5  h-5 flex justify-center items-center'>{notifications?.filter((notification)=>!notification.read).length ||0}</h2></h2>
+         <div className='hidden lg:flex gap-2  flex-wrap '>  <p>Notifications</p> <h2 className='bg-red-700 rounded-4xl w-5  h-5 flex justify-center items-center'>{notifications?.filter((notification)=>!notification.read).length ||0}</h2></div>
           </div>
         </li>
         <li className='flex gap-2  rounded-2xl cursor-pointer' onClick={()=>{
@@ -60,7 +60,7 @@ function MainHeader ({ userActive }:props) {
     className="fixed w-screen h-screen flex justify-center items-center z-10 bg-neutral-900/90"
   >
     <div
-      onClick={(e) => e.stopPropagation()} // 🚫 frena al padre
+      onClick={(e) => e.stopPropagation()} 
       className="bg-neutral-800 w-full lg:w-1/3 h-[90%] rounded-2xl flex flex-col"
     >
       <header className='border-b border-neutral-500 flex justify-between p-2'>

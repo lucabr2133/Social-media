@@ -1,6 +1,6 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
-async function onHandleFollow (userlId : string, userSessionId:string) {
+async function onHandleFollow (userlId : string|undefined, userSessionId:string) {
 
   const response=await fetch(`${apiUrl}/followings/following`, {
     method: 'post',

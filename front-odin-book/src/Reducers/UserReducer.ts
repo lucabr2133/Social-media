@@ -2,7 +2,7 @@ import useFollowing from "@/hooks/useFollowing"
 import { Following } from "@/types"
 import { useEffect, useReducer } from "react"
 
-interface myState{
+export interface myState{
   following:Following[]
 }
 interface actionFollow{

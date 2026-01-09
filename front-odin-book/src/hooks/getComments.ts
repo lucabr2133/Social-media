@@ -28,11 +28,11 @@ function useComments(publicationId: string) {
         const data: Comments[] = await res.json()
         setComments(data)
       } catch (err) {
-  if (err instanceof Error) {
-    if (err.name !== "AbortError") {
-      setError("No se pudieron cargar los comentarios")
-    }
-  }
+        if (err instanceof Error) {
+          if (err.name !== "AbortError") {
+            setError("No se pudieron cargar los comentarios")
+          }
+        }
 }
 finally {
         setLoading(false)
