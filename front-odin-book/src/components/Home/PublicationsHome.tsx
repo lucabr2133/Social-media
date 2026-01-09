@@ -4,6 +4,7 @@ import React, {  useState } from 'react'
 import { Likes, Publications, User } from '../../types'
 import usePublicationLikes from '../../hooks/usePublicationLikes'
 import {  X } from 'lucide-react'
+import CommentList from '../Profile/CommentList'
 interface actions {
   onHandleLikePublication:(e:React.MouseEvent<HTMLImageElement>,publicationId:string,userId:string)=>Promise<Likes>
   onHandleDeletedLike:(id:string)=>Promise<Likes>
@@ -11,7 +12,6 @@ interface actions {
 }
 interface data{
   publication:Publications,
-  userFind:User[],
   user:User,
   users:User[]
 }
@@ -24,7 +24,7 @@ type props={
 
 function PublicationHome({ styles, actions, data }: props) {
   const [open, setOpen] = useState('')
-  const { publication, userFind, user, users } = data
+  const { publication, user, users } = data
 
   const {addLike,deleteLike,state}=usePublicationLikes()
   const { onHandleLikePublication, onHandleDeletedLike } = actions
@@ -41,15 +41,16 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
                 }
 
 }
+
   return (
     <div className={`${styles['publication-container']}  flex w-full md:w-auto p-0  rounded-2xl shadow-2xl` } key={publication.id}>
   <div className='w-full lg:w-auto'>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Link  to={`/profile/${userFind[0]?.username}`}>
-            <img style={{ width: '40px' }} src={userFind[0]?.profileImg||'profile2.svg'} alt="" />
+          <Link  to={`/profile/${publication.author?.username}`}>
+            <img style={{ width: '40px' }} src={publication.author?.profileImg||'profile2.svg'} alt="" />
           </Link>
-         <h1 className='capitalize font-extrabold '>{userFind[0]?.username}</h1> 
+         <h1 className='capitalize font-extrabold '>{publication.author?.username}</h1> 
         </div>
 
         <img className='h-[calc(100vh-35vh)] w-full md:w-auto ' src={publication.image_url} alt="" />
@@ -82,24 +83,15 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
         </div>
       </div>
 
-      <div
-      className={`${styles["main-publication"]} hidden `}
-        style={{
-          width: isOpen ? '500px' : '0px', // ancho cerrado o abierto
-          overflow: 'hidden',
-          whiteSpace: 'nowrap', // para que no baje a varias líneas si hay texto
-          transition: 'width 0.5s ease',
-        }}
-      >
-        {isOpen && <PublicationOpen publication={publication} setOpen={setOpen} user={user} users={users} styles={styles} />}
-      </div>
+
       <div 
     className={`
       bg-black
-      md:hidden 
+      lg:hidden 
       w-full 
       fixed 
       top-0 
+      right-0
       overflow-hidden 
       transition-all 
       duration-500 
@@ -110,7 +102,7 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
     {isOpen && (
       <div className="p-4 text-white h-full displaymenu">
         <div className='flex' style={{padding:'10px'}}>
-        <h2 className='w-full  uppercase text-2xl'>Comments</h2>
+        <h2 className='w-full  text-[2px]!'>Comments</h2>
         <X onClick={()=>setOpen('')}></X>
         </div>
         {isOpen && <PublicationOpen publication={publication} setOpen={setOpen} user={user} users={users} styles={styles} />}
@@ -118,6 +110,17 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
       </div>
     )}
   </div>
+    {isOpen && <div className='fixed hidden lg:flex justify-center top-0 items-center left-0   z-50 w-screen h-screen bg-neutral-900/80 ' onClick={()=>{
+    setOpen('')
+  }}>
+    <div className='flex  bg-amber-900 w-3/4 h-[calc(100vh-2vh)]'>
+      <img src={publication.image_url} alt=""  className='flex-1'/>
+      <div className='bg-black flex-1'>
+        <CommentList  publication={publication} styles={styles} user={user} users={users}></CommentList>
+      </div>
+    </div>
+  
+  </div>}
     </div>
     
   )

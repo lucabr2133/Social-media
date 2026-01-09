@@ -10,13 +10,12 @@ interface props{
 }
 function PublicationOpen ({ users, styles, user, publication, setOpen }:props) {
   return (
-    <div style={{margin:'5px'}}  onClick={(e) => {
+    <div  style={{margin:'5px'}}  onClick={(e) => {
       
         if (!e.currentTarget.closest(`.${styles['main-publication']}`) && !e.currentTarget.closest(`.displaymenu`)) { setOpen('') }
-      }} className={`${styles['publication_dialog']}  h-full`}
+      }} className={`${styles['publication_dialog']}  h-full w-full`}
     >
    
-       
 
         <CommentList  styles={styles} users={users} user={user} publication={publication} />
 

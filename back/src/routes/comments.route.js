@@ -11,7 +11,8 @@ commentRouter.post('/comments', async (req, res) => {
   });
 });
 commentRouter.get('/comments', async (req, res) => {
-  const comments = await ControlerData.getCommentController();
+  const {publicationId}=req.query
+  const comments = await ControlerData.getCommentController(publicationId);
 
   res.json(comments);
 });

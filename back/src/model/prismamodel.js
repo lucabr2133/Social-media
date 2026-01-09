@@ -80,8 +80,20 @@ class prismaModel {
     return createComment;
   }
 
-  static async getCommentsModel () {
-    const comments = await prisma.comments.findMany();
+  static async getCommentsModel (publicationId) {
+    const comments = await prisma.comments.findMany({
+      include:{
+        author:{
+          select:{
+            username:true,
+            profileImg:true
+          }
+        }
+      },
+      where:{
+        post_id:publicationId
+      }
+    });
     return comments;
   }
 
@@ -99,7 +111,18 @@ class prismaModel {
   }
 
   static async getPublicationsModel () {
-    const publications = await prisma.publications.findMany();
+    const publications = await prisma.publications.findMany(
+      {
+        include:{
+          author:{
+            select:{
+              username:true,
+              profileImg:true
+            }
+          }
+        }
+      }
+    );
     return publications;
   }
 

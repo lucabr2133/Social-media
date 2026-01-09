@@ -33,8 +33,8 @@ static async createUserController(username, password ) {
     return createComment;
   }
 
-  static async getCommentController () {
-    const comments = await prismaModel.getCommentsModel();
+  static async getCommentController (publicationId) {
+    const comments = await prismaModel.getCommentsModel(publicationId);
     return comments;
   }
 

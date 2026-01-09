@@ -22,7 +22,6 @@ width: 100%;
     display: flex;
     transition: 1s;
   
-  
   }
 
   
@@ -109,5 +108,7 @@ text-wrap: wrap;
   .comments{
     grid-template-rows: 90% 20%;
   }
-  
+
 }
+
+  

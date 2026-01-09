@@ -1,33 +1,28 @@
 import onHandleSubmitComment from '../../../services/onHandleSubmitComment'
 import useComments from '../../hooks/getComments'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Comments, Publications, User } from '../../types'
 import { socket } from '../../socket'
-import { useChatSocket } from '../../hooks/useChatSocket'
+import { CommentSkeleton } from './CommentSkeleton'
 interface props {
   styles:Record<string,string>
   publication:Publications,
   users:User[],
   user:User,
 }
-function CommentList ({ styles, publication, users, user }:props) {
-  const { comments:commentsHook } = useComments()
-const [comments,setComments]=useState<Comments[]>()
-useEffect(()=>{
-  if(commentsHook){
-    setComments(commentsHook)
-  }
-},[commentsHook])
-useChatSocket()
+function  CommentList ({ publication, user }:props) {
+  
+  const { comments:commentsHook ,setComments ,loading} = useComments(publication.id)
+console.log(loading);
+
 useEffect(() => {
   if (!publication?.id) return;
 
   socket.emit("publicationRomm", publication.id);
 
-  // Handler
   const handleComment = (comment: Comments) => {
+    
     setComments((prev) => {
-      if(!prev)return
       return [...prev, comment]
     });
   };
@@ -37,60 +32,58 @@ useEffect(() => {
   return () => {
     socket.off("publication comments", handleComment);
   };
-}, [publication?.id]);
+}, [publication.id, setComments]);
 
-if (comments==null && !users) {
-    return (
 
-      <h1>loading..</h1>
-
-    )
-  }
-
+if(loading)return <div className='p-2 w-full h-full'>
+  <CommentSkeleton></CommentSkeleton>
+</div>
   return (
     <>
+      <div className=' w-full h-[98vh] flex flex-col ' onClick={(e)=>{
+        e.stopPropagation()
+      }}>
+        <header className=' w-full text-2xl p-6 border-b border-neutral-700'>
+            <div className='flex items-center gap-2'>
+              <img src={publication?.author?.profileImg||'/profile2.svg'} width={50} alt="" />
+              <h6 className='text-[12px] capitalize'>{publication?.author?.username}</h6>
+            </div>
+            <p className='px-13 text-[13px] capitalize text-neutral-300!'>{publication?.content} .</p>
+        </header>
 
-      <div className={styles.comments}>
 
-        <div style={{
-          maxHeight:'750px',
-          overflowY:'auto'
-        }} className='messages'>
-          <h2 className='text-4xl font-extrabold'>Comments</h2>
-          {comments?.map((comment) => {
-            const user = users?.find((user) => user.id === comment.user_id)
-            return (
-              comment.post_id === publication.id && (
+        <main className='flex flex-col overflow-y-auto scrollbar-thumb-pink-950 justify-start! flex-1 '>
+          {commentsHook?.map(comment=>(
+            <div key={comment.id} className='p-4 '>
+             <div className="flex flex-col  justify-center p-2 gap-2 ">
+                <div className='flex items-center gap-2'>
+                    <img  width={30} className="shrink-0" src={comment.author?.profileImg || "/profile2.svg"}alt=""/>
+                    <p className="text-[10px] shrink-0 capitalize font-extrabold! ">
+                              {comment.author?.username}
+                    </p>
+              </div>
+   
 
-                <div className={styles.message} key={comment.id}>
-                  <div className='flex items-center gap-5'>
- <img width='50px' src={user?.profileImg || '/profile2.svg'} alt='' />
+              <p className="text-[11px] capitalize wrap-break-word px-10 text-neutral-500! font-mono!">
+                {comment.content}.
+              </p>
+            </div>
+                <hr className='w-1/12 mx-10 border-neutral-700' ></hr>
+            </div>
+          ))}
+        </main>
+          
+    <footer>
+      <form className='w-full flex px-3 py-2 gap-2 items-center' onSubmit={(e)=>{
+        onHandleSubmitComment(e,user.id,publication.id)
+      }}>
 
-                  <p>{user?.username}</p>
-                  <p  key={comment.id}>{comment.content}</p>
+        <input className='flex-2 rounded-2xl! h-8 ' type="text" name='comment' placeholder='Write....' />
+        <button className='flex-1' type='submit'>Submit</button>
 
-                  </div>
-                 
-
-                </div>
-
-              )
-            )
-          }
-
-          )}
-        </div>
-        <div className={styles['submit-comment']}>
-          <form className={styles['submit-comment-form']} action='' onSubmit={(e) => { 
-
-            onHandleSubmitComment(e, user.id, publication.id) 
-            }}>
-            <input className='comment-text' type='text' name='comment' />
-            <button onClick={()=>{
-              
-            }} type='submit' style={{padding:'5px'}}>Send</button>
-          </form>
-        </div>
+      </form>
+      
+    </footer>
       </div>
     </>
   )

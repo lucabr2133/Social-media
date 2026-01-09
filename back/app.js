@@ -49,13 +49,11 @@ io.on('connection', (socket) => {
       })
       
     io.to(to).emit("chat message",message);
-    socket.emit("chat message", message);
   });
   socket.on('publicationRomm',(publicationId)=>{
     socket.join(publicationId)
   })
   socket.on('publication comments',async({publicationId,from,text})=>{
-    console.log(publicationId,from,text);
     
     let comment
     try{
@@ -64,8 +62,17 @@ io.on('connection', (socket) => {
         content:text,
         post_id:publicationId,
         user_id:from
+      },
+      include:{
+        author:{
+          select:{
+            username:true,
+            profileImg:true
+          }
+        }
       }
     })
+    
     }catch(e){
       console.log(e);
       

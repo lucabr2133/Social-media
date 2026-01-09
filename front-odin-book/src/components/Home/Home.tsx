@@ -47,10 +47,9 @@ function Home () {
 }
             >
               {publication?.map((publication) => {
-                const userFind = users?.filter(user => publication.user_id === user.id)
                 return (
 
-                  <PublicationHome data={{ userFind, user, users, publication }} styles={styles} actions={{ onHandleDeletedLike, onHandleLikePublication }} key={publication.id} />
+                  <PublicationHome data={{ user, users, publication }} styles={styles} actions={{ onHandleDeletedLike, onHandleLikePublication }} key={publication.id} />
                 )
               })}
             </Suspense>

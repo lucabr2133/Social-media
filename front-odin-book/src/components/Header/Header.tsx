@@ -4,7 +4,7 @@ import { User } from '../../types'
 import CreatePublication from '../CreatePublication/CreatePublication'
 import { Bell, Cross, User as Useri, Users, X } from 'lucide-react'
 import { useNotification } from '../../hooks/useNotifications'
-import { onHandleReadNotification } from 'services/onHandleReadNotification'
+import { onHandleReadNotification } from '../../../services/onHandleReadNotification'
 interface props{
   userActive:User,
 }

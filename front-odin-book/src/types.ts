@@ -36,7 +36,11 @@ export interface User {
   post_id:     string
   user_id:     string
   content:     string
-  create_at:   Date     
+  create_at:   Date  
+  author:{
+    username:string,
+    profileImg:string
+  }   
   }
   export interface Publications { 
       id:        string 
@@ -44,6 +48,10 @@ export interface User {
   content:   string
   create_at: Date  
   image_url: string
+  author:{
+    username:string,
+    profileImg:string
+  }
   }
   export interface Following {
       id:           string   
