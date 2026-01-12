@@ -1,17 +1,34 @@
 import { useEffect, useState } from 'react'
-import { Following } from '../types'
-const apiUrl = import.meta.env.VITE_API_URL;
+import { ErrorInterface, errorMesagges, Following } from '../types'
+import { UsemyActions } from '../Reducers/UserReducer'
+const apiUrl = import.meta.env.VITE_API_URL
 
 function useFollowing () {
-  const [following, setFollowing] = useState<Following[]|null>(null)
+  const { setAction } = UsemyActions()
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
+    const controller = new AbortController()
+
     async function getFollowing () {
-      const data = await fetch(`${apiUrl}/followings/following`)
-      const res:Following[] = await data.json()
-      setFollowing(res)
+      try {
+        setLoading(true)
+        const response = await fetch(`${apiUrl}/followings/following`, {
+          signal: controller.signal
+        })
+        const data = await response.json()
+        if (!response.ok){ 
+         const error= data as ErrorInterface  
+          throw new Error(error.message)
+        }
+          
+    const following = data as Following[]
+        setAction(following)
+      } finally {
+        setLoading(false)
+      }
     }
     getFollowing()
-  }, [])
-  return { following }
+  }, [setAction])
+  return { loading }
 }
 export default useFollowing

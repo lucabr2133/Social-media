@@ -4,16 +4,26 @@ import { Server } from 'socket.io';
 import { createServer } from 'node:http';
 const messagesRouter = Router();
 
-messagesRouter.post('/messages', async (req, res) => {
-  const { message, receptorUser, user } = req.body;
+messagesRouter.post('/messages', async (req, res,next) => {
+  try {
+     const { message, receptorUser, user } = req.body;
   const messageCreate = await ControlerData.createMessageController(message, receptorUser.id, user.id);
-  res.json({
+  res.status(201).json({
     message: 'creado exitosamente',
     messageCreate
   });
+  } catch (error) {
+    next(error)
+  }
+ 
 });
-messagesRouter.get('/messages', async (req, res) => {
-  const messages = await ControlerData.getMessagesController();
-  res.json(messages);
+messagesRouter.get('/messages', async (req, res,next) => {
+  try {
+      const messages = await ControlerData.getMessagesController();
+  res.status(200).json(messages);
+  } catch (error) {
+    next(error)
+  }
+
 });
 export default messagesRouter;

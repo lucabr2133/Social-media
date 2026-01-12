@@ -29,7 +29,7 @@ Loginrouter.get('/', (req, res) => {
   res.json({ mensaje: 'Acceso permitido', user: req.user });
 });
 
-Loginrouter.post('/signup', async (req, res) => {
+Loginrouter.post('/signup', async (req, res,next) => {
   try {
     const { username, password } = req.body;
 
@@ -49,13 +49,7 @@ Loginrouter.post('/signup', async (req, res) => {
     res.json(userCreate);
 
   } catch (err) {
-    console.log(err);
-    
-    if (err.message.includes("Username already exists")) {
-      return res.status(400).json({ errors: { username: err.message } });
-    }
-    console.error(err);
-    return res.status(500).json({ error: "Internal server error" });
+   next(err)
   }
 });
 
@@ -84,7 +78,7 @@ Loginrouter.get('/logout', (req, res, next) => {
 
     req.session.destroy((err) => {
       if (err) return next(err);
-      res.json({ redirectUrl: process.env.CLIENT_URL }); // Envía la URL como JSON
+      res.json({ redirectUrl: process.env.CLIENT_URL }); 
     });
   });
 });
@@ -95,18 +89,28 @@ Loginrouter.get('/auth/github',
 Loginrouter.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function (req, res) {
-    res.redirect(`${process.env.CLIENT_UR}`); // o la página que quieras
+    res.redirect(`${process.env.CLIENT_URL}`); // o la página que quieras
   });
-Loginrouter.get('/users', async (req, res) => {
+Loginrouter.get('/users', async (req, res,next) => {
+  try {
   const {username,quantity}=req.query
-  
   const users = await ControlerData.getUserController(username,quantity);
   res.json(users);
+    
+  } catch (error) {
+    next(error)
+  }
+  
 });
-Loginrouter.get('/profile/:username/', async (req, res) => {
-  const { username } = req.params;
+Loginrouter.get('/profile/:username/', async (req, res,next) => {
+  try {
+      const { username } = req.params;
   const user = await ControlerData.getuserController(username);
-  res.json(user);
+  res.status(200).json(user);
+  } catch (error) {
+    next(error)
+  }
+
 });
 
 export { Loginrouter };

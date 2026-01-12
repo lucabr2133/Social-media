@@ -16,6 +16,7 @@ import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 
 
 const app = e();
+
 app.set("trust proxy", 1);
 const allowedOrigins = [
   process.env.CLIENT_URL,
@@ -119,6 +120,18 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
+app.use((err, req, res, next) => {
+  console.error(err);
 
+  if (err.status) {
+    return res.status(err.status).json({
+      error: err.message
+    });
+  }
+
+  return res.status(500).json({
+    error: 'Internal server error'
+  });
+});
 export {server}
 export default app;

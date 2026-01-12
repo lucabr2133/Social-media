@@ -92,3 +92,6 @@ export interface User {
 
 
   }
+  export interface ErrorInterface{
+  message:string
+}

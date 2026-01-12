@@ -1,19 +1,29 @@
 import { Router } from 'express';
 import ControlerData from '../controller/controller.js';
 const commentRouter = Router();
-commentRouter.post('/comments', async (req, res) => {
-  const { comment, userId, publicationId } = req.body;
-  if(!comment||!userId||!publicationId) return res.sendStatus(400)
+commentRouter.post('/comments', async (req, res,next) => {
+  try {
+    const { comment, userId, publicationId } = req.body;
   const createComment = await ControlerData.createCommentController(comment, userId, publicationId);
-  res.json({
+  res.status(201).json({
     message: 'comment Created succeful',
     createComment
   });
+  } catch (error) {
+    next(error)
+  }
+  
 });
-commentRouter.get('/comments', async (req, res) => {
-  const {publicationId}=req.query
+commentRouter.get('/comments', async (req, res,next) => {
+  try {
+      const {publicationId}=req.query
   const comments = await ControlerData.getCommentController(publicationId);
+  res.status(200).json(comments);
 
-  res.json(comments);
+  } catch (error) {
+    next(error)
+  }
+
+
 });
 export default commentRouter;

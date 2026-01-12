@@ -1,161 +1,43 @@
-import React, { useState, useContext, lazy, Suspense, useEffect } from 'react'
-import usePublication from '../../hooks/getPublications'
-import onHandleLikePublication from '../../../services/onHandleLikePublication'
-import useLikesPublication from '../../hooks/useLikes'
-import onHandleDeletedLike from '../../../services/onHandleDeletedLike'
-import styles from './Home.module.css'
-import { UserContext, UserSession } from '../../contex/context'
-import MainHeader from '../Header/Header'
-import { Link } from 'react-router'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { ArrowRightCircle } from 'lucide-react'
-import { toggleFollow } from '../../../services/onHandleToggleFollow'
-import { UsemyActions } from '../../Reducers/UserReducer'
-import useFollowing from '../../hooks/useFollowing'
+import { ErrorInterface, Following } from '@/types'
+import { useEffect, useState } from 'react'
 
-function Home () {
-  const PublicationHome = lazy(() => import('./PublicationsHome'))
-  const [opendialog, setOpenDialog] = useState(false)
-  const contex = useContext(UserSession)
-  const { followAction, setAction, state, unfollowAction } = UsemyActions()
+export function useFollowing() {
+  const [data, setData] = useState<Following[] | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  if (!contex) throw new Error('The context must have a valid provider')
-  const { user } = contex
-  const { publication } = usePublication()
-  const users = useContext(UserContext)
-  const { publicationLikes } = useLikesPublication()
-  const { following } = useFollowing()
-
-  const isLoading = ![users, user, publicationLikes].every(Boolean)
   useEffect(() => {
-    if (following) {
-      setAction(following)
+    const controller = new AbortController()
+
+    const fetchFollowing = async () => {
+      try {
+        setLoading(true)
+
+        const response = await fetch('/api/following', {
+          signal: controller.signal
+        })
+
+        const json = await response.json()
+
+        if (!response.ok) {
+          const err = json as ErrorInterface
+          throw new Error(err.message)
+        }
+
+        setData(json as Following[])
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') return
+
+        setError(err instanceof Error ? err.message : 'Unknown error')
+      } finally {
+        setLoading(false)
+      }
     }
-  }, [following])
-  if (isLoading || !users || !user) {
-    return (
-      <div className='min-h-screen flex items-center justify-center flex-col gap-5'>
-        <h2>Loading...</h2>
-        <div className='w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin' />
-      </div>
-    )
-  }
-    const isFollowing = (userId: string) =>{
-      return state.following.some(
-      (f) => f.following_id === user.id && f.follower_id === userId
-    )
-  }
 
-  return (
-    <>
-      <div className='lg:grid  lg:grid-cols-[15%_65%_20%] block'>
-        <MainHeader userActive={user} setOpenDialog2s={setOpenDialog} />
-        <main className='w-full'>
-          <div className={styles['publications-home']}>
-            <Suspense fallback={
-              <div className='min-h-screen flex items-center justify-center flex-col gap-5'>
-                <h2>Loading...</h2>
-                <div className='w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin' />
+    fetchFollowing()
 
-              </div>
+    return () => controller.abort()
+  }, [])
+
+  return { data, loading, error }
 }
-            >
-              {publication?.map((publication) => {
-                return (
-
-                  <PublicationHome data={{ user, users, publication }} styles={styles} actions={{ onHandleDeletedLike, onHandleLikePublication }} key={publication.id} />
-                )
-              })}
-            </Suspense>
-
-          </div>
-        </main>
-        <aside style={{
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-        >
-          <div
-            style={{
-              margin: '15px'
-
-            }} className='hidden  lg:flex flex-col gap-4  rounded-2xl  border-neutral-700 '
-          >
-
-            {users.map((userl) => (
-              <div
-                key={userl.id}
-                className='
-        group
-        flex items-center justify-between
-        p-3
-        rounded-2xl
-        bg-neutral-900/60
-        border border-transparent
-        hover:border-amber-600/50
-        hover:bg-neutral-800/70
-        transition-all duration-300
-        hover:scale-105
-      '
-              >
-                <div className='flex items-center gap-3'>
-                  <Link
-                    to={`/profile/${userl.username}`}
-                    className='rounded-full hover:bg-transparent!'
-                  >
-                    <Avatar className='size-10 ring-2 ring-neutral-700 group-hover:ring-amber-500  transition'>
-                      <AvatarImage src={userl.profileImg || '/profile2.svg'} />
-                      <AvatarFallback />
-                    </Avatar>
-                  </Link>
-
-                  <h2 className='text-sm font-semibold capitalize text-neutral-100'>
-                    {userl.username}
-                  </h2>
-                </div>
-
-                <button
-                  onClick={() => {
-                    toggleFollow(userl, user, state, unfollowAction, followAction)
-                  }}
-                  className={`
-          h-8 px-4
-          text-xs font-semibold capitalize
-          rounded-full
-         ${isFollowing(userl.id)?'bg-red-600!':'bg-blue-600!'}
-          text-white
-          hover:from-blue-600 hover:to-blue-700
-          shadow-md
-          transition-all duration-300
-        `}
-                >
-                  {isFollowing(userl.id)?'Unfollow':'Follow'}
-                </button>
-              </div>
-            ))}
-
-            <h2
-              className='
-      mt-2
-      py-2
-      rounded-2xl
-      flex items-center justify-center gap-2
-      text-sm font-semibold
-      text-neutral-300
-      hover:text-white
-      hover:bg-neutral-700/50
-      cursor-pointer
-      transition-all duration-300
-    '
-            >
-              See more <ArrowRightCircle size={16} />
-            </h2>
-          </div>
-
-        </aside>
-      </div>
-
-    </>
-  )
-}
-export default Home
