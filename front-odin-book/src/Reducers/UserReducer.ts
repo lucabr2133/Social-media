@@ -53,5 +53,10 @@ export function UsemyActions(){
     const unfollowAction=(followId:string)=>{
         dispatch({type:'unfollow',followId})
     }
-    return {setAction,followAction,unfollowAction,state}
+     const isFollowing = (userId: string,userSessionId:string) =>{
+      return state.following.some(
+      (f) => f.following_id === userSessionId&& f.follower_id === userId
+    )
+  }
+    return {setAction,followAction,unfollowAction,state,isFollowing}
 }

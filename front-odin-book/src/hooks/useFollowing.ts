@@ -1,34 +1,43 @@
+import { UsemyActions } from '@/Reducers/UserReducer'
+import { ErrorInterface, Following } from '@/types'
 import { useEffect, useState } from 'react'
-import { ErrorInterface, errorMesagges, Following } from '../types'
-import { UsemyActions } from '../Reducers/UserReducer'
-const apiUrl = import.meta.env.VITE_API_URL
 
-function useFollowing () {
-  const { setAction } = UsemyActions()
-  const [loading, setLoading] = useState(false)
+export function useFollowing() {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const {state,setAction}=UsemyActions()
   useEffect(() => {
     const controller = new AbortController()
 
-    async function getFollowing () {
+    const fetchFollowing = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`${apiUrl}/followings/following`, {
+
+        const response = await fetch('/api/following', {
           signal: controller.signal
         })
-        const data = await response.json()
-        if (!response.ok){ 
-         const error= data as ErrorInterface  
-          throw new Error(error.message)
+
+        const json = await response.json()
+
+        if (!response.ok) {
+          const err = json as ErrorInterface
+          throw new Error(err.message)
         }
-          
-    const following = data as Following[]
-        setAction(following)
+
+        setAction(json as Following[])
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') return
+
+        setError(err instanceof Error ? err.message : 'Unknown error')
       } finally {
         setLoading(false)
       }
     }
-    getFollowing()
+
+    fetchFollowing()
+
+    return () => controller.abort()
   }, [setAction])
-  return { loading }
+
+  return { state, loading, error }
 }
-export default useFollowing
