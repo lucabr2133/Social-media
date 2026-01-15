@@ -1,11 +1,11 @@
-import { UsemyActions } from '@/Reducers/UserReducer'
+import { useFollow } from '../contex/FollowContext'
 import { ErrorInterface, Following } from '@/types'
 import { useEffect, useState } from 'react'
-
+const url= import.meta.env.VITE_API_URL
 export function useFollowing() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const {state,setAction}=UsemyActions()
+   const { state, setAction } = useFollow()
   useEffect(() => {
     const controller = new AbortController()
 
@@ -13,7 +13,7 @@ export function useFollowing() {
       try {
         setLoading(true)
 
-        const response = await fetch('/api/following', {
+        const response = await fetch(`${url}/followings/following`, {
           signal: controller.signal
         })
 
@@ -37,7 +37,7 @@ export function useFollowing() {
     fetchFollowing()
 
     return () => controller.abort()
-  }, [setAction])
+  }, [])
 
   return { state, loading, error }
 }

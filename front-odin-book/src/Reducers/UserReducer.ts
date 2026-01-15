@@ -1,6 +1,5 @@
-import useFollowing from "@/hooks/useFollowing"
 import { Following } from "@/types"
-import { useEffect, useReducer } from "react"
+import { useReducer } from "react"
 
 export interface myState{
   following:Following[]

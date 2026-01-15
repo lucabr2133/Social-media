@@ -4,7 +4,7 @@ import { Params, useParams } from 'react-router'
 import CreatePublication from '../CreatePublication/CreatePublication.js'
 import updatePublication from '../../../services/onHandleSubmitUpdatePublication.js'
 import styles from './Profile.module.css'
-import useFollowing from '../../hooks/useFollowing.js'
+import {useFollowing} from '../../hooks/useFollowing.js'
 import { PublicationContext, UserContext, UserSession } from '../../contex/context.js'
 import useUser from '../../hooks/useUser'
 import usePublication from '../../hooks/getUserPublicattion.js'
@@ -13,6 +13,7 @@ import UpdatePublicationProfile from './UpdatePublicationProfile.jsx'
 import PublicationGrid from './PublicationGrid'
 import MainHeader from '../Header/Header.js'
 import {  Publications, User } from '../../types.js'
+import { useFollow } from '../../contex/FollowContext.js'
 function Profile() {
   const [openDialgo2, setOpenDialog2s] = useState(false)
 const {username}=useParams<Params>()
@@ -22,7 +23,7 @@ const {username}=useParams<Params>()
   if(!context ||!userContext )throw new Error('you have to put the correctly provider')
   const users = useContext(UserContext)
   const [updateForm, setUpdateForm] = useState<string|null>(null)
-  const { following } = useFollowing()
+  const { state:followingState } = useFollow()
 
   const { user: userSession } = userContext
   const [userData, setUserData] = useState<User|null>(null)
@@ -41,9 +42,9 @@ useEffect(() => {
   if (publications.length === 0) return // no dispatch con array vacío
   dispatch({ type: "set", publications })
 }, [publications, dispatch])
-  const isLoading = ![following, state, users, userData, userSession, publications].every(Boolean)
+  const isLoading = ![followingState, state, users, userData, userSession, publications].every(Boolean)
 
-  if (isLoading||!publications||!userData||!following||!username||!users||!userSession) {
+  if (isLoading||!publications||!userData||!followingState||!username||!users||!userSession) {
     return (
     <div className="min-h-screen flex items-center justify-center flex-col gap-5">
     <h2>Loading...</h2>
@@ -65,7 +66,7 @@ useEffect(() => {
         <MainHeader userActive={userSession} setOpenDialog2s={setOpenDialog2s} />
         <div className={styles.mainpublication}>
           <Header
-            data={{ userData, userSession, publications, following }}
+            data={{ userData, userSession, publications,following:followingState.following }}
             actions={{ setUserData }}
             usernameParam={username}
             styles={styles}

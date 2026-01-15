@@ -4,6 +4,7 @@ const followingRouter = Router();
 followingRouter.post('/following', async (req, res,next) => {
   try {
       const { userSessionId, userlId } = req.body;
+      console.log(userSessionId,userlId);
   
   const following = await ControlerData.followingUser(userSessionId, userlId);
 
@@ -25,8 +26,10 @@ followingRouter.get('/following', async (req, res,next) => {
 followingRouter.delete('/following', async (req, res,next) => {
   try {
       const { followId } = req.body;
+      
   const followDelete = await ControlerData.letFollow(followId);
-  res.status(204).json( followDelete );
+  
+  res.status(200).json( followDelete );
 
   } catch (error) {
     next(error)

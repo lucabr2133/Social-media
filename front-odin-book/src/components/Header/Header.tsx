@@ -13,7 +13,7 @@ function MainHeader ({ userActive }:props) {
   const [openNotifications,setOpenNotifications]=useState(false)
   const {notifications}=useNotification(userActive.id)
 
-  if(!notifications) return <p>loading</p>
+
   return (
     <>
         <header   className='  bg-neutral-700/20 flex  z-10 fixed    ' style={{

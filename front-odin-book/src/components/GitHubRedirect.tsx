@@ -1,29 +1,27 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa desde 'react-router-dom'
-import React from 'react';
-function GitHubRedirect() {
-  const navigate = useNavigate();
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom' // Importa desde 'react-router-dom'
+import React from 'react'
+function GitHubRedirect () {
+  const navigate = useNavigate()
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    const params = new URLSearchParams(window.location.search)
+    const token = params.get('token')
 
     if (token) {
-
-      localStorage.setItem('authToken', token);
-
+      localStorage.setItem('authToken', token)
 
 
 
-      navigate('/');
+
+      navigate('/')
     } else {
-
-      console.error('No se encontró un token de autenticación en la URL.');
-      navigate('/login'); 
+      console.error('No se encontró un token de autenticación en la URL.')
+      navigate('/login') 
     }
-  }, [navigate]); 
+  }, [navigate]) 
 
-  return <div>Procesando autenticación...</div>;
+  return <div>Procesando autenticación...</div>
 }
 
-export default GitHubRedirect;
+export default GitHubRedirect

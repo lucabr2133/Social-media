@@ -14,6 +14,7 @@ async function onHandletFollow (followId:UUIDTypes) {
       followId
     })
   })
+  
   const data:Following= await response.json()
   return data
 }

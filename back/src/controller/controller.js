@@ -81,7 +81,6 @@ static async getPublications(userid) {
   }
 
   static async getCommentController (publicationId) {
-    if(publicationId) throw new AppError(' publication id is required',400)
 try {
       const comments = await prismaModel.getCommentsModel(publicationId);
     return comments;
@@ -96,7 +95,6 @@ try {
   }
 
   static async getUserController (query,quantity) {
-    if(!query||!quantity) throw new AppError(' quantity and query are required',400)
 try {
       const users = await prismaModel.getUserModel(query,quantity);
     return users;

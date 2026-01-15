@@ -1,7 +1,7 @@
 import React from "react"
 
 type ErrorMessageProps = {
-  message?: string
+  message?: string|null
   onRetry?: () => void
 }
 

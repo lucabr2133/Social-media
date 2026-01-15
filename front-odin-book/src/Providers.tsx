@@ -8,6 +8,7 @@ import usePublication from './hooks/getUserPublicattion.js'
 import { reducer } from './Reducers/PublicationReducer.js'
 import { PublicationContext, UserSession, UserContext } from './contex/context.js'
 import React, { useEffect, useReducer } from 'react'
+import { FollowProvider } from './contex/FollowContext.js'
 
 function AppWithProviders () {
   const { users } = useUsers()
@@ -25,13 +26,17 @@ function AppWithProviders () {
   }, [publications, dispatch])
 
   return (
-    <UserSession.Provider value={{ user, loading, setUser }}>
-      <UserContext.Provider value={users}>
-        <PublicationContext.Provider value={{ state, dispatch }}>
-          <App />
-        </PublicationContext.Provider>
-      </UserContext.Provider>
-    </UserSession.Provider>
+    <FollowProvider>
+
+      <UserSession.Provider value={{ user, loading, setUser }}>
+        <UserContext.Provider value={users}>
+          <PublicationContext.Provider value={{ state, dispatch }}>
+            <App />
+          </PublicationContext.Provider>
+        </UserContext.Provider>
+      </UserSession.Provider>
+    </FollowProvider>
+
   )
 }
 export default AppWithProviders
