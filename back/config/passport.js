@@ -44,19 +44,36 @@ passport.use(new LocalStrategy(async (username, password, done) => {
   if (!isMatch) return done(null, false, { message: 'Password doesnt match ' });
   return done(null, user);
 }));
-passport.use(new GitHubStrategy({
-  clientID: process.env.GITHUB_CLIENTID,
-  clientSecret: process.env.GITHUB_CLIENTSECRET,
-  callbackURL:process.env.GITHUB_AUTHCALLBACK
-}, async (accessToken, refreshToken, profile, done) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      githubId: profile.id
+passport.use(new GitHubStrategy(
+  {
+    clientID: process.env.GITHUB_CLIENTID,
+    clientSecret: process.env.GITHUB_CLIENTSECRET,
+    callbackURL: process.env.GITHUB_AUTHCALLBACK
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+      let user = await prisma.user.findUnique({
+        where: { githubId: profile.id }
+      });
+
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            githubId: profile.id,
+            username: profile.username,
+            email: profile.emails?.[0]?.value || null
+          }
+        });
+      }
+
+      return done(null, user); // ✅ SIEMPRE un user válido
+    } catch (err) {
+      console.error(err);
+      return done(err); // ❌ solo si hay error real
     }
-  });
-  return done(null, user);
-}
+  }
 ));
+
 passport.serializeUser((user, done) => {
   return done(null, user.id);
 });

@@ -87,7 +87,7 @@ Loginrouter.get('/auth/github',
   passport.authenticate('github', { scope: ['user:email'] }));
 
 Loginrouter.get('/auth/github/callback',
-  passport.authenticate('github', { failureRedirect: '/login' }),
+  passport.authenticate('github', { failureRedirect: `${process.env.CLIENT_URL}/login` }),
   function (req, res) {
     res.redirect(`${process.env.CLIENT_URL}`); // o la página que quieras
   });
