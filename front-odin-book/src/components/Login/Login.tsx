@@ -162,7 +162,7 @@ function Login () {
           Create account
         </Link>
 
-        <Link to={`${apiUrl}/auth/github`} className='flex justify-center'>
+        <Link to={`${apiUrl}/logins/auth/github`} className='flex justify-center'>
           <img
             src="/github.jpg"
             alt="GitHub login"
