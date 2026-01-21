@@ -6,7 +6,6 @@ import { UserContext, UserSession } from '../../contex/context.js'
 import MainHeader from '../Header/Header.jsx'
 import React from 'react'
 import { Messages as messages, User } from '../../types.js'
-import {useChatSocket} from '../../hooks/useChatSocket'
 import { socket } from '../../socket.js'
 function Messages() {
   const contex = useContext(UserSession)
@@ -14,24 +13,18 @@ function Messages() {
   const { user } = contex
 
   const users = useContext(UserContext)
-  const { messages:hookMessage } = useMessages()
-  const [messages,setMessages]=useState<messages[]>()
-  useEffect(()=>{
-    if(hookMessage){
-      setMessages(hookMessage)
-    }
-  },[hookMessage])
+  const { messages:hookMessage,setMessages } = useMessages()
+
   
   const [receptorUser, setReceptorUser] = useState<User | null>(null)
   const [opendialog, setOpenDialog] = useState(false)
-  useChatSocket();
     useEffect(() => {
       if(user?.id){
        socket.emit("joinRoom", user.id);
 
     const handleMessage = (message: messages) => {
       setMessages((prev) => {
-        if(!prev) return
+        if(!prev) return []
         return [...prev, message]});
     };
 
@@ -47,8 +40,8 @@ function Messages() {
    
 
 
-  }, [user?.id]);
-  if (!user || !users || !messages) {
+  }, [user?.id,setMessages]);
+  if (!user || !users || !hookMessage) {
    return <div className="min-h-screen flex items-center justify-center flex-col gap-5">
     <h2>Loading...</h2>
     <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -186,7 +179,7 @@ function Messages() {
                   backgroundColor: '#181818',
                 }}
               >
-                {messages
+                {hookMessage
                   .filter(
                     (message) =>
                       (message.sender_id === user.id && message.receptor_id === receptorUser.id) ||

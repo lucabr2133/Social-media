@@ -50,6 +50,7 @@ io.on('connection', (socket) => {
       })
       
     io.to(to).emit("chat message",message);
+      socket.emit("chat message", message);
   });
   socket.on('publicationRomm',(publicationId)=>{
     socket.join(publicationId)

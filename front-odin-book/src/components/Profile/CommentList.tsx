@@ -13,7 +13,6 @@ interface props {
 function  CommentList ({ publication, user }:props) {
   
   const { comments:commentsHook ,setComments ,loading} = useComments(publication.id)
-console.log(loading);
 
 useEffect(() => {
   if (!publication?.id) return;

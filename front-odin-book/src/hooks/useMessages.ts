@@ -9,16 +9,16 @@ export default function useMessages () {
       try {
         const response = await fetch(`${apiUrl}/messages/messages`, {
           method: 'GET',
-          credentials: 'include' // Asegura que las cookies se envíen
+          credentials: 'include' 
         })
         const res:Messages[] = await response.json()
-        setMessages(res) // Actualiza el estado con los datos obtenidos
+        setMessages(res)
       } catch (error) {
-        console.error('Error fetching data:', error) // Maneja errores de red o JSON
+        console.error('Error fetching data:', error) 
       }
     }
 
     getMessages()
   }, [])
-  return { messages }
+  return { messages,setMessages }
 }
