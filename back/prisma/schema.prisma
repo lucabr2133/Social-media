@@ -44,7 +44,7 @@ model comments {
   user_id     String
   content     String
   create_at   DateTime     @default(now())
-  publication publications @relation(fields: [post_id], references: [id])
+  publication publications @relation(fields: [post_id], references: [id], onDelete: Cascade)
   author      User         @relation(fields: [user_id], references: [id])
   likes       likes[]
 }
