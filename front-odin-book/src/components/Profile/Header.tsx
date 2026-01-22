@@ -136,7 +136,7 @@ function Header({ data, actions, usernameParam, styles }: Props) {
                   ((e.target as HTMLButtonElement).style.background = '#4cafef')
                 }
               >
-                Cambiar perfil
+                Change profile
               </button>
 
               <button
@@ -158,7 +158,7 @@ function Header({ data, actions, usernameParam, styles }: Props) {
                   ((e.target as HTMLButtonElement).style.background = '#f05454')
                 }
               >
-                Cerrar sesión
+                Log out
               </button>
             </div>
           )}

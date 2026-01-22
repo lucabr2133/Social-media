@@ -37,7 +37,7 @@ const likePublication = useMemo(() => {
   async function deletePublication(publicationId: string) {
     dispatch({ type: 'delete', publicationId })
     try {
-      await fetch(`${apiUrl}publications/publications/${publicationId}`, {
+      await fetch(`${apiUrl}/publications/publications/${publicationId}`, {
         method: 'delete',
         credentials: 'include',
       })
