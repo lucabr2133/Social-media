@@ -17,7 +17,7 @@ static async createUserController(username, password ) {
 
 
   static async updateProfileController (username, profile, description) {
-    if(!username ||!profile ||!description) throw new AppError('username , description and profile are required',400)
+    if(!username && !profile && !description) throw new AppError('username , description and profile are required',400)
       try {
     const updateUser = await prismaModel.updateUserModel(username, profile, description);
     return updateUser;

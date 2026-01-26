@@ -17,6 +17,8 @@ export default function FollowingList ({users,user,state}:{users:User[],user:Use
                 className='
                         group
                         flex items-center justify-between
+                      flex-wrap
+
                         p-3
                         rounded-2xl
                         bg-neutral-900/60
@@ -38,7 +40,7 @@ export default function FollowingList ({users,user,state}:{users:User[],user:Use
                     </Avatar>
                   </Link>
 
-                  <h2 className='text-sm font-semibold capitalize text-neutral-100'>
+                  <h2 className='text-[12px] font-semibold capitalize text-neutral-100'>
                     {userl.username}
                   </h2>
                 </div>

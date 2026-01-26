@@ -57,7 +57,7 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
 
 }
   return (
-    <div
+    <div className='justify-center!'
       style={{
         position: 'relative',
         backgroundColor: 'rgb(36,36,39)',
@@ -69,7 +69,7 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
         display:'flex'
       }}
     >
-      <div>
+      <div className='w-1/2'>
  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
         <img
           style={{ width: '60px', height: '60px', marginRight: '10px', borderRadius: '50%' }}
@@ -94,8 +94,10 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
       )}
 
       {/* Controles */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <img
+      <div className='flex-col' style={{ display: 'flex', gap: '10px' }}>
+        {/*icons*/}
+        <div className='flex gap-5'>
+         <img
         onClick={(e)=>onHandleClickLike(e)}
           aria-label="likeimg"
           src={state.likes.some(like => like.post_id === publication.id && like.user_id === userSession.id) ? '/likeActive.svg' : '/offlike.svg'}
@@ -111,13 +113,15 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
           style={{ cursor: 'pointer' }}
           alt="comment"
         />
+        </div>
+       
         <div className={styles.description}>{publication.content}</div>
         {isOwner && (
-          <>
+          <div className='flex '>
        
             <button onClick={() => deletePublication(publication.id)}>Delete</button>
             <button onClick={() => setUpdateForm(publication.id)}>Update</button>
-          </>
+          </div>
         )}
       </div>
       </div>
@@ -133,14 +137,17 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
           transition: 'max-width 1s ease',
         }}
       >
-        {isOpen && (
-            <CommentList 
-              publication={publication}
-              styles={styles}
-              user={userData}
-              users={users}
-            />
-        )}
+         {isOpen && <div className='fixed hidden lg:flex justify-center top-0 items-center left-0   z-50 w-screen h-screen bg-neutral-900/80 ' onClick={() => {
+        setOpenId('')
+      }}>
+        <div className='flex  bg-amber-900 w-3/4 h-[calc(100vh-2vh)]'>
+          <img src={publication.image_url} alt="" className='flex-1' />
+          <div className='bg-black flex-1'>
+            <CommentList publication={publication} styles={styles} user={userData} users={users}></CommentList>
+          </div>
+        </div>
+
+      </div>}
       </div>
       <div  className={`
       bg-black
@@ -155,8 +162,7 @@ async function onHandleClickLike(e:React.MouseEvent<HTMLImageElement,MouseEvent>
       ease-in-out 
       ${isOpen ? 'h-full' : 'h-0'}
     `}>
-            <div className='flex justify-between'>
-            <h3 >Comments</h3>
+            <div className='flex justify-end p-2'>
             <X onClick={()=>setOpenId(null)}></X>
             </div>
              <CommentList 

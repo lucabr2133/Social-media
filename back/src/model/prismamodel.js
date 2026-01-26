@@ -40,12 +40,12 @@ class prismaModel {
       },
       data: {
         description,
-        profileImg: profile
+         ...(profile && { profileImg: profile })
 
       }
     });
     return updateUser;
-  }
+  }   
 
   static async createPublicationModel (userid, url, description) {
     const publication = await prisma.publications.create({

@@ -1,6 +1,7 @@
-import onHandleSubmitProfile from '../../../services/onHandleSubmitProfile'
+import {onHandleSubmitProfile} from '../../../services/onHandleSubmitProfile'
 import React, { SetStateAction } from 'react'
 import { User } from '../../types'
+import toast, { Toaster } from 'react-hot-toast'
 
 interface Props {
   setUserData: React.Dispatch<SetStateAction<User | null>>
@@ -13,6 +14,8 @@ interface Props {
 function DialogUpdateProfile({ setUserData, openDialgo, setOpenDialog, user, userParams }: Props) {
   return (
     <>
+        <Toaster containerStyle={{zIndex:1000}} position='bottom-right'></Toaster>
+
       <div
         style={{
           position: 'fixed',
@@ -50,7 +53,11 @@ function DialogUpdateProfile({ setUserData, openDialgo, setOpenDialog, user, use
             onSubmit={async (e) => {
               e.preventDefault()
               const profile = await onHandleSubmitProfile(e, userParams)
-              setUserData(profile)
+              if(profile){
+                setOpenDialog(false)
+            setUserData(profile.user)
+              }
+
             }}
             style={{
               display: 'flex',

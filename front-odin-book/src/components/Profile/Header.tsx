@@ -90,7 +90,7 @@ function Header({ data, actions, usernameParam, styles }: Props) {
           >
             <span>
               <strong style={{ color: '#fff' }}>{publications.length}</strong>{' '}
-              publicaciones
+              Publication
             </span>
             <span>
               <strong style={{ color: '#fff' }}>

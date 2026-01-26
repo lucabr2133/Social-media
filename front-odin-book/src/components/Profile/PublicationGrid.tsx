@@ -22,9 +22,8 @@ function PublicationGrid({ styles, data, extra }: props) {
   const [openedId, setOpenedId] = useState<string | null>(null)
 
   return (
-    <div
+    <div className=''
       style={{
-        borderBottom: '2px solid rgb(226, 226, 226)',
         margin: '10px auto',
         display: 'flex',
         flexDirection: 'column',

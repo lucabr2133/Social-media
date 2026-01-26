@@ -39,7 +39,7 @@ if(loading)return <div className='p-2 w-full h-full'>
 </div>
   return (
     <>
-      <div className=' w-full h-[98vh] flex flex-col ' onClick={(e)=>{
+      <div className=' w-full h-[85vh] md:h-[98vh] flex flex-col ' onClick={(e)=>{
         e.stopPropagation()
       }}>
         <header className=' w-full text-2xl p-6 border-b border-neutral-700'>

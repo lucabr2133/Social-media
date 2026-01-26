@@ -14,22 +14,27 @@ cloudinary.config({
 const filesRouter= Router()
 filesRouter.post('/profile/:username', uploader.single('profile'), async (req, res) => {
   const { username } = req.params;
-
+let imageUrl
   const options = {
     use_filename: true,
     unique_filename: false,
     overwrite: true
   };
+  if(req.file){
   const path = req.file?.path??req.body.image_url;
   const result = await cloudinary.uploader.upload(path, options);
-
- const imageUrl = cloudinary.url(result.public_id, {
+    imageUrl = cloudinary.url(result.public_id, {
   transformation: [
     { aspect_ratio: '1.0', width: 250, crop: 'fill' },
     { radius: 'max' },
     { fetch_format: 'auto' }
   ]
 });
+
+  }
+
+
+
 
 
   const user = await ControlerData.updateProfileController(username, imageUrl, req.body.description);
