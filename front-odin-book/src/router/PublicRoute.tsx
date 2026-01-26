@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import { UserSession } from '../contex/context'
 
 export default function PublicRoute () {

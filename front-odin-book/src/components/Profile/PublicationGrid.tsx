@@ -1,14 +1,13 @@
 import PublicationList from './PublicationList'
 import React, { Suspense, useState } from 'react'
 import { Publications, User } from '../../types'
-import { myAction } from '../../Reducers/PublicationReducer'
 interface props{
   styles:Record<string,string>
   extra:{
     users:User[],
-    dispatch:React.Dispatch<myAction>,
+    deleteAction:(publicationId:string)=>void
     setUpdateForm:React.Dispatch<React.SetStateAction<string|null>>
-
+    setPublications:React.Dispatch<React.SetStateAction<Publications[]|null>>
     userData:User
     userSession:User
   }
@@ -18,7 +17,7 @@ interface props{
   }
 }
 function PublicationGrid({ styles, data, extra }: props) {
-  const { users, dispatch, setUpdateForm, userData, userSession } = extra
+  const { users, deleteAction, setUpdateForm,setPublications, userData, userSession } = extra
   const { publications, sortedVideos } = data
   const [openedId, setOpenedId] = useState<string | null>(null)
 
@@ -35,25 +34,24 @@ function PublicationGrid({ styles, data, extra }: props) {
         maxWidth: '1000px',
       }}
     >
-      {publications && publications.length > 0 ? (
-        <Suspense fallback={<p className='text-3xl flex items-center h-screen'>Loading data</p>}>
-{  sortedVideos.map((publication) => (
+      {publications ? 
+    sortedVideos.map((publication) => (
           <PublicationList
             key={publication.id}
             styles={styles}
-            actions={{ setOpenedId, setUpdateForm, dispatch }}
+            actions={{ setOpenedId, setUpdateForm, deleteAction,setPublications }}
             data={{
               openedId,
               users,
               publication,
               userData,
+              publications,
               userSession,
             }}
           />
-        ))}
-        </Suspense>
+        ))
       
-      ) : (
+       : (
         <p style={{ color: '#ccc', textAlign: 'center' }}>No hay publicaciones</p>
       )}
     </div>

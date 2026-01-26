@@ -23,6 +23,7 @@ type props={
 
 
 function PublicationHome({ styles, actions, data }: props) {
+  // open state , controls what publications are open
   const [open, setOpen] = useState('')
   const { publication, user, users } = data
 

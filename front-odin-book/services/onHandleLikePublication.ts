@@ -3,7 +3,8 @@ import { UUIDTypes } from "uuid"
 import { Likes } from "../src/types"
 const apiUrl = import.meta.env.VITE_API_URL;
 
-async function onHandleLikePublication (e:React.MouseEvent<HTMLImageElement>, publicationID:UUIDTypes, userActiveID:UUIDTypes):Promise<Likes> {
+async function onHandleLikePublication (e:React.MouseEvent<HTMLImageElement>, publicationID:string, userActiveID:string):Promise<Likes> {
+console.log(publicationID,userActiveID);
 
 const response = await fetch(`${apiUrl}/likes/likes`, {
   method: 'post',
@@ -12,7 +13,7 @@ const response = await fetch(`${apiUrl}/likes/likes`, {
     'Content-type': 'Application/json'
   },
   body: JSON.stringify({
-    like: true,
+    likes: true,
     publicationID,
     userActiveID
 

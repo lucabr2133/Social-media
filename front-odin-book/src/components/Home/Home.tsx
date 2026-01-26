@@ -1,4 +1,4 @@
-import React, { useContext, lazy, Suspense } from 'react'
+import React, { useContext } from 'react'
 import usePublication from '../../hooks/getPublications'
 import onHandleLikePublication from '../../../services/onHandleLikePublication'
 import onHandleDeletedLike from '../../../services/onHandleDeletedLike'
@@ -13,6 +13,7 @@ import GlobalLoading from '../../GlobalLoading'
 import PublicationHome from './PublicationsHome'
 import PublicationSkeleton from './PublicationSkeleton'
 import { useFollow } from '../../contex/FollowContext'
+import { usePublicationContext } from '../../contex/PublicationContext'
 
 function Home () {
   const contex = useContext(UserSession)
@@ -22,9 +23,11 @@ function Home () {
 
   const { user } = contex
 
-  const { publication, error: errorPublication, loading: loadingPublication } = usePublication()
+  const { error: errorPublication, loading: loadingPublication } = usePublication()
   const { error: errorFollowing, loading: loadingFollowing } = useFollowing()
+  // global following state used in the follower suggestions
   const { state } = useFollow()
+  const { state: publication } = usePublicationContext()
   if (errorPublication || errorFollowing) {
     return (
       <ErrorMessage
@@ -42,9 +45,9 @@ function Home () {
         <MainHeader userActive={user} />
         <main className='w-full'>
           <div className={styles['publications-home']}>
-            {loadingPublication || !user || !users
+            {loadingPublication
               ? <PublicationSkeleton />
-              : publication?.map((publication) => {
+              : publication.publications?.map((publication) => {
                 return (
 
                   <PublicationHome data={{ user, users, publication }} styles={styles} actions={{ onHandleDeletedLike, onHandleLikePublication }} key={publication.id} />

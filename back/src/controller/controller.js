@@ -284,7 +284,7 @@ static async deletePublicationController(publicationID) {
 
 
 static async updatePublicationController(publicationId, url, description) {
-  if (!publicationId || !url || !description) {
+  if (!publicationId  || !description) {
     throw new AppError(
       'publicationId, url and description are required',
       400

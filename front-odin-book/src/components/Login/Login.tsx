@@ -5,7 +5,6 @@ import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Inputs } from '../Signup/Signup'
 import { UserSession } from '../../contex/context'
-import { SpinnerComponnet } from '../ui/spinner'
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function Login () {
@@ -51,7 +50,6 @@ function Login () {
         Login
       </h2>
 
-      {/* USERNAME */}
       <label className="text-sm text-neutral-300">Username</label>
       <input
         type="text"
@@ -81,7 +79,6 @@ function Login () {
         </span>
       )}
 
-      {/* PASSWORD */}
       <label className="text-sm text-neutral-300">Password</label>
       <input
         type="password"
@@ -153,8 +150,7 @@ function Login () {
         </button>
       </div>
 
-      {/* FOOTER */}
-      <div className="flex items-center justify-between mt-6">
+      <footer className="flex items-center justify-between mt-6">
         <Link
           to="/Signup"
           className="text-sm text-neutral-300 hover:text-white transition"
@@ -169,7 +165,7 @@ function Login () {
             className="w-10 h-10 flex rounded-full hover:scale-110 transition"
           />
         </Link>
-      </div>
+      </footer>
     </form>
   </div>
 </>

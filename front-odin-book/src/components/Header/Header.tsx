@@ -9,7 +9,9 @@ interface props{
   userActive:User,
 }
 function MainHeader ({ userActive }:props) {
+  //dialog state used to open the create publication modal
   const [opendialog2, setOpenDialog2] = useState(false)
+  // dialog state used to open notifications modal
   const [openNotifications,setOpenNotifications]=useState(false)
   const {notifications}=useNotification(userActive.id)
 
@@ -55,7 +57,6 @@ function MainHeader ({ userActive }:props) {
       setOpenNotifications(false)
       onHandleReadNotification(userActive.id)
 
-
     }}
     className="fixed w-screen h-screen flex justify-center items-center z-10 bg-neutral-900/90"
   >
@@ -72,6 +73,7 @@ function MainHeader ({ userActive }:props) {
       }}></X>
       </header>
       <div>
+
         {notifications?.map((notification)=>{
            const now = Date.now()
   const date = new Date(notification.createdAt).getTime()

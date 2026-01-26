@@ -80,10 +80,9 @@ filesRouter.put('/publication/:id', uploader.single('img'), async (req, res) => 
       imageUrl = result.url;
     }
 
-    // Pasás la imagen solo si existe, y que el controller la maneje
     const publication = await ControlerData.updatePublicationController(
       id,
-      imageUrl, // puede ser null
+      imageUrl, 
       description
     );
 

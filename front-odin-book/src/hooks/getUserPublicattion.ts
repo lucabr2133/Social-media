@@ -15,6 +15,6 @@ const apiUrl = import.meta.env.VITE_API_URL;
     GetPublication()
   }, [userid,apiUrl])
   
-  return { publications }
+  return { publications,setPublication }
 }
 export default usePublication

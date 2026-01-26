@@ -1,24 +1,23 @@
 import React from 'react'
 import { Publications } from '../../types'
-import { myAction } from '../../Reducers/PublicationReducer'
+import { dataUpdated } from 'services/onHandleSubmitUpdatePublication'
 
 interface Props {
   updateForm: string | null
-  setUpdateForm: React.Dispatch<React.SetStateAction<string | null>>
-  styles: Record<string, string>
+  setUpdateForm: React.Dispatch<React.SetStateAction<string | null>>,
+  setPublication: React.Dispatch<React.SetStateAction<Publications[] | null>>
+
   updatePublication: (
     e: React.FormEvent<HTMLFormElement>,
     updateForm: string
-  ) => Promise<Publications>
-  dispatch: React.Dispatch<myAction>
+  ) => Promise<dataUpdated>
 }
 
 function UpdatePublicationProfile({
   updateForm,
   setUpdateForm,
-  styles,
   updatePublication,
-  dispatch,
+  setPublication
 }: Props) {
   if (updateForm === null) return null
 
@@ -43,8 +42,19 @@ function UpdatePublicationProfile({
       <form
         onSubmit={async (e) => {
           setUpdateForm(null)
-          const publications = await updatePublication(e, updateForm)
-          dispatch({ type: 'update', publication: publications })
+          const updatedPublication = await updatePublication(e, updateForm)
+          console.log(updatedPublication);
+          
+      setPublication(prev => {
+  if (!prev) return null
+
+  return prev.map(publication => {
+    if (publication.id === updatedPublication.publication.id) {
+      return updatedPublication.publication
+    }
+    return publication
+  })
+})
         }}
         encType="multipart/form-data"
         style={{

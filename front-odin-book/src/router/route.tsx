@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 import PublicRoute from './PublicRoute'
 import Login from '../components/Login/Login'
@@ -7,8 +7,7 @@ import Home from '../components/Home/Home'
 import { Messages } from '../components/Messages/Messages'
 import { Users } from '../components/User/User'
 import Profile from '../components/Profile/Profile'
-import App from '@/App'
-
+import React from 'react'
 export default function AppRoutes () {
   return (
     <Routes>

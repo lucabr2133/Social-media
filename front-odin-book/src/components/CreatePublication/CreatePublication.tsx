@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import onHandleSubmitCreatePublication from '../../../services/onHandelSubmitCreatePublication';
 // Importamos el ícono de imagen, podrías usar una librería como react-icons
-import { PublicationContext, UserSession } from '../../contex/context';
+import { UserSession } from '../../contex/context';
 import { User } from '../../types';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Image } from 'lucide-react';
+import { usePublicationContext } from '../../contex/PublicationContext';
 
 interface props {
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,14 +20,14 @@ export interface Inputs {
 
 function CreatePublication({ setOpenDialog, opendialog }: props) {
   const userContex = useContext(UserSession);
-  const contex = useContext(PublicationContext);
+  const contex = usePublicationContext()
 
   if (!contex || !userContex) {
     throw new Error('The context must be a valid provider');
   }
 
   const { user } = userContex;
-  const { dispatch } = contex;
+  const { addAction } = contex;
 
 
   const {
@@ -48,7 +49,9 @@ function CreatePublication({ setOpenDialog, opendialog }: props) {
       if (!publicaciones) return;
 
       setOpenDialog(false);
-      dispatch({ type: 'add', publication: publicaciones.publication });
+      console.log(publicaciones);
+      
+      addAction(publicaciones.publication);
     } catch (error) {
       console.error('❌ Error al crear publicación:', error);
     }

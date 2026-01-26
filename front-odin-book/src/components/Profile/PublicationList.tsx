@@ -1,7 +1,6 @@
-import React, {  useMemo, useRef, useState } from 'react'
+import React, {   useRef, useState } from 'react'
 import CommentList from './CommentList'
-import { Likes, Publications, User } from '../../types'
-import { myAction } from '../../Reducers/PublicationReducer'
+import { Publications, User } from '../../types'
 import onHandleDeletedLike from '../../../services/onHandleDeletedLike'
 import onHandleLikePublication from '../../../services/onHandleLikePublication'
 import usePublicationLikes from '../../hooks/usePublicationLikes'
@@ -10,37 +9,38 @@ interface Props {
   styles: Record<string, string>
   data: {
     users: User[]
-    publication: Publications
+    publication: Publications,
+    publications:Publications[]
     userData: User
     userSession: User
     openedId: string | null
-  }
+  },
   actions: {
-    dispatch: React.Dispatch<myAction>
+    deleteAction:(publicationId:string)=>void
     setUpdateForm: React.Dispatch<React.SetStateAction<string | null>>
     setOpenedId: React.Dispatch<React.SetStateAction<string | null>>
+    setPublications: React.Dispatch<React.SetStateAction<Publications[] | null>>
   }
 }
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function PublicationList({ styles, data, actions }: Props) {
-  const {  users, publication, userSession, userData } = data
-  const {  setUpdateForm, dispatch } = actions
+  const {  users, publication, userSession, userData,publications } = data
+  const {  setUpdateForm, deleteAction,setPublications} = actions
 const [isOpen,setOpenId]=useState<null|string>(null)
   const isOwner = userSession?.id === userData?.id
   const panelRef = useRef<HTMLDivElement>(null)
   const {addLike,deleteLike,state}=usePublicationLikes()
-const likePublication = useMemo(() => {
-  return state.likes.filter((like:Likes) => like.id === publication.id);
-}, [state.likes, publication.id]);
+
 
   async function deletePublication(publicationId: string) {
-    dispatch({ type: 'delete', publicationId })
     try {
       await fetch(`${apiUrl}/publications/publications/${publicationId}`, {
         method: 'delete',
         credentials: 'include',
       })
+      const newPublications=publications.filter((publication)=>publication.id!==publicationId)
+      setPublications(newPublications)
     } catch (error) {
       console.error('Error eliminando publicación:', error)
     }

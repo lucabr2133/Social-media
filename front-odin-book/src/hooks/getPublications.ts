@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Publications } from '../types'
+import { usePublicationContext } from '../contex/PublicationContext';
 const apiUrl = import.meta.env.VITE_API_URL;
 export type myError={
   message:string
 }
 function usePublication () {
-  const [publication, setPublication] = useState<Publications[]|null>(null)
+  const { setAction}=usePublicationContext()
+
   const [error,setError]=useState<string|null>(null)
   const [loading,setLoading]=useState(true)
 
@@ -23,7 +25,7 @@ function usePublication () {
         const error= res as myError
         throw new Error(error.message)
       }
-      setPublication(res as Publications[])
+      setAction(res as Publications[])
       } catch (error) {
            if (error instanceof DOMException && error.name === 'AbortError') return
           setError(error instanceof Error ? error.message : 'Unknown error')
@@ -36,7 +38,7 @@ function usePublication () {
     return ()=>{
       controller.abort()
     }
-  }, [])
-  return { publication,error,loading }
+  }, [setAction])
+  return { error,loading }
 }
 export default usePublication
