@@ -39,7 +39,7 @@ beforeEach(async () => {
   await prisma.publications.deleteMany();
   await prisma.following.deleteMany();
   await prisma.messages.deleteMany();
-  await prisma.session.deleteMany(); // ojo: tu modelo se llama "Session" pero prisma lo expone como `session`
+  await prisma.session.deleteMany(); 
   await prisma.user.deleteMany();
 });
 
@@ -76,7 +76,7 @@ const testUser = await prisma.user.create({
     const response = await request(app)
       .post(`/${testUser.id}/publication/`)
       .field('description', 'Esta es una publicación de prueba')
-      .attach('publicationImg', 'test/assets/paisaje.png'); // archivo de prueba local
+      .attach('publicationImg', 'test/assets/paisaje.png'); 
 
     expect(response.status).toBe(200);
     expect(response.body.publication).toHaveProperty('id');
@@ -128,7 +128,7 @@ describe('Comments api',()=>{
     const response = await request(app)
       .post(`/${testUser.id}/publication/`)
       .field('description', 'Esta es una publicación de prueba')
-      .attach('publicationImg', 'test/assets/paisaje.png'); // archivo de prueba local
+      .attach('publicationImg', 'test/assets/paisaje.png');
 
     expect(response.status).toBe(200);
     const comment={
@@ -175,7 +175,7 @@ describe('Likes api', ()=>{
     const response = await request(app)
       .post(`/${testUser.id}/publication/`)
       .field('description', 'Esta es una publicación de prueba')
-      .attach('publicationImg', 'test/assets/paisaje.png'); // archivo de prueba local
+      .attach('publicationImg', 'test/assets/paisaje.png'); 
 
     expect(response.status).toBe(200);
     const like={
@@ -196,7 +196,7 @@ it ('should delete a like',async()=>{
     const response = await request(app)
       .post(`/${testUser.id}/publication/`)
       .field('description', 'Esta es una publicación de prueba')
-      .attach('publicationImg', 'test/assets/paisaje.png'); // archivo de prueba local
+      .attach('publicationImg', 'test/assets/paisaje.png'); 
 
     expect(response.status).toBe(200);
     const like={

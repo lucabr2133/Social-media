@@ -14,7 +14,7 @@ import PublicationHome from './PublicationsHome'
 import PublicationSkeleton from './PublicationSkeleton'
 import { useFollow } from '../../contex/FollowContext'
 import { usePublicationContext } from '../../contex/PublicationContext'
-
+import { Link } from 'react-router'
 function Home () {
   const contex = useContext(UserSession)
   const users = useContext(UserContext)
@@ -70,7 +70,7 @@ function Home () {
 
             <FollowingList state={state} user={user} users={users} />
 
-            <h2
+            <Link to={'/users'}
               className='
                       mt-2
                       py-2
@@ -85,7 +85,7 @@ function Home () {
                     '
             >
               See more <ArrowRightCircle size={16} />
-            </h2>
+            </Link>
           </div>
 
         </aside>
