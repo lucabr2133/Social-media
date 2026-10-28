@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import onHandleSubmitSign from '../../../services/onHandleSign'
 import { Inputs } from '../Login/Login'
 import { useNavigate, Link } from 'react-router'
-import { ArrowRight, Lock, User as UserIcon } from 'lucide-react'
+import { ArrowRight, Lock, User as UserIcon, Radio } from 'lucide-react'
 
 function Signup() {
   const {
@@ -15,7 +15,10 @@ function Signup() {
   const navigate = useNavigate()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await onHandleSubmitSign(data, setError, navigate)
+    const userResponse = await onHandleSubmitSign(data, setError)
+    if (userResponse) {
+      navigate('/login')
+    }
   }
 
   return (
@@ -33,13 +36,13 @@ function Signup() {
         {/* Brand Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-white/[0.05] border border-white/10 mb-4 shadow-inner">
-            <span className="font-bold text-lg tracking-tight text-white">OB</span>
+            <Radio className="w-5 h-5 text-white" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-white">
-            Create your account
+            Join Echo
           </h1>
           <p className="text-sm text-zinc-400 mt-1.5">
-            Join Odin Book and connect with the community
+            Create an account and connect with the community
           </p>
         </div>
 

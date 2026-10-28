@@ -7,11 +7,18 @@ import FollowingList from './FollowingList.tsx'
 import { useFollow } from '../../contex/FollowContext.tsx'
 import { usePublicationContext } from '../../contex/PublicationContext.tsx'
 import PublicationsHome from './PublicationsHome.tsx'
+import usePublication from '../../hooks/getPublications.js'
+import { useFollowing } from '../../hooks/useFollowing.js'
 
 function Home() {
   const userContex = useContext(UserSession)
   const users = useContext(UserContext)
   const [opendialog, setOpenDialog2s] = useState(false)
+
+  // Initialize data loaders
+  const { loading: loadingPublications } = usePublication()
+  const { loading: loadingFollowing } = useFollowing()
+
   const { state: followState } = useFollow()
   const { state: publicationState } = usePublicationContext()
 
@@ -37,15 +44,14 @@ function Home() {
         <div className="flex-1 w-full lg:pl-[max(15%,220px)] pb-20 lg:pb-10">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 lg:pt-8 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
             <main className="w-full min-w-0">
-              {publicationState && followState && (
-                <PublicationsHome
-                  styles={styles}
-                  following={followState.following}
-                  publications={publicationState.publications}
-                  user={user}
-                  users={users}
-                />
-              )}
+              <PublicationsHome
+                styles={styles}
+                following={followState?.following || []}
+                publications={publicationState?.publications || []}
+                user={user}
+                users={users}
+                isLoading={loadingPublications || loadingFollowing}
+              />
             </main>
 
             <aside className="hidden lg:block sticky top-8">

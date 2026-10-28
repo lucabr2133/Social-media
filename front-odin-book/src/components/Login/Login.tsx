@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import onHandleSubmitLogin from '../../../services/onHandleLogin'
 import { useNavigate, Link } from 'react-router'
-import { Github, ArrowRight, UserCheck, Lock, User as UserIcon } from 'lucide-react'
+import { Github, ArrowRight, UserCheck, Lock, User as UserIcon, Radio } from 'lucide-react'
+import { UserSession } from '../../contex/context'
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
@@ -13,6 +14,9 @@ export interface Inputs {
 
 function Login() {
   const navigate = useNavigate()
+  const userContext = useContext(UserSession)
+  const setUser = userContext ? userContext.setUser : () => {}
+
   const {
     register,
     handleSubmit,
@@ -21,7 +25,10 @@ function Login() {
   } = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await onHandleSubmitLogin(data, setError, navigate)
+    const success = await onHandleSubmitLogin(data, setUser, setError)
+    if (success) {
+      navigate('/', { replace: true })
+    }
   }
 
   return (
@@ -39,13 +46,13 @@ function Login() {
         {/* Brand Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-white/[0.05] border border-white/10 mb-4 shadow-inner">
-            <span className="font-bold text-lg tracking-tight text-white">OB</span>
+            <Radio className="w-5 h-5 text-white" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-white">
-            Welcome back
+            Welcome to Echo
           </h1>
           <p className="text-sm text-zinc-400 mt-1.5">
-            Sign in to your Odin Book account to continue
+            Sign in to your Echo account to continue
           </p>
         </div>
 
@@ -140,11 +147,14 @@ function Login() {
               type="button"
               disabled={isSubmitting}
               onClick={async () => {
-                await onHandleSubmitLogin(
+                const ok = await onHandleSubmitLogin(
                   { username: 'guestUser', password: 'guestPassword' },
-                  setError,
-                  navigate
+                  setUser,
+                  setError
                 )
+                if (ok) {
+                  navigate('/', { replace: true })
+                }
               }}
               className="h-10 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-medium text-zinc-200 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
             >

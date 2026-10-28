@@ -91,6 +91,7 @@ function Profile() {
               actions={{ setUserData }}
               usernameParam={username}
               styles={styles}
+              allUsers={users}
             />
 
             <div className={styles['my-publications']}>
