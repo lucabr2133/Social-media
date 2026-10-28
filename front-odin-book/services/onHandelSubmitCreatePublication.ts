@@ -1,7 +1,7 @@
 import { UseFormSetError } from "react-hook-form"
 import { Inputs } from "../src/components/CreatePublication/CreatePublication"
 import { User } from "../src/types"
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 async function onHandleSubmitCreatePublication (data:Inputs, userActive:User,setError:UseFormSetError<Inputs>) {
     const formData = new FormData();

@@ -12,77 +12,72 @@ import { prisma } from './src/model/prismamodel.js';
 
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 
-
-
-
 const app = e();
 
 app.set("trust proxy", 1);
 const allowedOrigins = [
   process.env.CLIENT_URL,
   "http://localhost:5173",
+  "http://localhost:5174",
   "http://localhost:3000",
 ];
-const server=createServer(app)
-const io= new Server(server, {cors: {
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
     origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error("CORS bloqueado: " + origin));
-  },
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS bloqueado: " + origin));
+    },
     methods: ["GET", "POST"],
     credentials: true
-  }})
+  }
+});
 
 io.on('connection', (socket) => {
-
-   socket.on("joinRoom", (userId) => {
+  socket.on("joinRoom", (userId) => {
     socket.join(userId);
   });
-    socket.on("chat message",async ({  from, text,to }) => {
-      const message=await prisma.messages.create({
-        data:{
-          content:text,
-          sender_id:from,
-          receptor_id:to,
-        }
-      })
-      
-    io.to(to).emit("chat message",message);
-      socket.emit("chat message", message);
+  socket.on("chat message", async ({ from, text, to }) => {
+    const message = await prisma.messages.create({
+      data: {
+        content: text,
+        sender_id: from,
+        receptor_id: to,
+      }
+    });
+
+    io.to(to).emit("chat message", message);
+    socket.emit("chat message", message);
   });
-  socket.on('publicationRomm',(publicationId)=>{
-    socket.join(publicationId)
-  })
-  socket.on('publication comments',async({publicationId,from,text})=>{
-    
-    let comment
-    try{
-     comment= await prisma.comments.create({
-      data:{
-        content:text,
-        post_id:publicationId,
-        user_id:from
-      },
-      include:{
-        author:{
-          select:{
-            username:true,
-            profileImg:true
+  socket.on('publicationRomm', (publicationId) => {
+    socket.join(publicationId);
+  });
+  socket.on('publication comments', async ({ publicationId, from, text }) => {
+    let comment;
+    try {
+      comment = await prisma.comments.create({
+        data: {
+          content: text,
+          post_id: publicationId,
+          user_id: from
+        },
+        include: {
+          author: {
+            select: {
+              username: true,
+              profileImg: true
+            }
           }
         }
-      }
-    })
-    
-    }catch(e){
+      });
+    } catch (e) {
       console.log(e);
-      
     }
 
-io.to(publicationId).emit("publication comments", comment);
-
-  })
+    io.to(publicationId).emit("publication comments", comment);
+  });
 });
 
 app.use(e.json());
@@ -97,6 +92,7 @@ app.use(cors({
   credentials: true
 }));
 
+const isHttpsProd = process.env.NODE_ENV === "production" && Boolean(process.env.RENDER || process.env.RAILWAY_ENVIRONMENT);
 
 app.use(session({
   secret: 'keyboard cat',
@@ -105,11 +101,11 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    secure: process.env.NODE_ENV === "production"
+    sameSite: isHttpsProd ? "none" : "lax",
+    secure: isHttpsProd
   }
 }));
-configPassport()
+configPassport();
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -134,5 +130,5 @@ app.use((err, req, res, next) => {
     error: 'Internal server error'
   });
 });
-export {server}
+export { server };
 export default app;

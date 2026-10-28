@@ -1,27 +1,16 @@
-import {  Router } from 'express';
+import { Router } from 'express';
 import ControlerData from '../controller/controller.js';
 import bcrypt from 'bcryptjs';
 import passport from 'passport';
 import { z } from 'zod';
 
-
 const Loginrouter = Router();
-const User = z.object(
-  {
-    username: z.string().min(4),
 
-    password: z.string().min(8)
+const UserSign = z.object({
+  username: z.string().min(4),
+  password: z.string().min(8),
+});
 
-  }
-);
-const UserSign = z.object(
-  {
-    username: z.string().min(4),
-
-    password: z.string().min(8)
-
-  }
-);
 Loginrouter.get('/', (req, res) => {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ mensaje: 'No autorizado' });
@@ -29,11 +18,9 @@ Loginrouter.get('/', (req, res) => {
   res.json({ mensaje: 'Acceso permitido', user: req.user });
 });
 
-Loginrouter.post('/signup', async (req, res,next) => {
+Loginrouter.post('/signup', async (req, res, next) => {
   try {
     const { username, password } = req.body;
-
-    const hashed = await bcrypt.hash(password, 10);
 
     const validate = UserSign.safeParse({ username, password });
     if (!validate.success) {
@@ -45,32 +32,29 @@ Loginrouter.post('/signup', async (req, res,next) => {
       return res.status(400).json({ errors });
     }
 
+    const hashed = await bcrypt.hash(password, 10);
     const userCreate = await ControlerData.createUserController(username, hashed);
     res.json(userCreate);
-
   } catch (err) {
-   next(err)
+    next(err);
   }
 });
 
 Loginrouter.post('/', (req, res, next) => {
-  
   passport.authenticate('local', (err, user, info) => {
-    
     if (err) return res.status(500).json({ message: 'Error del servidor' });
-    if (!user) return res.status(401).json({ message: info.message || 'Credenciales incorrectas' });
+    if (!user) return res.status(401).json({ message: info?.message || 'Credenciales incorrectas' });
 
     req.logIn(user, (err) => {
       if (err) return res.status(500).json({ message: 'Error al iniciar sesión' });
 
       return res.json({
         message: 'Login exitoso',
-        user: { id: user.id, username: user.username }
+        user: { id: user.id, username: user.username },
       });
     });
   })(req, res, next);
 });
-
 
 Loginrouter.get('/logout', (req, res, next) => {
   req.logout(function (err) {
@@ -78,39 +62,40 @@ Loginrouter.get('/logout', (req, res, next) => {
 
     req.session.destroy((err) => {
       if (err) return next(err);
-      res.json({ redirectUrl: process.env.CLIENT_URL }); 
+      res.json({ redirectUrl: process.env.CLIENT_URL || 'http://localhost:5173' });
     });
   });
 });
 
 Loginrouter.get('/auth/github',
-  passport.authenticate('github', { scope: ['user:email'] }));
+  passport.authenticate('github', { scope: ['user:email'] })
+);
 
 Loginrouter.get('/auth/github/callback',
-  passport.authenticate('github', { failureRedirect: `${process.env.CLIENT_URL}/login` }),
+  passport.authenticate('github', { failureRedirect: `${process.env.CLIENT_URL || 'http://localhost:5173'}/login` }),
   function (req, res) {
-    res.redirect(`${process.env.CLIENT_URL}`); // o la página que quieras
-  });
-Loginrouter.get('/users', async (req, res,next) => {
-  try {
-  const {username,quantity}=req.query
-  const users = await ControlerData.getUserController(username,quantity);
-  res.json(users);
-    
-  } catch (error) {
-    next(error)
+    res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}`);
   }
-  
-});
-Loginrouter.get('/profile/:username/', async (req, res,next) => {
-  try {
-      const { username } = req.params;
-  const user = await ControlerData.getuserController(username);
-  res.status(200).json(user);
-  } catch (error) {
-    next(error)
-  }
+);
 
+Loginrouter.get('/users', async (req, res, next) => {
+  try {
+    const { username, quantity } = req.query;
+    const users = await ControlerData.getUserController(username, quantity);
+    res.json(users);
+  } catch (error) {
+    next(error);
+  }
+});
+
+Loginrouter.get('/profile/:username/', async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const user = await ControlerData.getuserController(username);
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export { Loginrouter };

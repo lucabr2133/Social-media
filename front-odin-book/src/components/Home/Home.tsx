@@ -1,107 +1,67 @@
-import React, { useContext } from 'react'
-import usePublication from '../../hooks/getPublications'
-import onHandleLikePublication from '../../../services/onHandleLikePublication'
-import onHandleDeletedLike from '../../../services/onHandleDeletedLike'
+import React, { useContext, useState } from 'react'
+import { UserContext, UserSession } from '../../contex/context.js'
+import MainHeader from '../Header/Header.tsx'
 import styles from './Home.module.css'
-import { UserContext, UserSession } from '../../contex/context'
-import MainHeader from '../Header/Header'
-import { ArrowRightCircle } from 'lucide-react'
-import { useFollowing } from '../../hooks/useFollowing'
-import { ErrorMessage } from '../ui/Error'
-import FollowingList from './FollowingList'
-import GlobalLoading from '../../GlobalLoading'
-import PublicationHome from './PublicationsHome'
-import PublicationSkeleton from './PublicationSkeleton'
-import { useFollow } from '../../contex/FollowContext'
-import { usePublicationContext } from '../../contex/PublicationContext'
-import { Link } from 'react-router'
-function Home () {
-  const contex = useContext(UserSession)
+import CreatePublication from '../CreatePublication/CreatePublication.tsx'
+import FollowingList from './FollowingList.tsx'
+import { useFollow } from '../../contex/FollowContext.tsx'
+import { usePublicationContext } from '../../contex/PublicationContext.tsx'
+import PublicationsHome from './PublicationsHome.tsx'
+
+function Home() {
+  const userContex = useContext(UserSession)
   const users = useContext(UserContext)
+  const [opendialog, setOpenDialog2s] = useState(false)
+  const { state: followState } = useFollow()
+  const { state: publicationState } = usePublicationContext()
 
-  if (!contex) throw new Error('The context must have a valid provider')
+  if (!userContex) throw new Error('the user should exist')
+  const { user } = userContex
 
-  const { user } = contex
-
-  const { error: errorPublication, loading: loadingPublication } = usePublication()
-  const { error: errorFollowing, loading: loadingFollowing } = useFollowing()
-  // global following state used in the follower suggestions
-  const { state } = useFollow()
-  const { state: publication } = usePublicationContext()
-  if (errorPublication || errorFollowing) {
-    return (
-      <ErrorMessage
-        message={errorPublication || errorFollowing}
-      />
-    )
-  }
   if (!user || !users) {
-    return <GlobalLoading />
+    return (
+      <div className="min-h-screen w-full bg-[#09090b] flex flex-col items-center justify-center gap-3">
+        <div className="w-7 h-7 rounded-full border-2 border-white/15 border-t-white animate-spin" />
+        <span className="text-xs font-medium text-zinc-400 tracking-wide">
+          Loading feed...
+        </span>
+      </div>
+    )
   }
 
   return (
     <>
-      <div className='lg:grid  lg:grid-cols-[15%_65%_20%] block'>
-        <MainHeader userActive={user} />
-        <main className='w-full'>
-          <div className={styles['publications-home']}>
-            {loadingPublication
-              ? <PublicationSkeleton />
-              : publication.publications?.map((publication) => {
-                return (
+      <div className="min-h-screen bg-[#09090b] text-[#fafafa] flex">
+        <MainHeader setOpenDialog2s={setOpenDialog2s} userActive={user} />
 
-                  <PublicationHome data={{ user, users, publication }} styles={styles} actions={{ onHandleDeletedLike, onHandleLikePublication }} key={publication.id} />
-                )
-              })}
+        <div className="flex-1 w-full lg:pl-[max(15%,220px)] pb-20 lg:pb-10">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 lg:pt-8 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
+            <main className="w-full min-w-0">
+              {publicationState && followState && (
+                <PublicationsHome
+                  styles={styles}
+                  following={followState.following}
+                  publications={publicationState.publications}
+                  user={user}
+                  users={users}
+                />
+              )}
+            </main>
 
+            <aside className="hidden lg:block sticky top-8">
+              <FollowingList user={user} users={users} />
+            </aside>
           </div>
-        </main>
-        <aside
-          style={{ display: 'flex', flexDirection: 'column' }}
-        >
-          <div
-            className='hidden lg:flex flex-col gap-2'
-            style={{ margin: '16px 12px', padding: '16px', background: '#0a0a12', border: '1px solid #1e1e35', borderRadius: '2px' }}
-          >
-            <FollowingList state={state} user={user} users={users} />
-
-            <Link
-              to={'/users'}
-              style={{
-                marginTop: '10px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-                padding: '8px',
-                fontFamily: "'Share Tech Mono', monospace",
-                fontSize: '0.7rem',
-                color: '#6a6a8a',
-                textTransform: 'uppercase',
-                letterSpacing: '0.12em',
-                border: '1px solid #1e1e35',
-                borderRadius: '2px',
-                transition: 'all 0.2s ease',
-                background: 'transparent',
-              }}
-              onMouseEnter={e => {
-                const el = e.currentTarget
-                el.style.borderColor = '#00ff8766'
-                el.style.color = '#00ff87'
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget
-                el.style.borderColor = '#1e1e35'
-                el.style.color = '#6a6a8a'
-              }}
-            >
-              View all users <ArrowRightCircle size={14} />
-            </Link>
-          </div>
-        </aside>
+        </div>
       </div>
 
+      <CreatePublication
+        opendialog={opendialog}
+        setOpenDialog={setOpenDialog2s}
+        userActive={user}
+      />
     </>
   )
 }
+
 export default Home

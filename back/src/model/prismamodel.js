@@ -1,13 +1,9 @@
-import { PrismaClient } from '@prisma/client'
 
 
+import pkg from '@prisma/client';
+const { PrismaClient } = pkg;
 
 const prisma = new PrismaClient()
-
-
-
-
-
 
 class prismaModel {
  static async createUserModel(username, password) {
@@ -28,6 +24,7 @@ class prismaModel {
     });
     return userCreate;
   } catch (e) {
+  
     throw new Error(e.message || "Error creating user");
   }
 }

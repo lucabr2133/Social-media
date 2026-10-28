@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Publications } from '../../types'
 import { dataUpdated } from 'services/onHandleSubmitUpdatePublication'
+import { ImagePlus, X } from 'lucide-react'
 
 interface Props {
   updateForm: string | null
-  setUpdateForm: React.Dispatch<React.SetStateAction<string | null>>,
+  setUpdateForm: React.Dispatch<React.SetStateAction<string | null>>
   setPublication: React.Dispatch<React.SetStateAction<Publications[] | null>>
-
   updatePublication: (
     e: React.FormEvent<HTMLFormElement>,
     updateForm: string
@@ -17,8 +17,10 @@ function UpdatePublicationProfile({
   updateForm,
   setUpdateForm,
   updatePublication,
-  setPublication
+  setPublication,
 }: Props) {
+  const [preview, setPreview] = useState<string | null>(null)
+
   if (updateForm === null) return null
 
   return (
@@ -29,119 +31,96 @@ function UpdatePublicationProfile({
           setUpdateForm(null)
         }
       }}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-      }}
+      className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4"
     >
       <form
         onSubmit={async (e) => {
           setUpdateForm(null)
           const updatedPublication = await updatePublication(e, updateForm)
-          console.log(updatedPublication);
-          
-      setPublication(prev => {
-  if (!prev) return null
-
-  return prev.map(publication => {
-    if (publication.id === updatedPublication.publication.id) {
-      return updatedPublication.publication
-    }
-    return publication
-  })
-})
+          setPreview(null)
+          setPublication((prev) => {
+            if (!prev) return null
+            return prev.map((publication) =>
+              publication.id === updatedPublication.publication.id
+                ? updatedPublication.publication
+                : publication
+            )
+          })
         }}
         encType="multipart/form-data"
-        style={{
-          backgroundColor: '#1e1e20',
-          borderRadius: '12px',
-          padding: '25px',
-          width: '100%',
-          maxWidth: '400px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '15px',
-          color: '#fff',
-        }}
+        className="w-full max-w-md bg-[#121215] border border-white/10 rounded-2xl p-6 text-white shadow-2xl flex flex-col gap-4"
       >
-        <h2 style={{ marginBottom: '5px', textAlign: 'center' }}>
-          Editar Publicación
-        </h2>
-
-        {/* Imagen */}
-        <label
-          htmlFor="img-form"
-          style={{
-            cursor: 'pointer',
-            display: 'flex',
-            justifyContent: 'center',
-            border: '2px dashed #555',
-            borderRadius: '8px',
-            padding: '10px',
-          }}
-        >
-          <img
-            width="100"
-            src="/publication.svg"
-            alt="Seleccionar imagen"
-            style={{ opacity: 0.8 }}
-          />
-        </label>
-        <input hidden id="img-form" name="img" type="file" />
-
-        {/* Descripción */}
-        <label htmlFor="description">Descripción</label>
-        <input
-          id="description"
-          name="description"
-          type="text"
-          placeholder="Escribe una descripción..."
-          style={{
-            padding: '10px',
-            borderRadius: '6px',
-            border: '1px solid #444',
-            backgroundColor: '#2a2a2c',
-            color: '#fff',
-          }}
-        />
-
-        {/* Botones */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>
+        <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+          <h2 className="text-base font-semibold text-white">Edit Post</h2>
           <button
             type="button"
             onClick={() => setUpdateForm(null)}
-            style={{
-              flex: 1,
-              padding: '10px',
-              backgroundColor: '#555',
-              border: 'none',
-              borderRadius: '6px',
-              color: '#fff',
-              cursor: 'pointer',
-            }}
+            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
           >
-            Cancelar
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <label
+          htmlFor="img-form"
+          className="group relative flex h-44 w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-white/15 bg-[#09090b] text-zinc-400 hover:border-white/30 hover:bg-white/[0.02] transition-all overflow-hidden"
+        >
+          {preview ? (
+            <img
+              src={preview}
+              alt="Preview"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <>
+              <ImagePlus className="h-7 w-7 mb-2 text-zinc-500 group-hover:text-zinc-300" />
+              <span className="text-xs font-medium text-zinc-300">
+                Click to replace image (optional)
+              </span>
+            </>
+          )}
+        </label>
+        <input
+          hidden
+          id="img-form"
+          name="img"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            if (file) setPreview(URL.createObjectURL(file))
+          }}
+        />
+
+        <div className="flex flex-col gap-1.5">
+          <label
+            htmlFor="description"
+            className="text-xs font-medium text-zinc-400"
+          >
+            Caption
+          </label>
+          <input
+            id="description"
+            name="description"
+            type="text"
+            placeholder="Write an updated caption..."
+            className="w-full h-10 px-3.5 rounded-xl bg-[#09090b] border border-white/10 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-white/10 transition-all"
+          />
+        </div>
+
+        <div className="flex items-center justify-end gap-2.5 pt-2">
+          <button
+            type="button"
+            onClick={() => setUpdateForm(null)}
+            className="h-9 px-4 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs font-medium text-zinc-300 transition-colors cursor-pointer"
+          >
+            Cancel
           </button>
           <button
             type="submit"
-            style={{
-              flex: 1,
-              padding: '10px',
-              backgroundColor: '#4cafef',
-              border: 'none',
-              borderRadius: '6px',
-              color: '#fff',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-            }}
+            className="h-9 px-5 rounded-xl bg-white text-zinc-950 hover:bg-zinc-200 text-xs font-semibold transition-all cursor-pointer"
           >
-            Guardar
+            Save Changes
           </button>
         </div>
       </form>

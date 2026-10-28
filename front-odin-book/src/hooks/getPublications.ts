@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Publications } from '../types'
 import { usePublicationContext } from '../contex/PublicationContext';
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 export type myError={
   message:string
 }

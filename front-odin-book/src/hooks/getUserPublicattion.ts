@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {Publications} from '../types'
 function usePublication (userid:string|undefined) {
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
   
   const [publications, setPublication] = useState<Publications[]|null>(null)
   useEffect(() => {

@@ -1,271 +1,138 @@
-import { Link } from 'react-router-dom'
+import React from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import onHandleSubmitSign from '../../../services/onHandleSign';
-import React from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-
-export interface Inputs {
-  username: string;
-  password: string;
-}
+import onHandleSubmitSign from '../../../services/onHandleSign'
+import { Inputs } from '../Login/Login'
+import { useNavigate, Link } from 'react-router'
+import { ArrowRight, Lock, User as UserIcon } from 'lucide-react'
 
 function Signup() {
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>()
+  const navigate = useNavigate()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const userResponse = await onHandleSubmitSign(data, setError)
-    if (userResponse) {
-      toast.success('User Created successfully', {
-        style: {
-          background: '#0a0a12',
-          border: '1px solid #00ff87',
-          color: '#00ff87',
-          fontFamily: "'Share Tech Mono', monospace",
-          borderRadius: '2px',
-        },
-        iconTheme: {
-          primary: '#00ff87',
-          secondary: '#0a0a12',
-        },
-      })
-    }
+    await onHandleSubmitSign(data, setError, navigate)
   }
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#07070d',
-        color: '#e0e0f0',
-        fontFamily: "'Rajdhani', monospace",
-        padding: '20px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      <Toaster position='bottom-right' />
-
-      {/* Background decoration */}
-      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,135,0.015) 2px, rgba(0,255,135,0.015) 4px)', pointerEvents: 'none', zIndex: 0 }} />
-
-      <form
-        onSubmit={handleSubmit(onSubmit)}
+    <div className="min-h-screen w-full bg-[#09090b] text-[#fafafa] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
+      {/* Subtle ambient radial spotlight */}
+      <div
+        className="pointer-events-none fixed inset-0"
         style={{
-          background: '#0a0a12',
-          border: '1.5px solid #1e1e35',
-          borderRadius: '2px',
-          padding: '40px 32px',
-          width: '100%',
-          maxWidth: '400px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '24px',
-          position: 'relative',
-          zIndex: 1,
-          boxShadow: '0 0 40px rgba(0, 255, 135, 0.05)',
+          background:
+            'radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 60%)',
         }}
-      >
-        <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-          <h2
-            style={{
-              margin: '0 0 8px 0',
-              fontFamily: "'Rajdhani', monospace",
-              fontWeight: 700,
-              fontSize: '2rem',
-              color: '#e0e0f0',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-            }}
-          >
-            Sign Up
-          </h2>
-          <div
-            style={{
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: '0.65rem',
-              color: '#6a6a8a',
-              letterSpacing: '0.25em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Create an account
+      />
+
+      <div className="w-full max-w-[400px] relative z-10">
+        {/* Brand Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-white/[0.05] border border-white/10 mb-4 shadow-inner">
+            <span className="font-bold text-lg tracking-tight text-white">OB</span>
           </div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            Create your account
+          </h1>
+          <p className="text-sm text-zinc-400 mt-1.5">
+            Join Odin Book and connect with the community
+          </p>
         </div>
 
-        {/* Username Field */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label
-            htmlFor="username"
-            style={{
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: '0.7rem',
-              color: '#00ff87',
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Username
-          </label>
-          <input
-            id="username"
-            aria-label="userinput"
-            type="text"
-            autoComplete="off"
-            style={{
-              padding: '12px 14px',
-              background: '#07070d',
-              border: '1px solid #1e1e35',
-              borderRadius: '2px',
-              color: '#00ff87',
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: '0.9rem',
-              outline: 'none',
-              transition: 'border-color 0.2s, box-shadow 0.2s',
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.borderColor = '#00ff87'
-              e.currentTarget.style.boxShadow = '0 0 10px #00ff8733'
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = '#1e1e35'
-              e.currentTarget.style.boxShadow = 'none'
-            }}
-            {...register('username', {
-              required: 'Username is required',
-              minLength: { value: 8, message: 'Minimum 8 characters' },
-              maxLength: { value: 16, message: 'Maximum 16 characters' },
-            })}
-          />
-          {errors.username && (
-            <span style={{ color: '#ff0090', fontSize: '0.75rem', fontFamily: "'Share Tech Mono', monospace" }}>
-              {errors.username.message}
-            </span>
-          )}
+        {/* Signup Card */}
+        <div className="bg-[#121215] border border-white/[0.08] rounded-2xl p-6 sm:p-8 shadow-2xl">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-xs font-medium text-zinc-400 mb-1.5"
+              >
+                Username
+              </label>
+              <div className="relative">
+                <UserIcon className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  id="username"
+                  aria-label="userinput"
+                  type="text"
+                  autoComplete="username"
+                  placeholder="At least 4 characters"
+                  {...register('username', {
+                    required: 'Username is required',
+                    minLength: {
+                      value: 4,
+                      message: 'Username must be at least 4 characters',
+                    },
+                  })}
+                  className="w-full h-10 pl-10 pr-3.5 rounded-xl bg-[#09090b] border border-white/10 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-white/10 transition-all"
+                />
+              </div>
+              {errors.username && (
+                <p className="mt-1.5 text-xs text-rose-400">
+                  {errors.username.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-xs font-medium text-zinc-400 mb-1.5"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  id="password"
+                  aria-label="passwordinput"
+                  type="password"
+                  autoComplete="new-password"
+                  placeholder="At least 8 characters"
+                  {...register('password', {
+                    required: 'Password is required',
+                    minLength: {
+                      value: 8,
+                      message: 'Password must be at least 8 characters',
+                    },
+                  })}
+                  className="w-full h-10 pl-10 pr-3.5 rounded-xl bg-[#09090b] border border-white/10 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-white/10 transition-all"
+                />
+              </div>
+              {errors.password && (
+                <p className="mt-1.5 text-xs text-rose-400">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <button
+              aria-label="send"
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-10 mt-2 rounded-xl bg-white text-zinc-950 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-zinc-200 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span>{isSubmitting ? 'Creating account...' : 'Create Account'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </form>
         </div>
 
-        {/* Password Field */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label
-            htmlFor="password"
-            style={{
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: '0.7rem',
-              color: '#00ff87',
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            aria-label="passwordinput"
-            type="password"
-            style={{
-              padding: '12px 14px',
-              background: '#07070d',
-              border: '1px solid #1e1e35',
-              borderRadius: '2px',
-              color: '#00ff87',
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: '0.9rem',
-              outline: 'none',
-              transition: 'border-color 0.2s, box-shadow 0.2s',
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.borderColor = '#00ff87'
-              e.currentTarget.style.boxShadow = '0 0 10px #00ff8733'
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = '#1e1e35'
-              e.currentTarget.style.boxShadow = 'none'
-            }}
-            {...register('password', {
-              required: 'Password is required',
-              minLength: { value: 8, message: 'Minimum 8 characters' },
-              maxLength: { value: 16, message: 'Maximum 16 characters' },
-            })}
-          />
-          {errors.password && (
-            <span style={{ color: '#ff0090', fontSize: '0.75rem', fontFamily: "'Share Tech Mono', monospace" }}>
-              {errors.password.message}
-            </span>
-          )}
-        </div>
-
-        {/* Buttons */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' }}>
-          <button
-            disabled={isSubmitting}
-            type="submit"
-            style={{
-              padding: '14px',
-              background: 'transparent',
-              border: '1.5px solid #00ff87',
-              color: '#00ff87',
-              fontFamily: "'Rajdhani', monospace",
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              borderRadius: '2px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              opacity: isSubmitting ? 0.6 : 1,
-            }}
-            onMouseEnter={e => {
-              if (!isSubmitting) {
-                e.currentTarget.style.background = '#00ff87'
-                e.currentTarget.style.color = '#07070d'
-                e.currentTarget.style.boxShadow = '0 0 15px #00ff8766'
-              }
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'transparent'
-              e.currentTarget.style.color = '#00ff87'
-              e.currentTarget.style.boxShadow = 'none'
-            }}
-          >
-            {isSubmitting ? 'Sending...' : 'Create account'}
-          </button>
-        </div>
-
-        {/* Footer */}
-        <footer
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: '8px',
-            paddingTop: '16px',
-            borderTop: '1px solid #1e1e35',
-          }}
-        >
+        {/* Footer Link */}
+        <p className="text-center text-xs text-zinc-400 mt-6">
+          Already have an account?{' '}
           <Link
-            to="/"
-            style={{
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: '0.68rem',
-              color: '#6a6a8a',
-              letterSpacing: '0.1em',
-              transition: 'color 0.2s',
-              textTransform: 'uppercase',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#00ff87')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#6a6a8a')}
+            to="/login"
+            className="text-white font-medium hover:underline underline-offset-4 ml-1"
           >
-            Already have an account? Login
+            Sign in
           </Link>
-        </footer>
-      </form>
+        </p>
+      </div>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React from "react"
 import { UUIDTypes } from "uuid"
 import { Likes } from "../src/types"
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 async function onHandleLikePublication (e:React.MouseEvent<HTMLImageElement>, publicationID:string, userActiveID:string):Promise<Likes> {
 console.log(publicationID,userActiveID);

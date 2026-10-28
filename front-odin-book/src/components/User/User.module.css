@@ -1,23 +1,8 @@
-.userContainer{
-    display: flex;
-    border: 2px solid rgb(65, 65, 69);
-    padding: 10px;
-    border-radius: 10px;
-    margin: 10px;
-      }
-      .usersContainer{
-        background-color: rgba(36, 34, 32, 0.667);
-      
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        padding: 100px;
-      }
-      .userContainer>*{
-        padding: 10px;
-      }
-@media only screen and  (min-device-width: 0px) and (max-device-width: 768px) {
-  .usersContainer{
-    padding: 0;
-  }
+.userContainer {
+  display: flex;
+}
+
+.usersContainer {
+  display: flex;
+  flex-direction: column;
 }

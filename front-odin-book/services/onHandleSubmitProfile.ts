@@ -1,6 +1,6 @@
 import React from "react"
 import { User } from "../src/types"
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 import { toast } from 'react-hot-toast'
 
 type Data={

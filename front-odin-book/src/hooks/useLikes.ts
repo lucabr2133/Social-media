@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Likes } from '../types'
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export default function useLikesPublication () {
   const [publicationLikes, setPublicationLikes] = useState<Likes[]|null>(null)

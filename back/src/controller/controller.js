@@ -8,8 +8,8 @@ static async createUserController(username, password ) {
   try {
     return await prismaModel.createUserModel(username, password);
   } catch (error) {
-    if (error.code === "P2002" && error.meta?.target.includes("username")) {
-      throw new Error("Username already exists",409);
+    if (error.message === "Username already exists" || (error.code === "P2002" && error.meta?.target?.includes("username"))) {
+      throw new AppError("Username already exists", 409);
     }
       throw new AppError('Database error', 500);
   }

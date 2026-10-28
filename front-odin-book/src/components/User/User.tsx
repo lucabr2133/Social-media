@@ -1,6 +1,5 @@
 import { useFollowing } from '../../hooks/useFollowing'
 import CreatePublication from '../CreatePublication/CreatePublication'
-import styles from './User.module.css'
 import MainHeader from '../Header/Header'
 import { UserSession } from '../../contex/context'
 import React, { useContext, useState } from 'react'
@@ -9,217 +8,133 @@ import { useSearchUser } from '../../hooks/useSearchUsers'
 import { toggleFollow } from '../../../services/onHandleToggleFollow'
 import { useFollow } from '../../contex/FollowContext'
 import { Link } from 'react-router'
+import { Search } from 'lucide-react'
 
-export function Users () {
+export function Users() {
   const contextUserSession = useContext(UserSession)
   if (!contextUserSession) {
     throw new Error('you must provide the correct value types')
   }
   const { user } = contextUserSession
-  const { error, loading: followLoading } = useFollowing()
+  const { loading: followLoading } = useFollowing()
   const { state, followAction, unfollowAction, isFollowing } = useFollow()
   const [opendialog, setOpenDialog] = useState(false)
   const { input, loading, setInputValue, users } = useSearchUser()
 
-  if (!users || !user || followLoading) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '20px', background: '#07070d' }}>
-      <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '0.75rem', color: '#00ff87', letterSpacing: '0.2em', textShadow: '0 0 8px #00ff87' }}>LOADING...</span>
-      <div style={{ width: '40px', height: '40px', border: '2px solid #1e1e35', borderTop: '2px solid #00ff87', borderRadius: '50%', animation: 'spin 0.8s linear infinite', boxShadow: '0 0 10px #00ff8766' }} />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </div>
-  )
+  if (!users || !user || followLoading) {
+    return (
+      <div className="min-h-screen w-full bg-[#09090b] flex flex-col items-center justify-center gap-3">
+        <div className="w-7 h-7 rounded-full border-2 border-white/15 border-t-white animate-spin" />
+        <span className="text-xs font-medium text-zinc-400 tracking-wide">
+          Loading directory...
+        </span>
+      </div>
+    )
+  }
+
+  const filteredUsers = users.filter((u) => u.username !== user.username)
 
   return (
     <>
-      <div className='lg:grid lg:grid-cols-[15%_85%] w-full' style={{ display: 'grid' }}>
-        <MainHeader userActive={user} />
+      <div className="min-h-screen bg-[#09090b] text-[#fafafa] flex">
+        <MainHeader userActive={user} setOpenDialog2s={setOpenDialog} />
 
-        <div
-          className='col-start-1 lg:col-start-2 lg:col-end-3'
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh',
-            backgroundColor: '#07070d',
-            color: '#e0e0f0',
-            fontFamily: "'Rajdhani', monospace",
-            padding: '24px 32px',
-            boxSizing: 'border-box',
-          }}
-        >
-          {/* ── Search bar ── */}
-          <div style={{ marginBottom: '24px', position: 'relative' }}>
-            <span style={{
-              position: 'absolute',
-              left: '14px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: '0.8rem',
-              color: '#00ff87',
-              pointerEvents: 'none',
-            }}>
-              {'>'}
-            </span>
-            <input
-              value={input}
-              onChange={(e) => setInputValue(e.currentTarget.value)}
-              type='text'
-              placeholder="Search user..."
-              style={{
-                width: '100%',
-                paddingLeft: '30px',
-                background: '#0f0f1a',
-                border: '1px solid #1e1e35',
-                borderRadius: '2px',
-                fontFamily: "'Share Tech Mono', monospace",
-                fontSize: '0.85rem',
-                color: '#e0e0f0',
-              }}
-            />
-          </div>
+        <div className="flex-1 w-full lg:pl-[max(15%,220px)] pb-20 lg:pb-12">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 lg:pt-8">
+            {/* Page Header & Search */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08] mb-6">
+              <div>
+                <h1 className="text-xl font-bold text-white tracking-tight">
+                  Discover People
+                </h1>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Find and connect with creators and members on Odin Book
+                </p>
+              </div>
 
-          {/* ── Section header ── */}
-          <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: '9px',
-              color: '#00ff87',
-              textShadow: '0 0 8px #00ff87',
-              letterSpacing: '0.08em',
-            }}>
-              Users
-            </span>
-            <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, #00ff8755, transparent)' }} />
-          </div>
-
-          {/* ── Loading indicator ── */}
-          {loading && (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', padding: '20px' }}>
-              <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: '0.7rem', color: '#6a6a8a', letterSpacing: '0.15em' }}>SEARCHING...</span>
-              <SpinnerComponnet />
+              <div className="relative w-full sm:w-72">
+                <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  value={input}
+                  onChange={(e) => setInputValue(e.currentTarget.value)}
+                  type="text"
+                  placeholder="Search user..."
+                  className="w-full h-10 pl-10 pr-3.5 rounded-xl bg-[#121215] border border-white/10 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-white/10 transition-all"
+                />
+              </div>
             </div>
-          )}
 
-          {/* ── Users grid ── */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-              gap: '16px',
-              visibility: loading ? 'hidden' : 'visible',
-            }}
-          >
-            {users.length !== 0
-              ? users
-                .filter((u) => u.username !== user.username)
-                .map((userl) => {
+            {loading && (
+              <div className="flex items-center justify-center gap-3 py-8 text-xs text-zinc-400">
+                <SpinnerComponnet />
+                <span>Searching users...</span>
+              </div>
+            )}
+
+            {/* Users Grid */}
+            <div
+              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ${
+                loading ? 'opacity-50 pointer-events-none' : ''
+              }`}
+            >
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((userl) => {
                   const following = isFollowing(userl.id, user.id)
                   return (
                     <div
                       key={userl.id}
-                      style={{
-                        background: '#0f0f1a',
-                        border: '1px solid #1e1e35',
-                        borderRadius: '2px',
-                        padding: '20px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '16px',
-                        transition: 'border-color 0.2s, box-shadow 0.2s',
-                        cursor: 'pointer',
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.borderColor = '#00ff8755'
-                        e.currentTarget.style.boxShadow = '0 0 16px #00ff8718'
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.borderColor = '#1e1e35'
-                        e.currentTarget.style.boxShadow = 'none'
-                      }}
+                      className="bg-[#121215] border border-white/[0.08] hover:border-white/[0.16] rounded-2xl p-4 flex items-center justify-between gap-4 transition-all"
                     >
-                      {/* Avatar */}
-                      <Link to={`/profile/${userl.username}`} style={{ background: 'transparent', flexShrink: 0, display: 'block' }}>
+                      <Link
+                        to={`/profile/${userl.username}`}
+                        className="flex items-center gap-3.5 min-w-0 group"
+                      >
                         <img
-                          src={userl.profileImg || 'profile2.svg'}
+                          src={userl.profileImg || '/profile2.svg'}
                           alt={`${userl.username} profile`}
-                          width={56}
-                          height={56}
-                          style={{
-                            borderRadius: '2px',
-                            objectFit: 'cover',
-                            border: '1.5px solid #1e1e35',
-                            display: 'block',
-                            transition: 'border-color 0.2s',
-                          }}
-                          onMouseEnter={e => (e.currentTarget.style.borderColor = '#00ff87')}
-                          onMouseLeave={e => (e.currentTarget.style.borderColor = '#1e1e35')}
+                          width={48}
+                          height={48}
+                          className="w-12 h-12 rounded-full object-cover border border-white/10 shrink-0"
                         />
-                      </Link>
-
-                      {/* Info */}
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0 }}>
-                        <Link
-                          to={`/profile/${userl.username}`}
-                          style={{ background: 'transparent' }}
-                        >
-                          <h3 style={{
-                            margin: 0,
-                            fontFamily: "'Rajdhani', monospace",
-                            fontWeight: 700,
-                            color: '#e0e0f0',
-                            fontSize: '1rem',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.06em',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            userSelect: 'none',
-                          }}>
+                        <div className="flex flex-col min-w-0">
+                          <h3 className="text-sm font-semibold text-white truncate group-hover:underline">
                             {userl.username}
                           </h3>
-                        </Link>
+                          <span className="text-xs text-zinc-500 truncate">
+                            {userl.description || 'Odin Book member'}
+                          </span>
+                        </div>
+                      </Link>
 
-                        <button
-                          onClick={async (e) => {
-                            e.stopPropagation()
-                            toggleFollow(userl, user, state, unfollowAction, followAction)
-                          }}
-                          style={{
-                            alignSelf: 'flex-start',
-                            padding: '5px 14px',
-                            fontSize: '0.7rem',
-                            fontFamily: "'Share Tech Mono', monospace",
-                            letterSpacing: '0.06em',
-                            textTransform: 'uppercase',
-                            border: following ? '1px solid #ff009077' : '1px solid #00ff8777',
-                            color: following ? '#ff0090' : '#00ff87',
-                            background: 'transparent',
-                            borderRadius: '2px',
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease',
-                            margin: 0,
-                          }}
-                          onMouseEnter={e => {
-                            e.currentTarget.style.background = following ? '#ff0090' : '#00ff87'
-                            e.currentTarget.style.color = '#07070d'
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.background = 'transparent'
-                            e.currentTarget.style.color = following ? '#ff0090' : '#00ff87'
-                          }}
-                        >
-                          {following ? 'Unfollow' : 'Follow'}
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={async (e) => {
+                          e.stopPropagation()
+                          toggleFollow(
+                            userl,
+                            user,
+                            state,
+                            unfollowAction,
+                            followAction
+                          )
+                        }}
+                        className={`h-8 px-3.5 rounded-xl text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                          following
+                            ? 'bg-white/[0.06] text-zinc-300 hover:bg-rose-500/15 hover:text-rose-300 border border-white/10'
+                            : 'bg-white text-zinc-950 hover:bg-zinc-200 font-semibold'
+                        }`}
+                      >
+                        {following ? 'Unfollow' : 'Follow'}
+                      </button>
                     </div>
                   )
                 })
-              : (
-                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', fontFamily: "'Share Tech Mono', monospace", fontSize: '0.7rem', color: '#3a3a5a', letterSpacing: '0.15em' }}>
-                  No users found
+              ) : (
+                <div className="col-span-full bg-[#121215] border border-white/[0.08] rounded-2xl p-12 text-center text-xs text-zinc-500">
+                  No users found matching your search.
                 </div>
               )}
+            </div>
           </div>
         </div>
       </div>

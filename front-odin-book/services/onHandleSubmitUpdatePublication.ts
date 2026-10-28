@@ -1,6 +1,6 @@
 import React from "react"
 import { Publications } from "../src/types"
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 export type dataUpdated={
   publication:Publications,
   message:string

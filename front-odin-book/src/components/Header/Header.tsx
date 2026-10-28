@@ -1,302 +1,218 @@
-import { Link } from 'react-router'
-import React, { useState } from 'react'
-import { User } from '../../types'
-import CreatePublication from '../CreatePublication/CreatePublication'
-import { Bell, User as Useri, Users, X, Home, MessageSquare, PlusCircle } from 'lucide-react'
-import { useNotification } from '../../hooks/useNotifications'
-import { onHandleReadNotification } from '../../../services/onHandleReadNotification'
+import React, { useEffect, useState } from 'react'
+import { socket } from '../../socket'
+import { Notification, User } from '../../types'
+import { useNotifications } from '../../hooks/useNotifications'
+import { onHandleReadNotifications } from '../../../services/onHandleReadNotifactions'
+import { Link, useLocation } from 'react-router'
+import {
+  Home,
+  MessageSquare,
+  PlusSquare,
+  Users,
+  Bell,
+  X,
+} from 'lucide-react'
 
 interface props {
-  userActive: User,
+  setOpenDialog2s?: React.Dispatch<React.SetStateAction<boolean>>
+  userActive: User
 }
 
-function MainHeader ({ userActive }: props) {
-  const [opendialog2, setOpenDialog2] = useState(false)
-  const [openNotifications, setOpenNotifications] = useState(false)
-  const { notifications } = useNotification(userActive.id)
+function MainHeader({ setOpenDialog2s, userActive }: props) {
+  const [openNotification, setOpenNotification] = useState(false)
+  const { notification, setNotifications } = useNotifications(userActive.id)
+  const location = useLocation()
 
-  const unreadCount = notifications?.filter((n) => !n.read).length || 0
+  useEffect(() => {
+    socket.emit('NotificationRoom', userActive.id)
+    socket.on('notifications', (data: Notification) => {
+      setNotifications((prev) => [...prev, data])
+    })
+    return () => {
+      socket.off('notifications')
+    }
+  }, [setNotifications, userActive.id])
 
-  const navItems = [
-    { to: '/', icon: <Home size={20} />, label: 'Home' },
-    { to: '/messages', icon: <MessageSquare size={20} />, label: 'Messages' },
-    ...(userActive
-      ? [{ to: `/profile/${userActive.username}`, icon: <Useri size={20} />, label: 'Profile' }]
-      : []),
-    { to: '/users', icon: <Users size={20} />, label: 'Users' },
-  ]
+  if (!notification) return null
+
+  const unreadCount = notification.filter((item) => !item.read).length
+
+  const isActive = (path: string) => location.pathname === path
 
   return (
     <>
-      {/* ── Sidebar ── */}
-      <header
-        className='z-10 fixed'
-        style={{ margin: '10px 0' }}
-      >
-        <ul
-          className='
-            lg:w-[15%] flex flex-row lg:flex-col
-            bottom-0 fixed justify-around
-            lg:top-0 lg:justify-start
-            w-full
-            gap-1
-          '
-          style={{
-            background: '#0a0a12',
-            borderRight: '1px solid #1e1e35',
-            borderTop: '1px solid #1e1e35',
-            padding: '12px 8px',
-            height: '100vh',
-          }}
-        >
-          {/* ── Logo / Brand ── */}
-          <li className='hidden lg:flex items-center justify-center mb-6' style={{ minHeight: 'auto' }}>
-            <span
-              style={{
-                fontFamily: "'Press Start 2P', monospace",
-                fontSize: '10px',
-                color: '#00ff87',
-                textShadow: '0 0 7px #00ff87, 0 0 14px #00ff8799',
-                letterSpacing: '0.05em',
-                lineHeight: '1.6',
-                textAlign: 'center',
-              }}
-            >
-              ODIN<br />
-              <span style={{ color: '#ff0090', textShadow: '0 0 7px #ff0090, 0 0 14px #ff009099' }}>
-                BOOK
-              </span>
+      {/* Desktop Left Sidebar + Mobile Bottom Navigation */}
+      <aside className="fixed bottom-0 left-0 right-0 z-40 h-16 bg-[#09090b]/90 backdrop-blur-xl border-t border-white/[0.08] flex flex-row items-center justify-around px-2 lg:top-0 lg:bottom-0 lg:right-auto lg:w-[15%] lg:min-w-[220px] lg:max-w-[260px] lg:h-screen lg:flex-col lg:justify-between lg:items-stretch lg:border-t-0 lg:border-r lg:px-4 lg:py-6">
+        {/* Brand Logo (Desktop) */}
+        <div className="hidden lg:flex items-center gap-3 px-3 mb-8">
+          <div className="w-8 h-8 rounded-xl bg-white text-zinc-950 font-bold text-sm flex items-center justify-center shadow-sm">
+            OB
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-sm tracking-tight text-white leading-none">
+              Odin Book
             </span>
-          </li>
+            <span className="text-[11px] text-zinc-500 mt-0.5">Social Feed</span>
+          </div>
+        </div>
 
-          {/* ── Nav Items ── */}
-          {navItems.map(({ to, icon, label }) => (
-            <li key={to} style={{ minHeight: '48px', display: 'flex', alignItems: 'center', width: '100%', margin: '2px 0' }}>
-              <Link
-                to={to}
-                className='
-                  arcade-nav-item
-                  flex gap-3 items-center
-                  w-full p-3
-                  text-sm font-semibold
-                '
-                style={{
-                  color: '#a0a0c0',
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  fontSize: '0.8rem',
-                }}
-              >
-                <span style={{ flexShrink: 0 }}>{icon}</span>
-                <h2 className='hidden lg:block'>{label}</h2>
-              </Link>
-            </li>
-          ))}
-
-          {/* ── Notifications ── */}
-          <li style={{ minHeight: '48px', display: 'flex', alignItems: 'center', width: '100%', margin: '2px 0' }}>
-            <div
-              onClick={() => setOpenNotifications(true)}
-              className='arcade-nav-item flex gap-3 items-center w-full p-3 cursor-pointer justify-center'
-              style={{
-                color: '#a0a0c0',
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                fontSize: '0.8rem',
-              }}
-            >
-              <span style={{ flexShrink: 0 }}>
-                <Bell size={20} />
-                {unreadCount > 0 && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      top: '-6px',
-                      right: '-6px',
-                      background: '#ff0090',
-                      color: '#07070d',
-                      borderRadius: '50%',
-                      width: '16px',
-                      height: '16px',
-                      fontSize: '9px',
-                      fontFamily: "'Press Start 2P', monospace",
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 0 6px #ff009099',
-                      animation: 'neon-pulse 1.5s ease-in-out infinite',
-                    }}
-                  >
-                    {unreadCount}
-                  </span>
-                )}
-              </span>
-              <h2 className='hidden lg:block'>Notifications</h2>
-            </div>
-          </li>
-
-          {/* ── Create Post ── */}
-          <li
-            style={{ minHeight: '48px', display: 'flex', alignItems: 'center', width: '100%', margin: '2px 0', marginTop: 'auto' }}
+        {/* Navigation Links */}
+        <nav className="flex flex-row lg:flex-col items-center lg:items-stretch justify-around w-full gap-1 lg:flex-1">
+          <Link
+            to="/"
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+              isActive('/')
+                ? 'bg-white/[0.09] text-white'
+                : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
+            }`}
           >
-            <div
-              onClick={() => setOpenDialog2(true)}
-              className='flex gap-3 items-center w-full p-3 cursor-pointer'
-              style={{
-                border: '1.5px solid #00ff87',
-                borderRadius: '2px',
-                color: '#00ff87',
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                transition: 'all 0.15s ease',
-                background: 'transparent',
-              }}
-              onMouseEnter={e => {
-                const el = e.currentTarget as HTMLDivElement
-                el.style.background = '#00ff87'
-                el.style.color = '#07070d'
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget as HTMLDivElement
-                el.style.background = 'transparent'
-                el.style.color = '#00ff87'
-              }}
+            <Home className="w-5 h-5 shrink-0" />
+            <span className="hidden lg:inline">Home</span>
+          </Link>
+
+          <Link
+            to="/Messages"
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+              isActive('/Messages')
+                ? 'bg-white/[0.09] text-white'
+                : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
+            }`}
+          >
+            <MessageSquare className="w-5 h-5 shrink-0" />
+            <span className="hidden lg:inline">Messages</span>
+          </Link>
+
+          {setOpenDialog2s && (
+            <button
+              type="button"
+              onClick={() => setOpenDialog2s(true)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer text-left"
             >
-              <PlusCircle size={20} style={{ flexShrink: 0 }} />
-              <h2 className='hidden lg:block'>Create</h2>
+              <PlusSquare className="w-5 h-5 shrink-0" />
+              <span className="hidden lg:inline">Create Post</span>
+            </button>
+          )}
+
+          <Link
+            to="/Users"
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+              isActive('/Users')
+                ? 'bg-white/[0.09] text-white'
+                : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
+            }`}
+          >
+            <Users className="w-5 h-5 shrink-0" />
+            <span className="hidden lg:inline">Discover</span>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => {
+              onHandleReadNotifications(userActive.id)
+              setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
+              setOpenNotification((prev) => !prev)
+            }}
+            className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer text-left ${
+              openNotification
+                ? 'bg-white/[0.09] text-white'
+                : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
+            }`}
+          >
+            <div className="relative">
+              <Bell className="w-5 h-5 shrink-0" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
             </div>
-          </li>
-        </ul>
-      </header>
+            <span className="hidden lg:inline">Notifications</span>
+          </button>
 
-      <CreatePublication opendialog={opendialog2} setOpenDialog={setOpenDialog2} />
+          <Link
+            to={`/profile/${userActive.username}`}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all lg:mt-auto ${
+              location.pathname.startsWith('/profile')
+                ? 'bg-white/[0.09] text-white'
+                : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
+            }`}
+          >
+            <img
+              src={userActive.profileImg || '/profile2.svg'}
+              alt={userActive.username || 'Profile'}
+              className="w-6 h-6 rounded-full object-cover border border-white/15 shrink-0"
+            />
+            <div className="hidden lg:flex flex-col min-w-0">
+              <span className="text-xs font-semibold text-white truncate">
+                {userActive.username}
+              </span>
+              <span className="text-[11px] text-zinc-500">View profile</span>
+            </div>
+          </Link>
+        </nav>
+      </aside>
 
-      {/* ── Notifications Modal ── */}
-      {openNotifications && (
+      {/* Notifications Modal */}
+      {openNotification && (
         <div
-          onClick={() => {
-            setOpenNotifications(false)
-            onHandleReadNotification(userActive.id)
-          }}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 50,
-            background: 'rgba(7, 7, 13, 0.85)',
-            backdropFilter: 'blur(6px)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setOpenNotification(false)}
         >
           <div
+            className="w-full max-w-md bg-[#121215] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[75vh]"
             onClick={(e) => e.stopPropagation()}
-            style={{
-              background: '#0f0f1a',
-              border: '1.5px solid #00ff8766',
-              boxShadow: '0 0 30px #00ff8722, 0 0 60px #00ff8711',
-              borderRadius: '2px',
-              width: '100%',
-              maxWidth: '420px',
-              maxHeight: '90vh',
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden',
-            }}
           >
-            {/* Header */}
-            <div
-              style={{
-                borderBottom: '1px solid #1e1e35',
-                padding: '16px 20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                background: 'linear-gradient(90deg, #0a0a12 0%, #0f0f1a 100%)',
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: "'Press Start 2P', monospace",
-                  fontSize: '9px',
-                  color: '#00ff87',
-                  textShadow: '0 0 7px #00ff87',
-                  letterSpacing: '0.1em',
-                }}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08]">
+              <div className="flex items-center gap-2">
+                <Bell className="w-4 h-4 text-zinc-400" />
+                <h3 className="text-sm font-semibold text-white">
+                  Notifications
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpenNotification(false)}
+                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
               >
-                NOTIFICATIONS
-              </span>
-              <X
-                size={18}
-                className='cursor-pointer'
-                style={{ color: '#6a6a8a', transition: 'color 0.2s' }}
-                onClick={() => {
-                  setOpenNotifications(false)
-                  onHandleReadNotification(userActive.id)
-                }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#ff0090')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#6a6a8a')}
-              />
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
-            {/* List */}
-            <div style={{ overflowY: 'auto', padding: '8px' }}>
-              {notifications && notifications.length > 0
-                ? notifications.map((notification) => {
-                    const diffMinutes = Math.floor((Date.now() - new Date(notification.createdAt).getTime()) / 60000)
-                    return (
-                      <div
-                        key={notification.id}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
-                          padding: '12px',
-                          margin: '6px 0',
-                          background: '#12121f',
-                          border: `1px solid ${notification.read ? '#1e1e35' : '#00ff8744'}`,
-                          borderRadius: '2px',
-                          transition: 'border-color 0.2s',
-                        }}
+            <div className="overflow-y-auto divide-y divide-white/[0.06]">
+              {notification.length > 0 ? (
+                notification.map((notify) => (
+                  <div
+                    key={notify.id}
+                    className="flex items-center gap-3.5 px-5 py-3.5 hover:bg-white/[0.02] transition-colors"
+                  >
+                    <Link
+                      to={`/profile/${notify.sender.username}`}
+                      onClick={() => setOpenNotification(false)}
+                      className="shrink-0"
+                    >
+                      <img
+                        src={notify.sender.profileImg || '/profile2.svg'}
+                        alt={notify.sender.username}
+                        className="w-9 h-9 rounded-full object-cover border border-white/10"
+                      />
+                    </Link>
+                    <div className="flex-1 min-w-0 text-xs text-zinc-300 leading-relaxed">
+                      <Link
+                        to={`/profile/${notify.sender.username}`}
+                        onClick={() => setOpenNotification(false)}
+                        className="font-semibold text-white hover:underline mr-1"
                       >
-                        <img
-                          src={notification.actor.profileImg || '/profile2.svg'}
-                          alt={notification.actor.username}
-                          style={{ width: '36px', height: '36px', borderRadius: '2px', objectFit: 'cover', border: '1px solid #1e1e35' }}
-                        />
-                        <div style={{ flex: 1 }}>
-                          <p style={{ fontSize: '0.82rem', color: '#e0e0f0', lineHeight: 1.4 }}>
-                            <span style={{ color: '#00ff87', fontWeight: 700 }}>
-                              {notification.actor.username}
-                            </span>{' '}
-                            empezó a seguirte
-                          </p>
-                          <span style={{ fontSize: '0.7rem', color: '#6a6a8a', fontFamily: "'Share Tech Mono', monospace" }}>
-                            {diffMinutes} min ago
-                          </span>
-                        </div>
-                        {!notification.read && (
-                          <span
-                            style={{
-                              width: '8px',
-                              height: '8px',
-                              borderRadius: '50%',
-                              background: '#00ff87',
-                              boxShadow: '0 0 6px #00ff87',
-                              flexShrink: 0,
-                            }}
-                          />
-                        )}
-                      </div>
-                    )
-                  })
-                : (
-                  <div style={{ textAlign: 'center', padding: '40px 20px', color: '#6a6a8a', fontFamily: "'Share Tech Mono', monospace", fontSize: '0.75rem' }}>
-                    NO NEW NOTIFICATIONS
+                        {notify.sender.username}
+                      </Link>
+                      <span>{notify.content}</span>
+                    </div>
                   </div>
-                )}
+                ))
+              ) : (
+                <div className="py-12 px-6 text-center text-xs text-zinc-500">
+                  You&apos;re all caught up. No notifications yet.
+                </div>
+              )}
             </div>
           </div>
         </div>

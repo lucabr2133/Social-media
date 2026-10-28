@@ -4,87 +4,107 @@ import React, { useEffect } from 'react'
 import { Comments, Publications, User } from '../../types'
 import { socket } from '../../socket'
 import { CommentSkeleton } from './CommentSkeleton'
+import { Send } from 'lucide-react'
+
 interface props {
-  styles:Record<string,string>
-  publication:Publications,
-  users:User[],
-  user:User,
+  styles: Record<string, string>
+  publication: Publications
+  users: User[]
+  user: User
 }
-function  CommentList ({ publication, user }:props) {
-  
-  const { comments:commentsHook ,setComments ,loading} = useComments(publication.id)
 
-useEffect(() => {
-  if (!publication?.id) return;
+function CommentList({ publication, user }: props) {
+  const {
+    comments: commentsHook,
+    setComments,
+    loading,
+  } = useComments(publication.id)
 
-  socket.emit("publicationRomm", publication.id);
+  useEffect(() => {
+    if (!publication?.id) return
 
-  const handleComment = (comment: Comments) => {
-    
-    setComments((prev) => {
-      return [...prev, comment]
-    });
-  };
+    socket.emit('publicationRomm', publication.id)
 
-  socket.on("publication comments", handleComment);
+    const handleComment = (comment: Comments) => {
+      setComments((prev) => [...prev, comment])
+    }
 
-  return () => {
-    socket.off("publication comments", handleComment);
-  };
-}, [publication.id, setComments]);
+    socket.on('publication comments', handleComment)
 
+    return () => {
+      socket.off('publication comments', handleComment)
+    }
+  }, [publication.id, setComments])
 
-if(loading)return <div className='p-2 w-full h-full'>
-  <CommentSkeleton></CommentSkeleton>
-</div>
-  return (
-    <>
-      <div className=' w-full h-[85vh] md:h-[98vh] flex flex-col ' onClick={(e)=>{
-        e.stopPropagation()
-      }}>
-        <header className=' w-full text-2xl p-6 border-b border-neutral-700'>
-            <div className='flex items-center gap-2'>
-              <img src={publication?.author?.profileImg||'/profile2.svg'} width={50} alt="" />
-              <h6 className='text-[12px] capitalize'>{publication?.author?.username}</h6>
-            </div>
-            <p className='px-13 text-[13px] capitalize text-neutral-300!'>{publication?.content} .</p>
-        </header>
-
-
-        <main className='flex flex-col overflow-y-auto scrollbar-thumb-pink-950 justify-start! flex-1 '>
-          {commentsHook?.map(comment=>(
-            <div key={comment.id} className='p-4 '>
-             <div className="flex flex-col  justify-center p-2 gap-2 ">
-                <div className='flex items-center gap-2'>
-                    <img  width={30} className="shrink-0" src={comment.author?.profileImg || "/profile2.svg"}alt=""/>
-                    <p className="text-[10px] shrink-0 capitalize font-extrabold! ">
-                              {comment.author?.username}
-                    </p>
-              </div>
-   
-
-              <p className="text-[11px] capitalize wrap-break-word px-10 text-neutral-500! font-mono!">
-                {comment.content}.
-              </p>
-            </div>
-                <hr className='w-1/12 mx-10 border-neutral-700' ></hr>
-            </div>
-          ))}
-        </main>
-          
-    <footer>
-      <form className='w-full flex px-3 py-2 gap-2 items-center' onSubmit={(e)=>{
-        onHandleSubmitComment(e,user.id,publication.id)
-      }}>
-
-        <input className='flex-2 rounded-2xl! h-8 ' type="text" name='comment' placeholder='Write....' />
-        <button className='flex-1' type='submit'>Submit</button>
-
-      </form>
-      
-    </footer>
+  if (loading) {
+    return (
+      <div className="py-2 w-full">
+        <CommentSkeleton />
       </div>
-    </>
+    )
+  }
+
+  return (
+    <div
+      className="w-full flex flex-col gap-3"
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
+    >
+      {/* Comments List */}
+      <div className="flex flex-col gap-3 max-h-72 overflow-y-auto pr-1">
+        {commentsHook && commentsHook.length > 0 ? (
+          commentsHook.map((comment) => (
+            <div
+              key={comment.id}
+              className="flex items-start gap-2.5 text-xs bg-white/[0.02] border border-white/[0.05] rounded-xl p-3"
+            >
+              <img
+                width={28}
+                height={28}
+                className="w-7 h-7 rounded-full object-cover border border-white/10 shrink-0 mt-0.5"
+                src={comment.author?.profileImg || '/profile2.svg'}
+                alt={comment.author?.username || 'User'}
+              />
+              <div className="flex-1 min-w-0">
+                <span className="font-semibold text-white block">
+                  {comment.author?.username}
+                </span>
+                <p className="text-zinc-300 mt-0.5 break-words leading-relaxed">
+                  {comment.content}
+                </p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-xs text-zinc-500 py-3 text-center">
+            No comments yet. Start the conversation!
+          </p>
+        )}
+      </div>
+
+      {/* Add Comment Form */}
+      <form
+        className="w-full flex items-center gap-2 pt-1"
+        onSubmit={(e) => {
+          onHandleSubmitComment(e, user.id, publication.id)
+        }}
+      >
+        <input
+          className="flex-1 h-9 px-3.5 rounded-xl bg-[#09090b] border border-white/10 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/30 transition-colors"
+          type="text"
+          name="comment"
+          placeholder="Add a comment..."
+        />
+        <button
+          className="h-9 px-3.5 rounded-xl bg-white text-zinc-950 hover:bg-zinc-200 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+          type="submit"
+        >
+          <Send className="w-3.5 h-3.5" />
+          <span>Post</span>
+        </button>
+      </form>
+    </div>
   )
 }
 

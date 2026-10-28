@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {User} from '../types'
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 function useUser (username:string|undefined) {
   if(!username) throw new Error("username must be a string")

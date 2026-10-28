@@ -1,7 +1,7 @@
 import { useFollow } from '../contex/FollowContext'
 import { ErrorInterface, Following } from '@/types'
 import { useEffect, useState } from 'react'
-const url= import.meta.env.VITE_API_URL
+const url = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 export function useFollowing() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

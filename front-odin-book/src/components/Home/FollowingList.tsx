@@ -1,145 +1,82 @@
-import { User } from "@/types";
-import { myState } from '../../Reducers/UserReducer'
-import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Link } from "react-router-dom";
+import React from 'react'
+import { User } from '../../types'
 import { toggleFollow } from '../../../services/onHandleToggleFollow'
-import { useFollow } from "../../contex/FollowContext";
+import { useFollow } from '../../contex/FollowContext'
+import { Link } from 'react-router'
 
-export default function FollowingList ({ users, user, state }: { users: User[], user: User, state: myState }) {
-  const { followAction, unfollowAction, isFollowing } = useFollow()
+interface props {
+  users: User[]
+  user: User
+}
+
+export default function FollowingList({ users, user }: props) {
+  const { state, followAction, unfollowAction, isFollowing } = useFollow()
+
+  const suggestedUsers = users
+    .filter((u) => u.username !== user.username)
+    .slice(0, 6)
 
   return (
-    <>
-      {/* ── Section header ── */}
-      <div
-        style={{
-          paddingBottom: '10px',
-          marginBottom: '4px',
-          borderBottom: '1px solid #1e1e35',
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "'Share Tech Mono', monospace",
-            fontSize: '0.65rem',
-            color: '#00ff87',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            textShadow: '0 0 6px #00ff8799',
-          }}
+    <div className="bg-[#121215] border border-white/[0.08] rounded-2xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          Suggested for you
+        </h2>
+        <Link
+          to="/Users"
+          className="text-xs font-medium text-zinc-400 hover:text-white transition-colors"
         >
-        Suggested
-        </span>
+          See all
+        </Link>
       </div>
 
-      {users.map((userl) => {
-        const following = isFollowing(userl.id, user.id)
-        return (
-          <div
-            key={userl.id}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              padding: '10px 12px',
-              margin: '5px 0',
-              background: '#0f0f1a',
-              border: '1px solid #1e1e35',
-              borderRadius: '2px',
-              transition: 'border-color 0.2s ease, background 0.2s ease',
-              gap: '8px',
-            }}
-            onMouseEnter={e => {
-              const el = e.currentTarget
-              el.style.borderColor = '#00ff8744'
-              el.style.background = '#12121f'
-            }}
-            onMouseLeave={e => {
-              const el = e.currentTarget
-              el.style.borderColor = '#1e1e35'
-              el.style.background = '#0f0f1a'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div className="flex flex-col gap-3.5">
+        {suggestedUsers.map((userl) => {
+          const following = isFollowing(userl.id, user.id)
+          return (
+            <div
+              key={userl.id}
+              className="flex items-center justify-between gap-3"
+            >
               <Link
                 to={`/profile/${userl.username}`}
-                style={{ display: 'block', background: 'transparent', borderRadius: '0' }}
+                className="flex items-center gap-3 min-w-0 group"
               >
-                <Avatar
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '2px',
-                    border: '1.5px solid #1e1e35',
-                  }}
-                >
-                  <AvatarImage src={userl.profileImg || '/profile2.svg'} />
-                  <AvatarFallback />
-                </Avatar>
+                <img
+                  width={36}
+                  height={36}
+                  src={userl.profileImg || '/profile2.svg'}
+                  alt={`${userl.username} profile`}
+                  className="w-9 h-9 rounded-full object-cover border border-white/10 shrink-0"
+                />
+                <div className="flex flex-col min-w-0">
+                  <span className="text-xs font-semibold text-white truncate group-hover:underline">
+                    {userl.username}
+                  </span>
+                  <span className="text-[11px] text-zinc-500 truncate">
+                    Member
+                  </span>
+                </div>
               </Link>
 
-              <span
-                style={{
-                  fontFamily: "'Rajdhani', monospace",
-                  fontWeight: 700,
-                  fontSize: '0.82rem',
-                  color: '#c0c0d8',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
+              <button
+                type="button"
+                aria-label="Follow"
+                onClick={async () => {
+                  toggleFollow(userl, user, state, unfollowAction, followAction)
                 }}
+                className={`h-7 px-3 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                  following
+                    ? 'bg-white/[0.06] text-zinc-300 hover:bg-rose-500/15 hover:text-rose-300 border border-white/10'
+                    : 'bg-white text-zinc-950 hover:bg-zinc-200 font-semibold'
+                }`}
               >
-                {userl.username}
-              </span>
+                {following ? 'Following' : 'Follow'}
+              </button>
             </div>
-
-            {/* Follow / Unfollow button */}
-            <button
-              onClick={() => {
-                toggleFollow(userl, user, state, unfollowAction, followAction)
-              }}
-              style={{
-                height: '28px',
-                padding: '0 12px',
-                fontSize: '0.7rem',
-                fontFamily: "'Share Tech Mono', monospace",
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                border: following ? '1px solid #1e1e35' : '1px solid #00ff8777',
-                color: following ? '#6a6a8a' : '#00ff87',
-                background: 'transparent',
-                borderRadius: '2px',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                margin: 0,
-              }}
-              onMouseEnter={e => {
-                const el = e.currentTarget
-                if (following) {
-                  el.style.borderColor = '#ff009077'
-                  el.style.color = '#ff0090'
-                } else {
-                  el.style.background = '#00ff87'
-                  el.style.color = '#07070d'
-                }
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget
-                if (following) {
-                  el.style.borderColor = '#1e1e35'
-                  el.style.color = '#6a6a8a'
-                } else {
-                  el.style.background = 'transparent'
-                  el.style.color = '#00ff87'
-                }
-              }}
-            >
-              {following ? 'Unfollow' : 'Follow'}
-            </button>
-          </div>
-        )
-      })}
-    </>
+          )
+        })}
+      </div>
+    </div>
   )
 }

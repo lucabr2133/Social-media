@@ -1,323 +1,179 @@
-import { Link, useNavigate } from 'react-router'
-import onHandleSubmitLogin from '../../../services/onHandleLogin'
-import { useContext, useState } from 'react'
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Inputs } from '../Signup/Signup'
-import { UserSession } from '../../contex/context'
+import onHandleSubmitLogin from '../../../services/onHandleLogin'
+import { useNavigate, Link } from 'react-router'
+import { Github, ArrowRight, UserCheck, Lock, User as UserIcon } from 'lucide-react'
 
-const apiUrl = import.meta.env.VITE_API_URL
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
-function Login () {
-  const { register, setError, handleSubmit, formState: { errors, isSubmitting } } = useForm<Inputs>()
+export interface Inputs {
+  username: string
+  password: string
+}
+
+function Login() {
   const navigate = useNavigate()
-  const contex = useContext(UserSession)
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<Inputs>()
 
-  if (!contex) {
-    throw new Error('component outside provider ')
-  }
-  const [loading, setLoading] = useState(false)
-  const { setUser } = contex
-
-  const onSubmit: SubmitHandler<Inputs> = async data => {
-    const success = await onHandleSubmitLogin(data, setUser, setError)
-    if (success) {
-      navigate('/', { replace: true })
-    }
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    await onHandleSubmitLogin(data, setError, navigate)
   }
 
   return (
-    <>
-      {/* ── Full-screen background with grid pattern ── */}
+    <div className="min-h-screen w-full bg-[#09090b] text-[#fafafa] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
+      {/* Subtle ambient radial spotlight */}
       <div
+        className="pointer-events-none fixed inset-0"
         style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#07070d',
-          backgroundImage: `
-            linear-gradient(rgba(0, 255, 135, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 135, 0.04) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-          padding: '20px',
-          position: 'relative',
-          overflow: 'hidden',
+          background:
+            'radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 60%)',
         }}
-      >
-        {/* ── Decorative neon orbs ── */}
-        <div style={{
-          position: 'absolute',
-          width: '300px',
-          height: '300px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0,255,135,0.06) 0%, transparent 70%)',
-          top: '-100px',
-          left: '-100px',
-          pointerEvents: 'none',
-        }} />
-        <div style={{
-          position: 'absolute',
-          width: '250px',
-          height: '250px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(255,0,144,0.06) 0%, transparent 70%)',
-          bottom: '-80px',
-          right: '-80px',
-          pointerEvents: 'none',
-        }} />
+      />
 
-        {/* ── Login Card ── */}
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          style={{
-            width: '100%',
-            maxWidth: '400px',
-            background: '#0f0f1a',
-            border: '1.5px solid #00ff8766',
-            boxShadow: '0 0 30px #00ff8722, 0 0 60px #00ff8711, inset 0 0 30px rgba(0,255,135,0.02)',
-            borderRadius: '2px',
-            padding: '40px 36px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            position: 'relative',
-          }}
-        >
-          {/* ── Corner decorations ── */}
-          {['top-left', 'top-right', 'bottom-left', 'bottom-right'].map((corner) => {
-            const isTop = corner.includes('top')
-            const isLeft = corner.includes('left')
-            return (
-              <div
-                key={corner}
-                style={{
-                  position: 'absolute',
-                  width: '12px',
-                  height: '12px',
-                  [isTop ? 'top' : 'bottom']: '-1px',
-                  [isLeft ? 'left' : 'right']: '-1px',
-                  borderTop: isTop ? '2px solid #00ff87' : 'none',
-                  borderBottom: !isTop ? '2px solid #00ff87' : 'none',
-                  borderLeft: isLeft ? '2px solid #00ff87' : 'none',
-                  borderRight: !isLeft ? '2px solid #00ff87' : 'none',
-                }}
-              />
-            )
-          })}
-
-          {/* ── Brand logo ── */}
-          <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-            <div
-              style={{
-                fontFamily: "'Press Start 2P', monospace",
-                fontSize: '18px',
-                color: '#00ff87',
-                textShadow: '0 0 10px #00ff87, 0 0 20px #00ff8799, 0 0 40px #00ff8733',
-                letterSpacing: '0.05em',
-                lineHeight: 1.8,
-                marginBottom: '4px',
-              }}
-            >
-              ODIN
-              <span style={{ color: '#ff0090', textShadow: '0 0 10px #ff0090, 0 0 20px #ff009099' }}>
-                BOOK
-              </span>
-            </div>
-            <div
-              style={{
-                fontFamily: "'Share Tech Mono', monospace",
-                fontSize: '0.65rem',
-                color: '#6a6a8a',
-                letterSpacing: '0.25em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Social Media
-            </div>
+      <div className="w-full max-w-[400px] relative z-10">
+        {/* Brand Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-white/[0.05] border border-white/10 mb-4 shadow-inner">
+            <span className="font-bold text-lg tracking-tight text-white">OB</span>
           </div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            Welcome back
+          </h1>
+          <p className="text-sm text-zinc-400 mt-1.5">
+            Sign in to your Odin Book account to continue
+          </p>
+        </div>
 
-          {/* ── Divider ── */}
-          <div style={{ borderBottom: '1px solid #1e1e35', margin: '4px 0' }} />
-
-          {/* ── Username ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label
-              style={{
-                fontFamily: "'Share Tech Mono', monospace",
-                fontSize: '0.7rem',
-                color: '#00ff87',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Username
-            </label>
-            <input
-              type="text"
-              style={{
-                background: '#12121f',
-                borderRadius: '2px',
-              }}
-              {...register('username', {
-                required: 'Username is required',
-                minLength: { value: 8, message: 'Minimum 8 characters' },
-                maxLength: { value: 16, message: 'Maximum 16 characters' },
-              })}
-              aria-label="username"
-            />
-            {errors.username && (
-              <span
-                style={{
-                  color: '#ff0090',
-                  fontFamily: "'Share Tech Mono', monospace",
-                  fontSize: '0.68rem',
-                  textShadow: '0 0 6px #ff009099',
-                }}
+        {/* Auth Card */}
+        <div className="bg-[#121215] border border-white/[0.08] rounded-2xl p-6 sm:p-8 shadow-2xl">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-xs font-medium text-zinc-400 mb-1.5"
               >
-                ✗ {errors.username.message}
-              </span>
-            )}
-          </div>
+                Username
+              </label>
+              <div className="relative">
+                <UserIcon className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  id="username"
+                  aria-label="username"
+                  type="text"
+                  autoComplete="username"
+                  placeholder="Enter your username"
+                  {...register('username', { required: 'Username is required' })}
+                  className="w-full h-10 pl-10 pr-3.5 rounded-xl bg-[#09090b] border border-white/10 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-white/10 transition-all"
+                />
+              </div>
+              {errors.username && (
+                <p className="mt-1.5 text-xs text-rose-400">
+                  {errors.username.message}
+                </p>
+              )}
+            </div>
 
-          {/* ── Password ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label
-              style={{
-                fontFamily: "'Share Tech Mono', monospace",
-                fontSize: '0.7rem',
-                color: '#00ff87',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              style={{
-                background: '#12121f',
-                borderRadius: '2px',
-              }}
-              {...register('password', {
-                required: 'Password is required',
-                minLength: { value: 8, message: 'Minimum 8 characters' },
-                maxLength: { value: 16, message: 'Maximum 16 characters' },
-              })}
-              aria-label="password"
-            />
-            {errors.password && (
-              <span
-                style={{
-                  color: '#ff0090',
-                  fontFamily: "'Share Tech Mono', monospace",
-                  fontSize: '0.68rem',
-                  textShadow: '0 0 6px #ff009099',
-                }}
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-xs font-medium text-zinc-400 mb-1.5"
               >
-                ✗ {errors.password.message}
-              </span>
-            )}
-          </div>
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  id="password"
+                  aria-label="password"
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  {...register('password', { required: 'Password is required' })}
+                  className="w-full h-10 pl-10 pr-3.5 rounded-xl bg-[#09090b] border border-white/10 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-white/10 transition-all"
+                />
+              </div>
+              {errors.password && (
+                <p className="mt-1.5 text-xs text-rose-400">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
 
-          {/* ── Buttons ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '8px' }}>
-            {/* Primary: Login */}
+            {errors.root && (
+              <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 px-3.5 py-2.5 text-xs text-rose-300">
+                {errors.root.message}
+              </div>
+            )}
+
             <button
+              aria-label="send"
               type="submit"
               disabled={isSubmitting}
-              aria-label="send"
-              style={{
-                padding: '10px 20px',
-                fontSize: '0.85rem',
-              }}
+              className="w-full h-10 mt-2 rounded-xl bg-white text-zinc-950 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-zinc-200 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-            {isSubmitting ? 'Signing in...' : 'Sign In'}
+              <span>{isSubmitting ? 'Signing in...' : 'Sign In'}</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
+          </form>
 
-            {/* Secondary: Guest */}
-            <button
-              disabled={loading}
-              type="button"
-              aria-label="send-guest"
-              onClick={() => {
-                setLoading(true)
-                onSubmit({ username: 'guestUser', password: '12345678' })
-              }}
-              style={{
-                border: '1.5px solid #1e1e35',
-                color: '#6a6a8a',
-                padding: '10px 20px',
-                fontSize: '0.85rem',
-                background: 'transparent',
-              }}
-              onMouseEnter={e => {
-                const el = e.currentTarget
-                el.style.borderColor = '#00d4ff66'
-                el.style.color = '#00d4ff'
-                el.style.background = 'rgba(0, 212, 255, 0.05)'
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget
-                el.style.borderColor = '#1e1e35'
-                el.style.color = '#6a6a8a'
-                el.style.background = 'transparent'
-              }}
-            >
-              {loading ? 'Loading...' : 'Enter as Guest'}
-            </button>
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/[0.08]" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-[#121215] px-3 text-zinc-500">
+                Or continue with
+              </span>
+            </div>
           </div>
 
-          {/* ── Footer ── */}
-          <footer
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginTop: '8px',
-              paddingTop: '16px',
-              borderTop: '1px solid #1e1e35',
-            }}
-          >
-            <Link
-              to="/Signup"
-              style={{
-                fontFamily: "'Share Tech Mono', monospace",
-                fontSize: '0.68rem',
-                color: '#6a6a8a',
-                letterSpacing: '0.1em',
-                transition: 'color 0.2s',
-                textTransform: 'uppercase',
+          {/* Secondary Login Options */}
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              aria-label="send-guest"
+              type="button"
+              disabled={isSubmitting}
+              onClick={async () => {
+                await onHandleSubmitLogin(
+                  { username: 'guestUser', password: 'guestPassword' },
+                  setError,
+                  navigate
+                )
               }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#00ff87')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#6a6a8a')}
+              className="h-10 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-medium text-zinc-200 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
             >
-              Create account
-            </Link>
+              <UserCheck className="w-4 h-4 text-zinc-400" />
+              <span>Guest Access</span>
+            </button>
 
-            <Link
-              to={`${apiUrl}/logins/auth/github`}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent' }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
-              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            <a
+              href={`${apiUrl}/logins/auth/github`}
+              className="h-10 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-medium text-zinc-200 flex items-center justify-center gap-2 transition-all no-underline"
             >
-              <img
-                src="/github.jpg"
-                alt="GitHub login"
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '2px',
-                  border: '1px solid #1e1e35',
-                  transition: 'border-color 0.2s',
-                }}
-              />
-            </Link>
-          </footer>
-        </form>
+              <Github className="w-4 h-4 text-zinc-400" />
+              <span>GitHub</span>
+            </a>
+          </div>
+        </div>
+
+        {/* Footer Link */}
+        <p className="text-center text-xs text-zinc-400 mt-6">
+          Don&apos;t have an account?{' '}
+          <Link
+            to="/signup"
+            className="text-white font-medium hover:underline underline-offset-4 ml-1"
+          >
+            Create an account
+          </Link>
+        </p>
       </div>
-    </>
+    </div>
   )
 }
 

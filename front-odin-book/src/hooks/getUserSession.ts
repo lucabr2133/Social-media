@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { User } from '../types'
-import {data} from '../types'
+import { data } from '../types'
+
 function useUserSession () {
-const apiUrl = import.meta.env.VITE_API_URL;
-  const [user, setUser] = useState<User|null>(null)
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   useEffect(() => {
     async function getData () {
@@ -11,22 +12,22 @@ const apiUrl = import.meta.env.VITE_API_URL;
         const res = await fetch(`${apiUrl}/logins/`, {
           credentials: 'include',
         })
-        
+
         if (res.ok) {
-          const data:data = await res.json()
-          setUser(data.user) // Asigna el usuario recibido
+          const data: data = await res.json()
+          setUser(data.user)
         } else {
-          setUser(null) // Si no hay usuario, establece a null
+          setUser(null)
         }
       } catch (error) {
-        setUser(null) // En caso de error, establece el usuario como null
+        setUser(null)
       } finally {
-        setLoading(false) // Marca la carga como completada
+        setLoading(false)
       }
     }
 
     getData()
-  }, [apiUrl]) 
+  }, [apiUrl])
 
   return { user, loading, setUser }
 }
